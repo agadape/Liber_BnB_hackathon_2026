@@ -94,4 +94,3 @@ Both apps have their own test suites (`npm test`) using Node's built-in test run
 ## Hackathon track
 
 Payment and Consumer Applications. Liber is a consumer-facing payment app built for everyday use, scan a code, see a price, pay, not a DeFi primitive or an institutional finance tool.
-

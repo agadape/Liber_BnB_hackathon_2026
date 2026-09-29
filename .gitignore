@@ -1,0 +1,15 @@
+.superpowers/
+.claude/
+.DS_Store
+
+# internal planning docs, not part of the shipped project
+docs/
+BRIDGE-PATHS.md
+LIBER-CONCEPT.md
+RESEARCH-QRIS-RAILS.md
+ideasubmission.md
+
+
+# video project: source lives here, but the heavy binary media
+# (recordings, downloaded audio, renders) stays local; see video/README.md
+video/

@@ -1,0 +1,13 @@
+{
+  "chainId": 97,
+  "network": "bsc-testnet",
+  "deployedAt": "2026-09-25",
+  "deployer": "0xE2D654a82893c5F97A40332D0f0ACb6Ad34318b5",
+  "contracts": {
+    "MockUSDC": {
+      "address": "0x2116D4a3f11Aa7059Ad0911ad5C89897CC0BcC97",
+      "txHash": "0xf1b791670032e6fc7d0d1b1afe8d6720d2d89dd38de51bfa5e5215e734451941",
+      "decimals": 18
+    }
+  }
+}

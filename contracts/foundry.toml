@@ -1,0 +1,14 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+solc = "0.8.24"
+remappings = ["@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/"]
+
+[rpc_endpoints]
+bsc_testnet = "${BSC_TESTNET_RPC_URL}"
+bsc = "${BSC_RPC_URL}"
+
+[etherscan]
+bsc_testnet = { key = "${BSCSCAN_API_KEY}", chain = 97 }
+bsc = { key = "${BSCSCAN_API_KEY}", chain = 56 }
