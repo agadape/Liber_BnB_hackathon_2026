@@ -4,8 +4,8 @@
 
 Liber is a self-custodial BNB Chain wallet that helps USDC holders pay at Indonesian QRIS merchants using existing card-linked payment apps. Users scan a QRIS code, see its price in USDC, top up their own Kolo Visa card with an on-chain BEP-20 transfer, then complete the QRIS payment in GoPay or DANA. Liber does not directly settle the merchant's QRIS payment.
 
-**Live app:** [liber-qris.vercel.app](https://liber-qris.vercel.app)  
-**Demo video:** [youtu.be/tAt_Gn67OII](https://youtu.be/tAt_Gn67OII)  
+**BNB demo status:** the BSC testnet contract is live, and the frontend, backend, and contract checks pass in CI. The BNB version of the frontend and backend still needs a public deployment.  
+**Earlier Stellar demo:** [live app](https://liber-qris.vercel.app) · [video](https://youtu.be/tAt_Gn67OII). These links predate the BNB migration and should not be presented as a BNB demo.  
 **BSC testnet contract:** [MockUSDC at `0x2116D4a3f11Aa7059Ad0911ad5C89897CC0BcC97`](https://testnet.bscscan.com/address/0x2116D4a3f11Aa7059Ad0911ad5C89897CC0BcC97). This is a faucet-enabled test token, not a production stablecoin.
 
 ## The problem
@@ -27,8 +27,8 @@ Liber never touches the payment itself. It holds the user's own keys, quotes the
 This is a monorepo of two fully independent applications, each deployed separately, with no shared root package.json or workspace tooling:
 
 ```
-frontend/   Next.js 16 (App Router) app, deployed to Vercel
-backend/    Hono API server, deployed to Railway
+frontend/   Next.js 16 (App Router) app, ready for a separate Vercel deployment
+backend/    Hono API server, ready for a separate Railway deployment
 contracts/  Foundry: MockUSDC for BSC testnet only
 ```
 
