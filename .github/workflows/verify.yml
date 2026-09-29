@@ -81,3 +81,26 @@ jobs:
       - run: forge build
       - run: forge test
 
+  live-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check deployed BNB app and API
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --retry 5 --retry-delay 3 \
+            https://liber-bnb-web.vercel.app/ -o web.html
+          grep -q 'Built on BNB Chain' web.html
+
+          curl --fail --silent --show-error --retry 5 --retry-delay 3 \
+            -H 'Origin: https://liber-bnb-web.vercel.app' \
+            -D health.headers https://liber-bnb-api.vercel.app/health -o health.json
+          grep -q '"status":"ok"' health.json
+          grep -qi 'access-control-allow-origin: https://liber-bnb-web.vercel.app' health.headers
+
+          status=$(curl --silent --show-error --retry 5 --retry-delay 3 \
+            -o user.json -w '%{http_code}' \
+            https://liber-bnb-api.vercel.app/users/by-address/0x0000000000000000000000000000000000000001)
+          test "$status" = 404
+          grep -q '"error":"user not found"' user.json
+
