@@ -50,3 +50,8 @@ export function createApp() {
   app.route("/", topupsRoute);
   return app;
 }
+
+// Vercel's Hono runtime looks for a default-exported app. The named factory
+// remains available to the local Node server and tests.
+export default createApp();
+
