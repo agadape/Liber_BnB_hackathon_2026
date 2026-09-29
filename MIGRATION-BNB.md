@@ -20,7 +20,7 @@ and mainnet (56) is chosen with an env var.
 | DB schema | `stellar_public_key`, `kolo_stellar_address`, `kolo_memo`, `stellar_tx_hash` | `wallet_address` (EIP-55), `kolo_address`, `tx_hash`. Written as a **fresh schema**, so use a new database |
 | API | `POST /users {stellarPublicKey}`, `/users/by-key/:key`, `kolo-address {koloStellarAddress,koloMemo}`, `topups {stellarTxHash}` | `POST /users {walletAddress}` (returns `{userId}`), `/users/by-address/:walletAddress`, `kolo-address {koloAddress}`, `topups {txHash}` |
 | Contracts | none | `contracts/` Foundry project with `MockUSDC` (18 decimals, open faucet) for testnet only |
-| Copy | "Built on Stellar", "Stellar address", etc. | BNB Chain across the landing page, onboarding, settings, terms, README and the video scenes |
+| Copy | "Built on Stellar", "Stellar address", etc. | BNB Chain across the app and README. The recorded video still shows the earlier Stellar build. |
 
 Env vars:
 - backend: `CHAIN_ID`, `BSC_RPC_URL`, `USDC_ADDRESS`. These replace `STELLAR_NETWORK_PASSPHRASE`, `HORIZON_URL` and `USDC_ISSUER`.
@@ -39,17 +39,20 @@ Mainnet USDC on BSC is Binance-Peg USDC `0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd5
 
 For mainnet, set `CHAIN_ID=56` and `NEXT_PUBLIC_CHAIN_ID=56`, set the RPC to `https://bsc-dataseed.bnbchain.org`, and set the USDC address to `0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d`.
 
-## Verification done
+## Hosted BSC testnet demo
 
-- `backend`: `tsc --noEmit` passes. The unit tests that need no DB pass (chain/account, quote, qris: 12/12). The route tests need Postgres and were not run.
-- `frontend`: `tsc --noEmit` passes, `npm test` passes 29/29, and `next build` succeeds.
-- `contracts`: `forge build` passes.
-- Nothing was deployed and no transactions were sent.
+- Frontend: [liber-bnb-web.vercel.app](https://liber-bnb-web.vercel.app), Vercel project `liber-bnb-web`, root directory `frontend/`.
+- Backend: [liber-bnb-api.vercel.app](https://liber-bnb-api.vercel.app/health), Vercel project `liber-bnb-api`, root directory `backend/`. `src/app.ts` exports the Hono app for Vercel; `src/server.ts` remains the local Node entry point.
+- Database: Neon Free Postgres resource `liber-bnb-db` in Singapore, connected to the backend through Vercel as `DATABASE_URL`. The three tables and two indexes from `backend/src/db/schema.sql` were created and checked in the Neon query editor. Database credentials stay in Vercel/Neon.
+- BSC testnet MockUSDC: [`0x2116D4a3f11Aa7059Ad0911ad5C89897CC0BcC97`](https://testnet.bscscan.com/address/0x2116D4a3f11Aa7059Ad0911ad5C89897CC0BcC97).
+
+The frontend uses `NEXT_PUBLIC_BACKEND_URL`, `NEXT_PUBLIC_CHAIN_ID=97`, `NEXT_PUBLIC_BSC_RPC_URL`, `NEXT_PUBLIC_USDC_ADDRESS`, and `NEXT_PUBLIC_USDC_DECIMALS=18`. The backend uses `DATABASE_URL`, `FRONTEND_ORIGINS`, `CHAIN_ID=97`, `BSC_RPC_URL`, and `USDC_ADDRESS`. Keep production URLs in the matching Vercel projects and redeploy after changing environment variables. The Neon query editor accepts one SQL statement per execution when creating the schema manually.
+
+GitHub Actions checks frontend tests, types, lint and build; backend tests and types against Postgres; and Foundry build and tests. The video at https://youtu.be/tAt_Gn67OII is from the earlier Stellar version.
 
 ## TODO
 
 - **Kolo on BNB Chain.** Confirm that Kolo accepts USDC (or USDT) deposits on BSC/BEP-20, and whether it needs a per-user address or some attribution that replaces the old Stellar memo. If Kolo only takes USDT on BSC, point `USDC_ADDRESS` at USDT (`0x55d398326f99059fF775485246999027B3197955`, 18 decimals) and rename the UI labels.
-- Deploy MockUSDC to testnet and fill in the addresses in both env files.
-- Provision a fresh Postgres database. The schema changed incompatibly, and the old Railway database holds Stellar data.
 - Optional: sponsor gas or use an ERC-4337 paymaster so new users don't need to hold BNB.
 - The historical docs (`LIBER-CONCEPT.md`, `BRIDGE-PATHS.md`, `RESEARCH-QRIS-RAILS.md`, `ideasubmission.md`, `.superpowers/`, pitch deck PDF, recorded demo videos) still describe the Stellar build and were left as-is.
+
