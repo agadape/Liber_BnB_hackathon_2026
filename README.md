@@ -4,8 +4,8 @@
 
 Liber is a self-custodial BNB Chain wallet that helps USDC holders pay at Indonesian QRIS merchants using existing card-linked payment apps. Users scan a QRIS code, see its price in USDC, top up their own Kolo Visa card with an on-chain BEP-20 transfer, then complete the QRIS payment in GoPay or DANA. Liber does not directly settle the merchant's QRIS payment.
 
-**BNB demo status:** the BSC testnet contract is live, and the frontend, backend, and contract checks pass in CI. The BNB version of the frontend and backend still needs a public deployment.  
-**Earlier Stellar demo:** [live app](https://liber-qris.vercel.app) · [video](https://youtu.be/tAt_Gn67OII). These links predate the BNB migration and should not be presented as a BNB demo.  
+**BNB live demo:** [web app](https://liber-bnb-web.vercel.app) · [API health](https://liber-bnb-api.vercel.app/health). The web app and Hono API run as separate Vercel projects; the API uses Neon Postgres.  
+**Earlier Stellar demo video:** [watch on YouTube](https://youtu.be/tAt_Gn67OII). This recording predates the BNB migration and should not be presented as a BNB walkthrough. The [older Stellar site](https://liber-qris.vercel.app) remains available for comparison.  
 **BSC testnet contract:** [MockUSDC at `0x2116D4a3f11Aa7059Ad0911ad5C89897CC0BcC97`](https://testnet.bscscan.com/address/0x2116D4a3f11Aa7059Ad0911ad5C89897CC0BcC97). This is a faucet-enabled test token, not a production stablecoin.
 
 ## The problem
@@ -28,7 +28,7 @@ This is a monorepo of two fully independent applications, each deployed separate
 
 ```
 frontend/   Next.js 16 (App Router) app, ready for a separate Vercel deployment
-backend/    Hono API server, ready for a separate Railway deployment
+backend/    Hono API, deployed as a separate Vercel project
 contracts/  Foundry: MockUSDC for BSC testnet only
 ```
 
@@ -61,6 +61,13 @@ BNB Smart Chain (BSC) is the settlement and custody layer end to end (testnet ch
 See [MIGRATION-BNB.md](MIGRATION-BNB.md) for what changed from the original Stellar build and how to deploy.
 
 ## Deployments
+
+| Application | Live URL | Source directory |
+|---|---|---|
+| Web app | [liber-bnb-web.vercel.app](https://liber-bnb-web.vercel.app) | `frontend/` |
+| API | [liber-bnb-api.vercel.app](https://liber-bnb-api.vercel.app/health) | `backend/` |
+
+The API uses the `liber-bnb-db` Neon Free Postgres database in Singapore. Vercel injects its `DATABASE_URL` through the Neon integration; credentials are not stored in this repository. The database schema is in `backend/src/db/schema.sql`. The frontend targets BSC testnet (chain ID 97) and the API URL above. This is a testnet demo, not a production payment service.
 
 | Network | Contract | Address |
 |---|---|---|
