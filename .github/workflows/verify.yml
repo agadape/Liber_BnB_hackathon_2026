@@ -95,6 +95,11 @@ jobs:
           if ! grep -q 'Built on BNB Chain' web.html; then
             echo 'Frontend BNB marker missing. Response excerpt:'
             head -c 500 web.html
+            echo
+            echo 'Chain references in the returned HTML:'
+            grep -oE '.{0,60}(BNB|Stellar).{0,60}' web.html | head -n 6 || true
+            echo 'HTML byte count:'
+            wc -c web.html
             exit 1
           fi
 
