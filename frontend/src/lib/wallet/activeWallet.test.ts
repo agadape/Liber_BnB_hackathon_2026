@@ -13,13 +13,16 @@ import {
 // node:test runs in Node, which doesn't have `window`, so stub a minimal one for these tests.
 beforeEach(() => {
   const store = new Map<string, string>();
-  (globalThis as any).window = {
-    localStorage: {
-      getItem: (key: string) => store.get(key) ?? null,
-      setItem: (key: string, value: string) => store.set(key, value),
-      removeItem: (key: string) => store.delete(key),
+  Object.defineProperty(globalThis, "window", {
+    configurable: true,
+    value: {
+      localStorage: {
+        getItem: (key: string) => store.get(key) ?? null,
+        setItem: (key: string, value: string) => store.set(key, value),
+        removeItem: (key: string) => store.delete(key),
+      },
     },
-  };
+  });
 });
 
 test("getWalletMode defaults to local when never set", () => {

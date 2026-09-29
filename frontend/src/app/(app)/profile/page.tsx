@@ -33,9 +33,9 @@ export default function ProfilePage() {
   const [success, setSuccess] = useState<string | null>(null);
 
   useEffect(() => {
-    setUserId(window.localStorage.getItem(USER_ID_KEY));
-    setKoloAddress(window.localStorage.getItem(KOLO_ADDRESS_KEY));
     getActiveWallet().then(async (activeWallet) => {
+      setUserId(window.localStorage.getItem(USER_ID_KEY));
+      setKoloAddress(window.localStorage.getItem(KOLO_ADDRESS_KEY));
       setWallet(activeWallet);
       setAddress(activeWallet.publicKey);
       setQrDataUrl(await QRCode.toDataURL(activeWallet.publicKey));

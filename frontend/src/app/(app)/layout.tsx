@@ -1,24 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { BottomNav } from "@/components/nav/BottomNav";
-
-const USER_ID_KEY = "liber:userId";
+import { useSessionStatus } from "@/lib/useSessionStatus";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const [ready, setReady] = useState(false);
+  const session = useSessionStatus();
 
   useEffect(() => {
-    if (window.localStorage.getItem(USER_ID_KEY)) {
-      setReady(true);
-    } else {
+    if (session === false) {
       router.replace("/");
     }
-  }, [router]);
+  }, [router, session]);
 
-  if (!ready) return null;
+  if (session !== true) return null;
 
   return (
     <>

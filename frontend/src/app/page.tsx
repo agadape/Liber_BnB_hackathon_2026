@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { Logo } from "@/components/Logo";
 import { ScanIcon, ProfileIcon, HistoryIcon } from "@/components/icons";
+import { useSessionStatus } from "@/lib/useSessionStatus";
 
 const STEPS = [
   {
@@ -27,21 +28,17 @@ const STEPS = [
 
 const TRUST = ["Non-custodial", "Built on BNB Chain", "Works with any QRIS merchant"] as const;
 
-const USER_ID_KEY = "liber:userId";
-
 export default function LandingPage() {
   const router = useRouter();
-  const [checked, setChecked] = useState(false);
+  const session = useSessionStatus();
 
   useEffect(() => {
-    if (window.localStorage.getItem(USER_ID_KEY)) {
+    if (session === true) {
       router.replace("/home");
-    } else {
-      setChecked(true);
     }
-  }, [router]);
+  }, [router, session]);
 
-  if (!checked) return null;
+  if (session !== false) return null;
 
   return (
     <div className="relative min-h-dvh overflow-x-hidden bg-paper text-ink">
@@ -59,8 +56,8 @@ export default function LandingPage() {
               Spend QRIS <span className="italic text-emerald">straight from USDC.</span>
             </h1>
             <p className="fade-up mt-5 text-base text-ink/60 md:text-lg" style={{ animationDelay: "160ms" }}>
-              A non-custodial BNB Chain wallet for Indonesia. Scan any QRIS merchant, see the live USDC price, and
-              settle instantly through your own Kolo card, no bank transfer, no manual steps.
+              A non-custodial BNB Chain wallet for Indonesia. Scan a QRIS code, see the USDC quote, top up your own
+              Kolo card on-chain, then complete the payment in a card-linked QRIS app.
             </p>
             <div className="fade-up mt-8 flex flex-col items-center gap-3 md:items-start" style={{ animationDelay: "240ms" }}>
               <Link

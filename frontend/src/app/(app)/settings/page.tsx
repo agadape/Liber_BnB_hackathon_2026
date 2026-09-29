@@ -9,7 +9,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { ShieldIcon, DocumentIcon } from "@/components/icons";
 import { importWallet, LocalStorageWalletStorage } from "@/lib/wallet/storage";
-import { getActiveWallet, getWalletMode, disconnectAndSwitchToLocal } from "@/lib/wallet/activeWallet";
+import { getActiveWallet, disconnectAndSwitchToLocal } from "@/lib/wallet/activeWallet";
 import { getUserIdByAddress } from "@/lib/api";
 
 const USER_ID_KEY = "liber:userId";
@@ -125,7 +125,7 @@ export default function SettingsPage() {
               </p>
             </div>
             <p className="rounded-2xl bg-rose/10 px-4 py-3 text-xs text-rose">
-              Disconnecting never touches your connected wallet's funds - it just signs this device out. You'll be
+              Disconnecting never touches your connected wallet&apos;s funds - it just signs this device out. You&apos;ll be
               sent back to the start screen, and can reconnect the same wallet any time from onboarding.
             </p>
             <Button variant="ghost" onClick={handleDisconnect} disabled={disconnecting}>
