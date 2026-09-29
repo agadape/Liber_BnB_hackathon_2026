@@ -1,9 +1,12 @@
 # Liber
 
-A non-custodial BNB Chain wallet that lets anyone spend USDC at Indonesian QRIS merchants, without a custodial exchange and without building a new payment rail.
+**Indonesia Web3 Hackathon 2026 · Finance & Commerce / Consumer Apps**
 
-**Live app:** [liber-qris.vercel.app](https://liber-qris.vercel.app)
-**Demo video:** [youtu.be/tAt_Gn67OII](https://youtu.be/tAt_Gn67OII)
+Liber is a self-custodial BNB Chain wallet that helps USDC holders pay at Indonesian QRIS merchants using existing card-linked payment apps. Users scan a QRIS code, see its price in USDC, top up their own Kolo Visa card with an on-chain BEP-20 transfer, then complete the QRIS payment in GoPay or DANA. Liber does not directly settle the merchant's QRIS payment.
+
+**Live app:** [liber-qris.vercel.app](https://liber-qris.vercel.app)  
+**Demo video:** [youtu.be/tAt_Gn67OII](https://youtu.be/tAt_Gn67OII)  
+**BSC testnet contract:** [MockUSDC at `0x2116D4a3f11Aa7059Ad0911ad5C89897CC0BcC97`](https://testnet.bscscan.com/address/0x2116D4a3f11Aa7059Ad0911ad5C89897CC0BcC97). This is a faucet-enabled test token, not a production stablecoin.
 
 ## The problem
 
@@ -91,6 +94,8 @@ npm run dev
 
 Both apps have their own test suites (`npm test`) using Node's built-in test runner.
 
-## Hackathon track
+## Hackathon tracks
 
-Payment and Consumer Applications. Liber is a consumer-facing payment app built for everyday use, scan a code, see a price, pay, not a DeFi primitive or an institutional finance tool.
+- **Finance & Commerce:** a consumer payment flow that uses BNB Smart Chain for self-custodial USDC transfers.
+- **Consumer Apps:** a mobile-first experience that connects a familiar QRIS scan to an on-chain wallet and existing payment apps.
+
