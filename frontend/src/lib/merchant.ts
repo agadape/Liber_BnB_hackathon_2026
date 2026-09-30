@@ -1,7 +1,7 @@
 import {createPublicClient,http,encodeFunctionData,encodeAbiParameters,keccak256,parseUnits,erc20Abi,type Address,type Hash} from "viem";
 import {CHAIN,RPC_URL} from "./chain";
 import {invoiceAbi} from "./invoice-abi";
-import {getActiveWallet,setExternalWalletMode,type ActiveWallet} from "./wallet/activeWallet";
+import {getActiveWallet,setExternalWalletMode,setLocalWalletMode,type ActiveWallet} from "./wallet/activeWallet";
 import {connectExternalWallet} from "./wallet/externalWallet";
 import {clearApiSession} from "./auth";
 export interface MerchantConfig {chainId:number;contractAddress:Address|null;tokenAddress:Address|null;tokenDecimals:number;tokenLabel:string;testnet:boolean;copilotEnabled:boolean}
@@ -17,7 +17,7 @@ export const verifyInvoice=(id:string,txHash:string)=>json<Invoice>(`/invoices/$
 export const publicRpc=()=>createPublicClient({chain:CHAIN,transport:http(RPC_URL)});
 export async function selectWallet(external=false):Promise<ActiveWallet> {
   if(external){const publicKey=await connectExternalWallet();clearApiSession();setExternalWalletMode();return {mode:"external",publicKey};}
-  return getActiveWallet();
+  clearApiSession();setLocalWalletMode();return getActiveWallet();
 }
 export function prepareInvoice(contract:Address,merchant:Address,amount:string,minutes:number,now=Math.floor(Date.now()/1000)) {
   if(CHAIN.id!==97 || !/^\d{1,9}(\.\d{1,2})?$/.test(amount) || parseUnits(amount,18)<=BigInt(0) || !Number.isInteger(minutes) || minutes<5 || minutes>1440)throw Error("Use a positive amount (up to 2 decimals) and an expiry of 5–1440 minutes.");
