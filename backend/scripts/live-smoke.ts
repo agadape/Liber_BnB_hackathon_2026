@@ -10,10 +10,10 @@ const post = (path: string, body: unknown, token?: string) => fetch(`${api}${pat
 let ready = false;
 for (let attempt = 0; attempt < 24; attempt++) {
   const health = await fetch(`${api}/health`, { headers: { Origin: web }, signal: AbortSignal.timeout(10_000) }).catch(() => null);
-  const page = await fetch(web, { signal: AbortSignal.timeout(10_000) }).catch(() => null);
+  const page = await fetch(`${web}/pilot`, { signal: AbortSignal.timeout(10_000) }).catch(() => null);
   const body = await health?.json().catch(() => null);
   const html = await page?.text();
-  if (health?.ok && body?.version === "merchant-copilot-v1" && page?.ok && html?.includes("BSC Testnet Demo")) {
+  if (health?.ok && body?.version === "qris-pilot-v1" && page?.ok && html?.includes("Merchant QRIS pilot")) {
     assert.equal(health.headers.get("access-control-allow-origin"), web);
     ready = true; break;
   }
@@ -22,6 +22,16 @@ for (let attempt = 0; attempt < 24; attempt++) {
 assert.ok(ready, "Updated production deployment did not become ready");
 const config = await (await fetch(`${api}/config`)).json();
 assert.equal(config.chainId, 97); assert.ok(config.contractAddress, "Invoice contract missing");
+const pilotResponse = await fetch(`${api}/pilot/config`);
+assert.equal(pilotResponse.status,200);
+assert.match(pilotResponse.headers.get("cache-control") ?? "", /no-store/);
+const pilot = await pilotResponse.json();
+assert.equal(pilot.registryChainId,97);
+assert.ok(pilot.registryAddress, "Receipt registry missing");
+assert.ok(!("serverKey" in pilot) && !("owner" in pilot) && !("merchantId" in pilot));
+assert.equal((await post("/pilot/orders",{amountIdr:10000})).status,401);
+assert.equal((await fetch(`${api}/pilot/orders/invalid`)).status,400);
+assert.equal((await post("/pilot/midtrans/notification",{})).status,401);
 const sample = await post("/copilot/demo", {sample:"valid"});
 assert.equal(sample.status,200); const inspected=await sample.json();
 assert.equal(inspected.facts.checksumValid,true); assert.equal(inspected.facts.merchantIdentityVerified,false);
@@ -48,4 +58,4 @@ try {
 } finally {
   assert.equal((await post("/auth/logout", {}, token)).status, 200);
 }
-console.log("Production web, CORS, database-backed wallet authentication, nonce replay and anonymous write checks passed.");
+console.log("Production web, QRIS pilot configuration, rejected forged notification, CORS, database-backed authentication and nonce replay checks passed. No provider charge was issued.");

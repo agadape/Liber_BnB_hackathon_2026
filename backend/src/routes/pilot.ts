@@ -53,7 +53,7 @@ export function createPilotRoute(api?:Gateway,verify=verifyRecord) {
     if(!uuid.test(id)||!uuid.test(receiptId)||!hash.test(body?.txHash??""))return c.json({error:"Invalid receipt proof"},400);
     const row=(await getPool().query("SELECT commitment,statement FROM pilot_receipts WHERE id=$1 AND order_id=$2",[receiptId,id])).rows[0];
     if(!row)return c.json({error:"Verified provider receipt not found"},404);
-    try {const proof=await verify(row.commitment as Hash,row.statement.environment==="sandbox",body.txHash as Hash);
+    try {const proof=await verify(row.commitment as Hash,body.txHash as Hash);
       await getPool().query("UPDATE pilot_receipts SET chain_tx_hash=$2,recorded_by=$3 WHERE id=$1",[receiptId,body.txHash.toLowerCase(),proof.recordedBy]);
       return c.json({recorded:true,...proof});
     }catch{return c.json({error:"Chain transaction does not record this receipt hash and environment."},409);}

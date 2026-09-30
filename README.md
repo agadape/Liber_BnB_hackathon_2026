@@ -2,11 +2,12 @@
 
 **Scan. Understand. Verify on BNB.**
 
-Liber is a self-custodial payment prototype for Indonesia: inspect a QRIS payload, understand its amount and limits, then try a separate merchant invoice paid directly on BNB Smart Chain. The hosted demo uses **BSC Testnet (97)** and **MockUSDC with no monetary value**.
+Liber combines a merchant QRIS pilot for rupiah payments through Midtrans with receipt hashes on BNB, and a separate self-custodial test-token invoice demo. The hosted on-chain flows use **BSC Testnet (97)** and **MockUSDC with no monetary value**. The QRIS pilot awaits the merchant's Midtrans account; real payments are not active.
 
 **Indonesia Web3 Hackathon 2026 · Finance & Commerce / Consumer Apps**
 
 - [Two-minute demo](https://liber-bnb-web.vercel.app/demo) — no wallet needed to inspect valid and corrupted QR samples.
+- [Merchant QRIS pilot](https://liber-bnb-web.vercel.app/pilot) — connection status, rupiah checkout and provider-backed receipts; [setup and limits](PILOT.md).
 - [Merchant Mode](https://liber-bnb-web.vercel.app/merchant) — create, share and cancel on-chain invoices.
 - [Confirmed payment proof](https://liber-bnb-web.vercel.app/receipt?id=0x9472aacf99e2369eaf65a51d2e7b0f515c6433ac32d0450da1b18e9465ded034) — a real transfer of 5 test tokens between two test wallets.
 - [API health](https://liber-bnb-api.vercel.app/health) · [CI](https://github.com/agadape/Liber_BnB_hackathon_2026/actions).
@@ -17,7 +18,7 @@ A familiar merchant QR does not tell a crypto user which on-chain payment they c
 
 Liber makes those steps visible. Deterministic checks inspect the QR format and checksum. An optional AI explanation summarizes only those checked facts. A native Liber invoice specifies a receiving wallet, exact token amount and expiry; the buyer reviews and signs in their own wallet. Public proof is checked against BSC receipts.
 
-**QRIS scanning is reference only.** A valid checksum does not prove merchant identity. Liber invoices are a separate token payment flow; this prototype does not settle QRIS, credit a Kolo card, or prove goods delivery. Any proposed Kolo/GoPay/DANA integration still needs provider confirmation and a real integration test.
+**QR inspection is reference only.** A valid checksum does not prove merchant identity. Native Liber invoices are a separate token payment flow. The QRIS pilot issues new provider-backed invoices after a merchant account is connected; it does not pay arbitrary scanned merchant QRs, convert crypto, credit a Kolo card or prove goods delivery.
 
 ## What works
 
@@ -29,6 +30,8 @@ Liber makes those steps visible. Deterministic checks inspect the QR format and 
 | Buyer checkout | Exact token approval, followed by a separate payment signature; no server transaction signer. |
 | Public receipt | Successful transaction receipt, matching InvoicePaid event **and** exact MockUSDC Transfer event. Chain state is read again on refresh. |
 | Wallet app | Local test wallet or injected EVM wallet, signed authentication, balances, scanning and verified transfer history. |
+| QRIS pilot integration | Merchant-only creation, stable retry keys, canonical Midtrans status verification, duplicate and refund handling. Provider fixture tests pass; a connected-account E2E test is still pending. |
+| Receipt hash registry | Permissionless, immutable hash timestamps on BSC Testnet. Environment/status are bound inside the statement hash; BNB does not independently confirm fiat payment. |
 
 ## Native BNB contract
 
@@ -101,7 +104,7 @@ cp .env.local.example .env.local
 npm run dev
 ```
 
-For an existing database, apply both additive migrations: backend/src/db/security-migration.sql and backend/src/db/product-migration.sql. Set INVOICE_CONTRACT_ADDRESS on the backend. Enable COPILOT_ENABLED=true only after AI Gateway credits are ready; Vercel supplies its server OIDC token.
+For an existing database, apply the additive migrations: backend/src/db/security-migration.sql, backend/src/db/product-migration.sql and backend/src/db/pilot-migration.sql. Set INVOICE_CONTRACT_ADDRESS on the backend. Enable COPILOT_ENABLED=true only after AI Gateway credits are ready; Vercel supplies its server OIDC token. See [PILOT.md](PILOT.md) for private backend credential setup and the sandbox-to-production gate.
 
 Run npm test in each app, and forge test in contracts/. See [MIGRATION-BNB.md](MIGRATION-BNB.md) for the original Stellar-to-BNB migration and [SUBMISSION.md](SUBMISSION.md) for the judge walkthrough.
 

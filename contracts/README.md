@@ -39,3 +39,9 @@ Deployment and sample payment records are in `deployments/`. Reproducible Solidi
 including imported source files, is in `verification/LiberInvoice.standard-input.json`.
 Public receipt verification requires both the invoice payment event and the matching token transfer.
 QRIS settlement, Kolo card credit and goods delivery are outside this contract.
+
+## LiberReceiptRegistry
+
+`record(commitment)` timestamps a nonzero receipt hash on chain 97. Each hash can be recorded once, by any wallet, with no owner, upgrade or fund custody. The canonical statement binds environment, invoice amount, status and observation time inside the hash. The public event identifies the recorder; it does not certify that recorder as the merchant.
+
+The API accepts a chain proof only for an existing provider-confirmed statement and a successful transaction to the configured registry with the matching event. Midtrans remains the source of fiat status. See [PILOT.md](../PILOT.md) for account setup and current limitations. Compiler input is in `verification/LiberReceiptRegistry.standard-input.json`.

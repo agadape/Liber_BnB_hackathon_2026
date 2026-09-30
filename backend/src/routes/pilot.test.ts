@@ -52,3 +52,18 @@ test("wrong provider amount creates no paid receipt",async()=>{
   await assert.rejects(()=>refreshOrder(order,{...api,status:async id=>response(id,9999)}));
   const row=(await getPool().query<OrderRow>("SELECT * FROM pilot_orders WHERE id=$1",[order.id])).rows[0];assert.equal(row.status,"pending");
 });
+test("chain proof requires a provider receipt and a matching verified commitment",async()=>{
+  reset();let order=await createOrder(owner,10000,randomUUID(),api);
+  const txHash=`0x${"a".repeat(64)}` as const;
+  let verifiedCommitment="";
+  const route=createPilotRoute(api,async(commitment,hash)=>{assert.equal(hash,txHash);verifiedCommitment=commitment;return {recordedBy:owner,blockNumber:123};});
+  const send=(receiptId:string,hash=txHash)=>route.request(`/pilot/orders/${order.id}/receipts/${receiptId}/proof`,{method:"POST",body:JSON.stringify({txHash:hash})});
+  assert.equal((await send(randomUUID())).status,404);
+  status="settlement";order=await refreshOrder(order,api);
+  const view=await publicOrder(order),receipt=view.receipts[0];
+  assert.equal((await send(receipt.id)).status,200);assert.equal(verifiedCommitment,receipt.commitment);
+  assert.equal((await publicOrder(order)).receipts[0].txHash,txHash);
+  const rejecting=createPilotRoute(api,async()=>{throw Error("Unrelated transaction");});
+  const rejected=await rejecting.request(`/pilot/orders/${order.id}/receipts/${receipt.id}/proof`,{method:"POST",body:JSON.stringify({txHash:`0x${"b".repeat(64)}`})});
+  assert.equal(rejected.status,409);assert.equal((await publicOrder(order)).receipts[0].txHash,txHash);
+});

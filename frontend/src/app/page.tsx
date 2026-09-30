@@ -67,6 +67,7 @@ export default function LandingPage() {
                 Try the two-minute demo
               </Link>
               <Link href="/merchant" className="text-sm text-emerald underline">Open Merchant Mode</Link>
+              <Link href="/pilot" className="text-sm text-emerald underline">Explore the merchant QRIS pilot</Link>
               <p className="text-xs text-ink/40">Start without a wallet. Connect one to try test payments.</p>
             </div>
           </div>
@@ -89,7 +90,7 @@ export default function LandingPage() {
               <p className="mt-3 text-sm text-ink/60 md:text-base">
                 Wallet addresses, networks, token approvals and transaction hashes make digital payments hard to understand.
                 Liber puts the amount, recipient and evidence into one clear flow. QRIS inspection and Liber invoices are separate:
-                this demo does not settle QRIS or load a Kolo card.
+                the test-token demo does not settle QRIS. The merchant QRIS pilot uses a separate Midtrans connection.
               </p>
             </div>
           </div>

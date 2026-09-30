@@ -55,6 +55,8 @@ export default function HomePage() {
         <Link href="/demo" className="text-sm text-emerald underline">Demo guide</Link>
       </div>
 
+      <Link href="/pilot" className="mt-4 block rounded-3xl border border-emerald/20 p-4 text-sm font-semibold text-emerald">Merchant QRIS pilot · rupiah checkout</Link>
+
       <div className="mt-8 flex items-center justify-between">
         <h2 className="text-sm font-semibold text-ink/70">Recent activity</h2>
         <Link href="/history" className="text-sm text-emerald underline underline-offset-4">

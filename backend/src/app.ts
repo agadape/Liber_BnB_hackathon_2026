@@ -46,7 +46,7 @@ export function createApp() {
       origin: origins,
     }),
   );
-  app.get("/health", (c) => c.json({ status: "ok", version: "merchant-copilot-v1" }));
+  app.get("/health", (c) => c.json({ status: "ok", version: "qris-pilot-v1" }));
   app.route("/", createAuthRoute());
   app.route("/", usersRoute);
   app.route("/", balanceRoute);

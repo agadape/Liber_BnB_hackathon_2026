@@ -32,7 +32,7 @@ function OrderContent({id,proof}:{id:string;proof:boolean}){
     const wallet=await selectWallet(external);
     const existing=await publicRpc().readContract({address:config.registryAddress,abi:receiptAbi,functionName:"records",args:[latest.commitment]});
     if(existing[0]!=="0x0000000000000000000000000000000000000000")throw Error("This hash is already recorded. Enter its transaction hash below to recover the proof.");
-    const tx=await sendActiveWallet(wallet,{to:config.registryAddress,data:encodeFunctionData({abi:receiptAbi,functionName:"record",args:[latest.commitment,latest.statement.environment==="sandbox"]})}) as Hash;
+    const tx=await sendActiveWallet(wallet,{to:config.registryAddress,data:encodeFunctionData({abi:receiptAbi,functionName:"record",args:[latest.commitment]})}) as Hash;
     sessionStorage.setItem(pendingKey,tx);setStatus(`Recording submitted: ${tx}. Retry confirmation without sending again.`);await confirm(tx);
   }catch(e){setError((e as Error).message);}finally{setBusy(false);}}
   return <PageShell><Link href="/pilot" className="text-sm text-emerald">← Merchant QRIS pilot</Link><p className="mt-6 text-xs uppercase tracking-widest text-emerald">{proof?"Payment evidence":"Buyer checkout"}</p><h1 className="mt-2 font-display text-4xl italic">{proof?<>Rupiah payment.<br/>A recorded receipt.</>:<>Review the invoice.<br/>Pay with QRIS.</>}</h1>

@@ -3,7 +3,7 @@
 Liber had no Soroban contracts (the `contracts/` folder was a deferred Passkey Kit placeholder). All the
 Stellar logic lived in the frontend and backend, so this port swaps `@stellar/stellar-sdk` and
 `@creit.tech/stellar-wallets-kit` for **viem** on **BNB Smart Chain**. BSC testnet (97) is the default,
-and mainnet (56) is chosen with an env var.
+and the hosted payment contracts are restricted to chain 97. Legacy wallet network configuration also supports chain 56; changing it does not activate the invoice or receipt contracts on mainnet.
 
 ## What changed
 
@@ -37,7 +37,11 @@ Mainnet USDC on BSC is Binance-Peg USDC `0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd5
 4. Frontend: `cp .env.local.example .env.local`. Set `NEXT_PUBLIC_USDC_ADDRESS=<MockUSDC>`. Then run `npm i && npm run dev`.
 5. Onboard, send 0.001 test BNB to the shown address, then call `MockUSDC.faucet()` or `mint()` to fund the wallet with USDC.
 
-For mainnet, set `CHAIN_ID=56` and `NEXT_PUBLIC_CHAIN_ID=56`, set the RPC to `https://bsc-dataseed.bnbchain.org`, and set the USDC address to `0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d`.
+Keep the hosted release on chain 97. Mainnet token transfers need a separate deployment and operational review; changing the wallet environment is not a production migration of LiberInvoice or LiberReceiptRegistry.
+
+## Merchant QRIS pilot
+
+The pilot adds separate `pilot_orders` and `pilot_receipts` tables and a `LiberReceiptRegistry` contract. Buyers pay IDR via Midtrans; the contract timestamps receipt hashes without moving funds or authenticating fiat settlement. Account setup and activation gates are in [PILOT.md](PILOT.md). The provider account is not connected yet, so real payments remain disabled.
 
 ## Hosted BSC testnet demo
 
