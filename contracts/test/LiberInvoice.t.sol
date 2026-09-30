@@ -38,7 +38,7 @@ contract LiberInvoiceTest is Test {
         vm.prank(merchant); router.cancelInvoice(other);
         vm.prank(buyer); vm.expectRevert(LiberInvoice.NotPayable.selector); router.payInvoice(other);
     }
-    function testFailedTransferRollsBackPaidFlag() public {
+    function testRevertedTransferRollsBackPaidFlag() public {
         vm.prank(buyer); vm.expectRevert(); router.payInvoice(id);
         (,,,bool paid,,address payer) = router.invoices(id);
         assertFalse(paid); assertEq(payer, address(0));

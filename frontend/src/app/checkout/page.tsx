@@ -1,5 +1,6 @@
 "use client";
-import {useEffect,useState} from "react";
+import {useEffect,useState,Suspense} from "react";
+import {useSearchParams} from "next/navigation";
 import Link from "next/link";
 import {erc20Abi,type Address,type Hash} from "viem";
 import {PageShell} from "@/components/ui/PageShell";
@@ -10,10 +11,12 @@ import {sendActiveWallet,type ActiveWallet} from "@/lib/wallet/activeWallet";
 import {explorerTxUrl} from "@/lib/chain";
 type Pending={kind:"approval"|"payment";hash:Hash};
 const pendingKey=(id:string,address:string)=>`liber:checkout:97:${id}:${address.toLowerCase()}`;
-export default function CheckoutPage() {
-  const [invoice,setInvoice]=useState<Invoice|null>(null),[id,setId]=useState(""),[wallet,setWallet]=useState<ActiveWallet|null>(null),[pending,setPending]=useState<Pending|null>(null);
+export default function CheckoutPage(){return <Suspense fallback={<PageShell>Loading invoice…</PageShell>}><CheckoutContent/></Suspense>;}
+function CheckoutContent() {
+  const id=useSearchParams().get("id") ?? "";
+  const [invoice,setInvoice]=useState<Invoice|null>(null),[wallet,setWallet]=useState<ActiveWallet|null>(null),[pending,setPending]=useState<Pending|null>(null);
   const [busy,setBusy]=useState(false),[approved,setApproved]=useState(false),[status,setStatus]=useState(""),[error,setError]=useState<string|null>(null);
-  useEffect(()=>{const key=new URLSearchParams(location.search).get("id")??"";setId(key);if(!/^0x[a-fA-F0-9]{64}$/.test(key)){setError("Invalid invoice link.");return;}getInvoice(key).then(setInvoice).catch(e=>setError(e.message));},[]);
+  useEffect(()=>{if(!/^0x[a-fA-F0-9]{64}$/.test(id))return;getInvoice(id).then(setInvoice).catch(e=>setError(e.message));},[id]);
   async function connect(external:boolean){setBusy(true);setError(null);try{const active=await selectWallet(external);setWallet(active);const raw=sessionStorage.getItem(pendingKey(id,active.publicKey));setPending(raw?JSON.parse(raw):null);}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
   async function confirm(operation:Pending) {
     if(!wallet)return;

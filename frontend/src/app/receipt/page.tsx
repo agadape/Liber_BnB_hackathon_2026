@@ -1,15 +1,18 @@
 "use client";
-import {useEffect,useState} from "react";
+import {useEffect,useState,Suspense} from "react";
+import {useSearchParams} from "next/navigation";
 import Link from "next/link";
 import {PageShell} from "@/components/ui/PageShell";
 import {Card} from "@/components/ui/Card";
 import {Button} from "@/components/ui/Button";
 import {getInvoice,verifyInvoice,contractUrl,type Invoice} from "@/lib/merchant";
 import {explorerTxUrl} from "@/lib/chain";
-export default function ReceiptPage(){
-  const [invoice,setInvoice]=useState<Invoice|null>(null),[id,setId]=useState(""),[hash,setHash]=useState(""),[error,setError]=useState<string|null>(null),[busy,setBusy]=useState(false);
+export default function ReceiptPage(){return <Suspense fallback={<PageShell>Reading payment proof…</PageShell>}><ReceiptContent/></Suspense>;}
+function ReceiptContent(){
+  const id=useSearchParams().get("id") ?? "";
+  const [invoice,setInvoice]=useState<Invoice|null>(null),[hash,setHash]=useState(""),[error,setError]=useState<string|null>(null),[busy,setBusy]=useState(false);
   async function load(key:string){setBusy(true);setError(null);try{const result=await getInvoice(key);if(result.txHash)setInvoice(await verifyInvoice(key,result.txHash));else setInvoice(result);}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
-  useEffect(()=>{const key=new URLSearchParams(location.search).get("id")??"";setId(key);if(/^0x[a-fA-F0-9]{64}$/.test(key)){void load(key);}else setError("Invalid invoice link.");},[]);
+  useEffect(()=>{if(!/^0x[a-fA-F0-9]{64}$/.test(id))return;getInvoice(id).then(result=>result.txHash?verifyInvoice(id,result.txHash):result).then(setInvoice).catch(e=>setError(e.message));},[id]);
   return <PageShell><Link href="/demo" className="text-sm text-emerald">← Demo guide</Link><p className="mt-6 text-xs uppercase tracking-widest text-emerald">Public payment proof</p><h1 className="mt-2 font-display text-4xl italic">Evidence,<br/>on BNB.</h1><p className="mt-3 text-sm text-ink/60">Current contract state and a matching payment receipt. No screenshots or client-only success claims.</p>
     {invoice && <Card className="mt-6 flex flex-col gap-4"><span className="self-start rounded-full bg-emerald/10 px-3 py-1 text-xs uppercase text-emerald">{invoice.verified?"Receipt verified":invoice.status==="paid"?"Paid on chain · receipt needed":invoice.status}</span><p className="text-3xl font-semibold">{invoice.amountUsdc} <span className="text-base">MockUSDC</span></p><dl className="flex flex-col gap-3 text-xs"><div><dt className="text-ink/50">Recipient</dt><dd className="mt-1 break-all font-mono">{invoice.merchant}</dd></div>{invoice.payer && <div><dt className="text-ink/50">Payer</dt><dd className="mt-1 break-all font-mono">{invoice.payer}</dd></div>}<div><dt className="text-ink/50">Network / latest checked block</dt><dd className="mt-1">BSC Testnet · chain 97 · #{invoice.checkedBlock}</dd></div><div><dt className="text-ink/50">Invoice ID</dt><dd className="mt-1 break-all font-mono">{invoice.id}</dd></div></dl>{invoice.verified && <p className="text-sm text-emerald">✓ Successful receipt<br/>✓ Matching invoice payment event<br/>✓ Exact token transfer to recipient</p>}{invoice.txHash && <a href={explorerTxUrl(invoice.txHash)} target="_blank" rel="noopener noreferrer" className="text-sm text-emerald underline">Inspect transaction on BscScan</a>}{invoice.contractAddress && <a href={contractUrl(invoice.contractAddress)} target="_blank" rel="noopener noreferrer" className="text-sm text-emerald underline">Inspect invoice contract</a>}</Card>}
     {invoice?.paid && !invoice.verified && <Card className="mt-4 flex flex-col gap-3"><p className="text-sm">Have the payment hash? Verify and recover its public receipt.</p><input aria-label="Payment transaction hash" className="rounded-xl bg-paper p-3 text-xs" placeholder="0x…" value={hash} onChange={e=>setHash(e.target.value)}/><Button disabled={busy || !/^0x[a-fA-F0-9]{64}$/.test(hash)} onClick={async()=>{setBusy(true);setError(null);try{setInvoice(await verifyInvoice(id,hash));}catch(e){setError((e as Error).message);}finally{setBusy(false);}}}>Verify receipt</Button></Card>}
