@@ -2,6 +2,7 @@ import { calculateCRC16 } from "./crc16.js";
 import { parseQRIS } from "./parser.js";
 
 export function inspectQris(payload: string, staticAmount?: string) {
+  if (staticAmount !== undefined && typeof staticAmount !== "string") throw new Error("IDR amount must be a decimal string.");
   if (typeof payload !== "string" || payload.length > 4096 || !/^[\x20-\x7e]+$/.test(payload)) throw new Error("QR payload must contain 1–4096 printable ASCII characters.");
   const tags = new Map<string,string>();
   let pos = 0;

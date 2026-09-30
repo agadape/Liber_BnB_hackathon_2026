@@ -13,4 +13,5 @@ test("rejects corruption, duplicate fields, unsupported currency and missing dyn
 test("static input accepts an explicit amount but rejects negative and oversized values",()=>{
   const qr=buildQris(fields.filter(([k])=>k!=="54").map(([k,v])=>[k,k==="01"?"11":v]));
   assert.equal(inspectQris(qr,"10000").amountIdr,"10000"); assert.throws(()=>inspectQris(qr,"-1")); assert.throws(()=>inspectQris(qr,"10000000000000"));
+  assert.throws(()=>inspectQris(qr,10000 as unknown as string));
 });

@@ -1,0 +1,22 @@
+{
+  "chainId": 97,
+  "network": "bsc-testnet",
+  "deployedAt": "2026-09-30T12:16:01.392Z",
+  "deployer": "0x80a92Cac1a63799170af13d17313b45EB77661e5",
+  "contracts": {
+    "LiberInvoice": {
+      "address": "0x2ad1785460b3c60b0131b0649b37dacf3dc17b1c",
+      "txHash": "0xaa7b2d95663691c3d4764707410e41b256a6916f29d68168ddc52838708f4dbf",
+      "deploymentBlock": 134052453,
+      "tokenAddress": "0x2116D4a3f11Aa7059Ad0911ad5C89897CC0BcC97",
+      "compiler": "0.8.24+commit.e11b9ed9.Emscripten.clang",
+      "sourceVerified": false,
+      "sourcify": {
+        "match": "exact_match",
+        "verifiedAt": "2026-09-30T12:18:11Z",
+        "url": "https://repo.sourcify.dev/97/0x2Ad1785460b3C60b0131b0649B37dACF3DC17b1C"
+      },
+      "bscScanVerification": "pending: upstream daily submission limit"
+    }
+  }
+}

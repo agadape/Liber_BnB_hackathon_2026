@@ -1,0 +1,12 @@
+{
+  "chainId": 97,
+  "contractAddress": "0x2ad1785460b3c60b0131b0649b37dacf3dc17b1c",
+  "invoiceId": "0x9472aacf99e2369eaf65a51d2e7b0f515c6433ac32d0450da1b18e9465ded034",
+  "amountUsdc": "5",
+  "merchant": "0x80a92Cac1a63799170af13d17313b45EB77661e5",
+  "payer": "0x764613D1A102A89e38d5E6F567575046b6823A1a",
+  "creationTxHash": "0x36af465aa4a2b1b796e6329122bd05edb5af6f129cd1db7d2d9c3db91501c706",
+  "approvalTxHash": "0xb6190018cad7b3a65d224c5e2cc9feb6852633d694ad0cb963a4856d7065a8e8",
+  "paymentTxHash": "0x572e268f3a2a835dacfdfcadd1874997720f3b905f35bed52cc3f1101e263241",
+  "tokenAddress": "0x2116D4a3f11Aa7059Ad0911ad5C89897CC0BcC97"
+}

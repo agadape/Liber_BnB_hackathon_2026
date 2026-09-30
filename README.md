@@ -1,120 +1,110 @@
 # Liber
 
+**Scan. Understand. Verify on BNB.**
+
+Liber is a self-custodial payment prototype for Indonesia: inspect a QRIS payload, understand its amount and limits, then try a separate merchant invoice paid directly on BNB Smart Chain. The hosted demo uses **BSC Testnet (97)** and **MockUSDC with no monetary value**.
+
 **Indonesia Web3 Hackathon 2026 · Finance & Commerce / Consumer Apps**
 
-Liber is a self-custodial BNB Chain wallet prototype for Indonesia. The hosted BSC testnet demo scans QRIS codes, estimates their USDC equivalent, and demonstrates a confirmed MockUSDC transfer to another test wallet. MockUSDC has no monetary value and does not fund a real Kolo card or settle a merchant payment.
+- [Two-minute demo](https://liber-bnb-web.vercel.app/demo) — no wallet needed to inspect valid and corrupted QR samples.
+- [Merchant Mode](https://liber-bnb-web.vercel.app/merchant) — create, share and cancel on-chain invoices.
+- [Confirmed payment proof](https://liber-bnb-web.vercel.app/receipt?id=0x9472aacf99e2369eaf65a51d2e7b0f515c6433ac32d0450da1b18e9465ded034) — a real transfer of 5 test tokens between two test wallets.
+- [API health](https://liber-bnb-api.vercel.app/health) · [CI](https://github.com/agadape/Liber_BnB_hackathon_2026/actions).
 
-The proposed real-world payment route through Kolo and GoPay/DANA remains a hypothesis. Exact BSC token deposit support, account eligibility, and card-linked QRIS compatibility require provider confirmation and an end-to-end test before being offered as a working payment route.
+## Problem and solution
 
-**BNB live demo:** [web app](https://liber-bnb-web.vercel.app) · [API health](https://liber-bnb-api.vercel.app/health). The web app and Hono API run as separate Vercel projects; the API uses Neon Postgres.  
-**Earlier Stellar demo video:** [watch on YouTube](https://youtu.be/tAt_Gn67OII). This recording predates the BNB migration and should not be presented as a BNB walkthrough. The [older Stellar site](https://liber-qris.vercel.app) remains available for comparison.  
-**BSC testnet contract:** [MockUSDC at `0x2116D4a3f11Aa7059Ad0911ad5C89897CC0BcC97`](https://testnet.bscscan.com/address/0x2116D4a3f11Aa7059Ad0911ad5C89897CC0BcC97). This is a faucet-enabled test token, not a production stablecoin.
+A familiar merchant QR does not tell a crypto user which on-chain payment they can safely authorize. Reading an amount, confirming the recipient, and distinguishing an estimate from actual settlement are separate steps.
 
-## The problem
+Liber makes those steps visible. Deterministic checks inspect the QR format and checksum. An optional AI explanation summarizes only those checked facts. A native Liber invoice specifies a receiving wallet, exact token amount and expiry; the buyer reviews and signs in their own wallet. Public proof is checked against BSC receipts.
 
-Millions of Indonesians pay for everyday purchases through QRIS, but anyone holding their money in USDC or other crypto has no direct way to spend it there. Custodial exchanges hold the user's keys instead of the user. Off-ramping to a bank account is slow and fee-heavy. Not a single QRIS merchant accepts crypto directly. Today, spending crypto on daily life in Indonesia means selling it on an exchange, waiting for a bank transfer, then spending rupiah, a multi-day, multi-fee detour just to buy a coffee.
+**QRIS scanning is reference only.** A valid checksum does not prove merchant identity. Liber invoices are a separate token payment flow; this prototype does not settle QRIS, credit a Kolo card, or prove goods delivery. Any proposed Kolo/GoPay/DANA integration still needs provider confirmation and a real integration test.
 
-## What the demo proves
+## What works
 
-1. Create or connect an EVM wallet and authenticate by signing a Liber sign-in message.
-2. Scan a QRIS payload and display a reference USDC quote.
-3. Save a destination owned by the tester and transfer MockUSDC on BSC testnet.
-4. Wait for confirmation and check the transaction on BscScan. The API verifies the token contract, sender, recipient, amount, and successful receipt before recording it.
+| Feature | Evidence / limits |
+|---|---|
+| QR inspection | Strict TLV parsing, CRC16, IDR/Indonesia checks and positive amounts. Corrupted samples are rejected. |
+| Payment Copilot | Checked facts first; optional Indonesian AI explanation through Vercel AI Gateway. Clear checks-only fallback when AI is unavailable. |
+| Merchant invoices | BSC contract records recipient, amount, expiry, payer and paid/cancelled state. Wallet signs creation and cancellation. |
+| Buyer checkout | Exact token approval, followed by a separate payment signature; no server transaction signer. |
+| Public receipt | Successful transaction receipt, matching InvoicePaid event **and** exact MockUSDC Transfer event. Chain state is read again on refresh. |
+| Wallet app | Local test wallet or injected EVM wallet, signed authentication, balances, scanning and verified transfer history. |
 
-The wallet signs transfers on the device. Liber does not execute a QRIS payment or confirm card credit.
+## Native BNB contract
+
+| Contract | BSC Testnet address |
+|---|---|
+| **LiberInvoice** — project contract for submission | [0x2ad1785460b3c60b0131b0649b37dacf3dc17b1c](https://testnet.bscscan.com/address/0x2ad1785460b3c60b0131b0649b37dacf3dc17b1c) |
+| MockUSDC — open faucet, 18 decimals | [0x2116D4a3f11Aa7059Ad0911ad5C89897CC0BcC97](https://testnet.bscscan.com/address/0x2116D4a3f11Aa7059Ad0911ad5C89897CC0BcC97) |
+
+LiberInvoice is testnet-only. It has no owner, upgrade, service fee or custody balance: transferFrom moves tokens directly from buyer to recipient, and the contract checks the recipient received the exact amount. Paid, cancelled, expired and unknown invoices reject payment. Merchants cannot pay their own invoice.
+
+Source verification has an [exact creation/runtime match on Sourcify](https://repo.sourcify.dev/97/0x2Ad1785460b3C60b0131b0649B37dACF3DC17b1C). BscScan source publication is pending because its upstream service reported a daily submission limit. Deployment records and compiler input are in contracts/deployments/ and contracts/verification/.
+
+[Inspect the confirmed test payment on BscScan](https://testnet.bscscan.com/tx/0x572e268f3a2a835dacfdfcadd1874997720f3b905f35bed52cc3f1101e263241). Its invoice ID and creation, approval and payment hashes are recorded in [demo-invoice.json](contracts/deployments/demo-invoice.json).
 
 ## Architecture
 
-This is a monorepo of two fully independent applications, each deployed separately, with no shared root package.json or workspace tooling:
-
+```mermaid
+flowchart LR
+  QR[QRIS payload] --> Checks[API: format, checksum, amount]
+  Checks --> Facts[Checked facts]
+  Facts --> UI[Browser: review amount and limits]
+  Facts --> AI[Optional AI: explain redacted facts]
+  AI --> UI
+  Merchant[Merchant wallet] -->|create invoice| Invoice[LiberInvoice on BSC Testnet]
+  Buyer[Buyer wallet] -->|exact approval, then payment| Invoice
+  Invoice -->|direct MockUSDC transfer| Merchant
+  Invoice --> Proof[API: receipt and both events]
+  Proof --> Receipt[Public receipt]
+  Proof --> DB[(Neon: verified receipt hash)]
 ```
-frontend/   Next.js 16 (App Router) app, deployed as a separate Vercel project
-backend/    Hono API, deployed as a separate Vercel project
-contracts/  Foundry: MockUSDC for BSC testnet only
-```
 
-### Frontend
+Three independent directories: frontend/ (Next.js 16), backend/ (Hono + Postgres), contracts/ (Solidity 0.8.24 + Foundry). Web and API deploy separately on Vercel; Neon provides Postgres. No private key is sent to the API.
 
-Mobile-first Next.js app: a bottom-nav app shell (Home, Scan, Profile, History) sitting behind a marketing landing page. Wallet keypairs are generated and held entirely client-side (`frontend/src/lib/wallet/`); the backend never sees a private key.
+## AI boundaries and status
 
-- Next.js 16, React 19, Tailwind v4
-- `viem` for client-side EVM keypairs, signing and BSC RPC calls (local key, or any injected wallet such as MetaMask / Trust / Binance Web3 Wallet)
-- `html5-qrcode` for QRIS scanning, `qrcode` for generating the receive-address QR
+The model receives only nominal amount, QR method and validation flags. Raw QR, merchant text, wallet addresses, sessions and private keys are excluded. It cannot choose a recipient, change an amount, approve tokens or sign a transaction. All payment checks remain deterministic.
 
-### Backend
+AI is gated by COPILOT_ENABLED and server-side Vercel OIDC authentication. Atomic database accounting caps model attempts at **100 per UTC day** across the deployment. The public demo accepts only built-in samples; real QR explanations require wallet authentication. The UI labels model output as AI only after a successful, validated model response.
 
-A Hono API handling wallet authentication, registration, reference quotes, and activity logging. It checks the wallet gas balance before registration, never receives a private key, and does not fund accounts or relay transfers.
+**Live AI activation currently awaits user-completed card verification for Vercel's free credits.** Checks-only explanations work without it. No paid credits or auto top-up have been enabled.
 
-- Hono on `@hono/node-server`
-- Postgres for user records and scan/top-up history
-- `viem` for BSC reads (BNB gas balance for activation, USDC `balanceOf`)
+## Security and verification
 
-## BNB Chain integration
+- EIP-4361 challenges expire in five minutes; nonce consumption is atomic.
+- Bearer sessions expire in 30 minutes; only token hashes are stored. Wallet routes enforce ownership.
+- Invoice receipt recording accepts chain evidence, not client success claims. Unique invoice/transaction constraints prevent duplicate records.
+- Submitted transaction hashes survive page refresh in sessionStorage; confirmation retries do not resend payment.
+- CI checks frontend tests/types/lint/build, backend tests/types/migrations and contract tests. LiberInvoice includes replay, expiry, cancellation, failed transfer rollback and exact-amount fuzz coverage (256 runs).
 
-BNB Smart Chain (BSC) is the settlement and custody layer end to end (testnet chainId 97 by default, mainnet 56):
+These checks are engineering evidence, not an independent security audit. Use test tokens only.
 
-- **Non-custodial wallets**: every user gets an EVM keypair generated and held client-side, or connects an injected wallet.
-- **No trustline needed**: USDC is a BEP-20 token (Binance-Peg USDC on mainnet, 18 decimals; `contracts/MockUSDC` on testnet).
-- **Activation**: the wallet only needs a little BNB (0.001) for gas; the backend registers it once that balance is seen on-chain.
-- **Test transfers**: an ERC-20 `transfer` signed on-device and broadcast over BSC RPC. The hosted demo sends MockUSDC to a test wallet; it does not fund a Kolo card.
-- **Live balance and quotes**: balances are read directly from BSC via `balanceOf`; tx links go to BscScan.
+## Run locally
 
-See [MIGRATION-BNB.md](MIGRATION-BNB.md) for what changed from the original Stellar build and how to deploy.
-
-## Account and transaction security
-
-- EIP-4361 sign-in challenges expire after five minutes. A valid signature consumes its nonce atomically, preventing concurrent replay.
-- Random bearer sessions expire after 30 minutes; only SHA-256 token hashes are stored in Postgres. The browser keeps the session in sessionStorage. Log out revokes the current token.
-- Registration, wallet lookup, balance, history, scans, saved destinations, and transfer logs require authentication. Each user route checks wallet ownership. Public health and reference quotes remain accessible.
-- The API reads confirmed Transfer events from the configured chain and token; client-supplied amounts are checked against the receipt. A unique index prevents a transaction from being recorded twice.
-- Historical top-up rows remain unverified. A verified test transfer still does not prove Kolo card credit or QRIS settlement.
-- After broadcasting, the UI keeps the transaction hash and offers verification retry instead of prompting another transfer.
-
-## Deployments
-
-| Application | Live URL | Source directory |
-|---|---|---|
-| Web app | [liber-bnb-web.vercel.app](https://liber-bnb-web.vercel.app) | `frontend/` |
-| API | [liber-bnb-api.vercel.app](https://liber-bnb-api.vercel.app/health) | `backend/` |
-
-The API uses the `liber-bnb-db` Neon Free Postgres database in Singapore. Vercel injects its `DATABASE_URL` through the Neon integration; credentials are not stored in this repository. The database schema is in `backend/src/db/schema.sql`. The frontend targets BSC testnet (chain ID 97) and the API URL above. This is a testnet demo, not a production payment service.
-
-| Network | Contract | Address |
-|---|---|---|
-| BSC testnet (97) | MockUSDC (18 dec, open `faucet()`/`mint()`) | [`0x2116D4a3f11Aa7059Ad0911ad5C89897CC0BcC97`](https://testnet.bscscan.com/address/0x2116D4a3f11Aa7059Ad0911ad5C89897CC0BcC97) |
-| BSC mainnet (56) | Binance-Peg USDC (no deploy needed) | [`0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d`](https://bscscan.com/address/0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d) |
-
-Deploy record: `contracts/deployments/bsc-testnet.json`. Source is not verified on BscScan yet (no API key was available).
-
-## Local development
-
-Each app runs independently. Open two terminals.
-
-### Backend
+Each app runs independently:
 
 ```bash
 cd backend
-npm install
-cp .env.example .env   # fill in DATABASE_URL, USDC_ADDRESS
+npm ci
+cp .env.example .env
+# Set DATABASE_URL; defaults target the deployed BSC testnet contracts.
 npm run migrate
 npm run dev
 ```
 
-### Frontend
-
 ```bash
 cd frontend
-npm install
-cp .env.local.example .env.local   # point NEXT_PUBLIC_BACKEND_URL at the backend above
+npm ci
+cp .env.local.example .env.local
+# Set NEXT_PUBLIC_BACKEND_URL to your API.
 npm run dev
 ```
 
-Both apps have their own test suites (`npm test`) using Node's built-in test runner.
+For an existing database, apply both additive migrations: backend/src/db/security-migration.sql and backend/src/db/product-migration.sql. Set INVOICE_CONTRACT_ADDRESS on the backend. Enable COPILOT_ENABLED=true only after AI Gateway credits are ready; Vercel supplies its server OIDC token.
 
-For an existing database, apply `backend/src/db/security-migration.sql` before deploying the authentication update. The migration is additive. Users with an old browser session must verify their wallet again.
+Run npm test in each app, and forge test in contracts/. See [MIGRATION-BNB.md](MIGRATION-BNB.md) for the original Stellar-to-BNB migration and [SUBMISSION.md](SUBMISSION.md) for the judge walkthrough.
 
-## Hackathon tracks
+## Demo video
 
-- **Finance & Commerce:** a consumer payment flow that uses BNB Smart Chain for self-custodial USDC transfers.
-- **Consumer Apps:** a mobile-first experience that connects a familiar QRIS scan to an on-chain wallet and existing payment apps.
-
+The user-selected [YouTube video](https://youtu.be/tAt_Gn67OII) is the earlier Stellar walkthrough. It is supporting historical material, not evidence of these BNB features. The current BNB evidence is the live demo, contract and public payment receipt linked above.
