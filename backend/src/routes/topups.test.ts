@@ -57,4 +57,3 @@ test("unknown user returns 404 only after wallet authentication", async () => {
   const res = await createTopupsRoute().request("/users/00000000-0000-0000-0000-000000000000/topups", {method:"POST",headers:await authHeaders(),body:"{}"});
   assert.equal(res.status,404);
 });
-

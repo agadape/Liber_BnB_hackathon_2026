@@ -5,11 +5,11 @@
   "type": "module",
   "engines": { "node": ">=20" },
   "scripts": {
-    "dev": "NODE_OPTIONS=--env-file-if-exists=.env tsx watch src/server.ts",
+    "dev": "node --env-file-if-exists=.env --import tsx --watch src/server.ts",
     "start": "tsx src/server.ts",
     "test": "node --env-file-if-exists=.env --import tsx --test $(find src -name '*.test.ts')",
     "typecheck": "tsc --noEmit",
-    "migrate": "NODE_OPTIONS=--env-file-if-exists=.env tsx src/db/migrate.ts"
+    "migrate": "node --env-file-if-exists=.env --import tsx src/db/migrate.ts"
   },
   "dependencies": {
     "@hono/node-server": "^1.13.0",
