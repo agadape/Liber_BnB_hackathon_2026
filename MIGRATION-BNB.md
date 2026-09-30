@@ -14,12 +14,12 @@ and mainnet (56) is chosen with an env var.
 | Signing | sign XDR, submit to Horizon | `sendActiveWallet()` signs locally with a viem `privateKeyToAccount`, or through the injected wallet, then broadcasts over BSC RPC |
 | USDC | Classic asset + trustline (`changeTrust`) | BEP-20 ERC-20. No trustline, so the `confirm-trustline` route and flow were removed |
 | Activation | ≥ 2 XLM reserve | ≥ 0.001 BNB for gas (`ACTIVATION_BALANCE_BNB`, same value in backend and frontend) |
-| Kolo top-up | `payment` op + numeric `MEMO_ID` | ERC-20 `transfer` to the user's Kolo BEP-20 deposit address. The memo was dropped because EVM has none |
+| Test transfer | `payment` op + numeric `MEMO_ID` | ERC-20 `transfer` to a tester-controlled wallet. No validated Kolo deposit or QRIS settlement is claimed |
 | Balance | Horizon account balances | `balanceOf` + `decimals()` on the USDC contract (`backend/src/chain/account.ts`) |
 | Explorer | none | BscScan tx links in History and after a top-up (`frontend/src/lib/chain.ts`) |
 | DB schema | `stellar_public_key`, `kolo_stellar_address`, `kolo_memo`, `stellar_tx_hash` | `wallet_address` (EIP-55), `kolo_address`, `tx_hash`. Written as a **fresh schema**, so use a new database |
 | API | `POST /users {stellarPublicKey}`, `/users/by-key/:key`, `kolo-address {koloStellarAddress,koloMemo}`, `topups {stellarTxHash}` | `POST /users {walletAddress}` (returns `{userId}`), `/users/by-address/:walletAddress`, `kolo-address {koloAddress}`, `topups {txHash}` |
-| Contracts | none | `contracts/` Foundry project with `MockUSDC` (18 decimals, open faucet) for testnet only |
+| Contracts | none | `LiberInvoice` for native merchant invoices and `MockUSDC` (18 decimals, open faucet), BSC Testnet only |
 | Copy | "Built on Stellar", "Stellar address", etc. | BNB Chain across the app and README. The recorded video still shows the earlier Stellar build. |
 
 Env vars:
@@ -43,7 +43,7 @@ For mainnet, set `CHAIN_ID=56` and `NEXT_PUBLIC_CHAIN_ID=56`, set the RPC to `ht
 
 - Frontend: [liber-bnb-web.vercel.app](https://liber-bnb-web.vercel.app), Vercel project `liber-bnb-web`, root directory `frontend/`.
 - Backend: [liber-bnb-api.vercel.app](https://liber-bnb-api.vercel.app/health), Vercel project `liber-bnb-api`, root directory `backend/`. `src/app.ts` exports the Hono app for Vercel; `src/server.ts` remains the local Node entry point.
-- Database: Neon Free Postgres resource `liber-bnb-db` in Singapore, connected to the backend through Vercel as `DATABASE_URL`. The three tables and two indexes from `backend/src/db/schema.sql` were created and checked in the Neon query editor. Database credentials stay in Vercel/Neon.
+- Database: Neon Free Postgres resource `liber-bnb-db` in Singapore, connected to the backend through Vercel as `DATABASE_URL`. The base schema, authentication tables and additive product migration are deployed. Database credentials stay in Vercel/Neon.
 - BSC testnet MockUSDC: [`0x2116D4a3f11Aa7059Ad0911ad5C89897CC0BcC97`](https://testnet.bscscan.com/address/0x2116D4a3f11Aa7059Ad0911ad5C89897CC0BcC97).
 
 The hosted UI clearly labels BSC testnet and MockUSDC. Its proposed Kolo and GoPay/DANA route is unvalidated; demo transfers do not load a real card.
@@ -54,9 +54,23 @@ The frontend uses `NEXT_PUBLIC_BACKEND_URL`, `NEXT_PUBLIC_CHAIN_ID=97`, `NEXT_PU
 
 GitHub Actions checks frontend tests, types, lint and build; backend tests and types against Postgres; and Foundry build and tests. The video at https://youtu.be/tAt_Gn67OII is from the earlier Stellar version.
 
-## TODO
+## Merchant invoices and Payment Copilot
+
+The current hosted product adds `/demo`, `/merchant`, `/checkout` and `/receipt` to the migrated wallet.
+LiberInvoice is deployed at `0x2ad1785460b3c60b0131b0649b37dacf3dc17b1c` on BSC Testnet and transfers
+MockUSDC directly from buyer to merchant. Its constructor and the invoice API require chain 97;
+the original wallet's configurable mainnet support does not enable mainnet invoices.
+
+Set `INVOICE_CONTRACT_ADDRESS` on the API and apply `backend/src/db/product-migration.sql` for
+`copilot_usage` and `invoice_receipts`. QR inspection is deterministic. Optional Indonesian AI
+explanations use Vercel server OIDC, redacted facts and a global 100-attempt daily limit.
+Set `COPILOT_ENABLED=true` after AI Gateway credits are available; otherwise the app uses checked facts.
+Live AI activation currently awaits user-completed free-credit verification.
+
+See [README.md](README.md) for deployed evidence and [SUBMISSION.md](SUBMISSION.md) for the walkthrough.
+
+## Remaining work
 
 - **Real payment route validation.** Confirm the exact token contract/network, deposit attribution, card eligibility and GoPay/DANA QRIS compatibility with the providers. A testnet transfer is not a card top-up; switching token addresses alone does not validate a payment integration.
 - Optional: sponsor gas or use an ERC-4337 paymaster so new users don't need to hold BNB.
 - The historical docs (`LIBER-CONCEPT.md`, `BRIDGE-PATHS.md`, `RESEARCH-QRIS-RAILS.md`, `ideasubmission.md`, `.superpowers/`, pitch deck PDF, recorded demo videos) still describe the Stellar build and were left as-is.
-
