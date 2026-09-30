@@ -24,7 +24,7 @@ export default function OnboardingPage() {
         Your money, <span className="italic text-emerald">borderless.</span>
       </h1>
       <p className="mt-2 text-sm text-ink/60">
-        Get paid from anywhere, spend on any QRIS in Indonesia. One step to set up.
+        Set up a BSC testnet wallet to scan QRIS codes and try MockUSDC transfers.
       </p>
       <div className="mt-6">
         <OnboardingForm />

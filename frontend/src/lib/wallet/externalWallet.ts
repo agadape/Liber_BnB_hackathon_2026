@@ -1,4 +1,4 @@
-import { createWalletClient, custom, numberToHex, type Address, type EIP1193Provider, type Hash } from "viem";
+import { createWalletClient, custom, numberToHex, getAddress, type Address, type EIP1193Provider, type Hash } from "viem";
 import { CHAIN } from "../chain";
 import type { EvmTxRequest } from "./topup";
 
@@ -67,4 +67,11 @@ export async function disconnectExternalWallet(): Promise<void> {
   } catch {
     // ignore
   }
+}
+
+export async function signWithExternalWallet(address: string, message: string) {
+  const eth = provider();
+  const [active] = await eth.request({ method: "eth_accounts" });
+  if (!active || getAddress(active) !== getAddress(address)) throw new Error("Wallet account changed. Reconnect to continue.");
+  return createWalletClient({ transport: custom(eth) }).signMessage({ account: address as Address, message });
 }

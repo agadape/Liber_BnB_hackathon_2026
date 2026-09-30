@@ -3,13 +3,18 @@ import { createWalletClient, http, type Hash, type Hex } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { CHAIN, RPC_URL } from "../chain";
 import type { EvmTxRequest } from "./topup";
-import { getConnectedExternalAddress, sendWithExternalWallet, disconnectExternalWallet } from "./externalWallet";
+import { getConnectedExternalAddress, sendWithExternalWallet, disconnectExternalWallet, signWithExternalWallet } from "./externalWallet";
 
 const WALLET_MODE_KEY = "liber:wallet:mode";
 
 export type ActiveWallet =
   | { mode: "local"; publicKey: string; secretKey: string }
   | { mode: "external"; publicKey: string };
+
+export async function signActiveWallet(wallet: ActiveWallet, message: string): Promise<Hex> {
+  if (wallet.mode === "external") return signWithExternalWallet(wallet.publicKey, message);
+  return privateKeyToAccount(wallet.secretKey as Hex).signMessage({ message });
+}
 
 export function getWalletMode(): "local" | "external" {
   return window.localStorage.getItem(WALLET_MODE_KEY) === "external" ? "external" : "local";

@@ -1,3 +1,5 @@
+import { authenticatedFetch } from "./auth";
+
 export interface CreateUserRequest {
   walletAddress: string;
 }
@@ -17,6 +19,9 @@ export interface HistoryEntry {
   amountIdr?: string;
   amountUsdc?: string;
   txHash?: string;
+  verified?: boolean;
+  chainId?: number;
+  destinationAddress?: string;
 }
 
 function baseUrl(override?: string): string {
@@ -43,7 +48,7 @@ async function postJson<T>(path: string, body: unknown, fetchImpl: typeof fetch,
 
 export async function createUser(
   req: CreateUserRequest,
-  fetchImpl: typeof fetch = fetch,
+  fetchImpl: typeof fetch = authenticatedFetch,
   base = baseUrl()
 ): Promise<{ status: "created"; userId: string } | { status: "awaiting_funding" }> {
   const res = await fetchImpl(`${base}/users`, {
@@ -59,7 +64,7 @@ export async function createUser(
 
 export async function getUserIdByAddress(
   walletAddress: string,
-  fetchImpl: typeof fetch = fetch,
+  fetchImpl: typeof fetch = authenticatedFetch,
   base = baseUrl()
 ): Promise<{ userId: string; koloAddress: string | null } | null> {
   const res = await fetchImpl(`${base}/users/by-address/${walletAddress}`);
@@ -79,7 +84,7 @@ export async function getQuote(
 export async function saveKoloAddress(
   userId: string,
   koloAddress: string,
-  fetchImpl: typeof fetch = fetch,
+  fetchImpl: typeof fetch = authenticatedFetch,
   base = baseUrl()
 ): Promise<{ koloAddress: string }> {
   return postJson(`/users/${userId}/kolo-address`, { koloAddress }, fetchImpl, base);
@@ -88,7 +93,7 @@ export async function saveKoloAddress(
 export async function logScan(
   userId: string,
   scan: { merchantName: string; merchantCity: string; amountIdr: string; amountUsdc: string },
-  fetchImpl: typeof fetch = fetch,
+  fetchImpl: typeof fetch = authenticatedFetch,
   base = baseUrl()
 ): Promise<{ id: string }> {
   return postJson(`/users/${userId}/scans`, scan, fetchImpl, base);
@@ -97,7 +102,7 @@ export async function logScan(
 export async function logTopup(
   userId: string,
   topup: { amountUsdc: string; txHash: string },
-  fetchImpl: typeof fetch = fetch,
+  fetchImpl: typeof fetch = authenticatedFetch,
   base = baseUrl()
 ): Promise<{ id: string }> {
   return postJson(`/users/${userId}/topups`, topup, fetchImpl, base);
@@ -105,7 +110,7 @@ export async function logTopup(
 
 export async function getBalance(
   userId: string,
-  fetchImpl: typeof fetch = fetch,
+  fetchImpl: typeof fetch = authenticatedFetch,
   base = baseUrl()
 ): Promise<{ usdcBalance: string; idrEstimate: string }> {
   const res = await fetchImpl(`${base}/users/${userId}/balance`);
@@ -115,7 +120,7 @@ export async function getBalance(
 
 export async function getHistory(
   userId: string,
-  fetchImpl: typeof fetch = fetch,
+  fetchImpl: typeof fetch = authenticatedFetch,
   base = baseUrl()
 ): Promise<HistoryEntry[]> {
   const res = await fetchImpl(`${base}/users/${userId}/history`);

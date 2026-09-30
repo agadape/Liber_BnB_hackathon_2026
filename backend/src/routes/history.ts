@@ -1,10 +1,11 @@
 // backend/src/routes/history.ts
 import { Hono } from "hono";
 import { getPool } from "../db/pool.js";
+import { requireUser } from "../auth/auth.js";
 
 export const historyRoute = new Hono();
 
-historyRoute.get("/users/:id/history", async (c) => {
+historyRoute.get("/users/:id/history", requireUser, async (c) => {
   const userId = c.req.param("id");
 
   const { rows: userRows } = await getPool().query(`SELECT id FROM users WHERE id = $1`, [userId]);
@@ -17,7 +18,7 @@ historyRoute.get("/users/:id/history", async (c) => {
       [userId]
     ),
     getPool().query(
-      `SELECT id, amount_usdc, tx_hash, created_at
+      `SELECT id, amount_usdc, tx_hash, created_at, verified, chain_id, destination_address
        FROM kolo_topups WHERE user_id = $1`,
       [userId]
     ),
@@ -38,6 +39,9 @@ historyRoute.get("/users/:id/history", async (c) => {
       id: r.id,
       amountUsdc: r.amount_usdc,
       txHash: r.tx_hash,
+      verified: r.verified,
+      chainId: r.chain_id,
+      destinationAddress: r.destination_address,
       createdAt: r.created_at,
     })),
   ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());

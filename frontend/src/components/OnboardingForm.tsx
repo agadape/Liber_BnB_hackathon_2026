@@ -6,7 +6,8 @@ import QRCode from "qrcode";
 import { getOrCreateWallet, LocalStorageWalletStorage } from "@/lib/wallet/storage";
 import { createUser } from "@/lib/api";
 import { connectExternalWallet } from "@/lib/wallet/externalWallet";
-import { setExternalWalletMode, type ActiveWallet } from "@/lib/wallet/activeWallet";
+import { setExternalWalletMode, setLocalWalletMode, type ActiveWallet } from "@/lib/wallet/activeWallet";
+import { authenticateWallet, clearApiSession } from "@/lib/auth";
 import { ACTIVATION_BALANCE_BNB, CHAIN } from "@/lib/chain";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -25,6 +26,7 @@ export function OnboardingForm() {
 
   /** Returns true once the account is fully created/activated; false if it's still waiting on a deposit. */
   async function tryCreateAccount(wallet: ActiveWallet): Promise<boolean> {
+    await authenticateWallet(wallet);
     const result = await createUser({ walletAddress: wallet.publicKey });
     if (result.status === "awaiting_funding") {
       setPendingWallet(wallet);
@@ -36,6 +38,8 @@ export function OnboardingForm() {
   }
 
   async function createLocalWallet(): Promise<ActiveWallet> {
+    clearApiSession();
+    setLocalWalletMode();
     const wallet = await getOrCreateWallet(new LocalStorageWalletStorage());
     return { mode: "local", publicKey: wallet.publicKey, secretKey: wallet.secretKey };
   }
@@ -63,6 +67,7 @@ export function OnboardingForm() {
     setSubmitting(true);
     try {
       const publicKey = await connectExternalWallet();
+      clearApiSession();
       setExternalWalletMode();
       const wallet: ActiveWallet = { mode: "external", publicKey };
       const created = await tryCreateAccount(wallet);
@@ -102,7 +107,7 @@ export function OnboardingForm() {
         <Card className="flex flex-col items-center gap-4 text-center">
           <p className="text-sm text-ink/60">
             Send at least {ACTIVATION_BALANCE_BNB} BNB on {CHAIN.name} to this address to cover gas and activate your
-            wallet. You can send it from any exchange or wallet you already use.
+            wallet. For this testnet demo, use test BNB from a BSC testnet faucet. Test tokens have no monetary value.
           </p>
           {pendingQrDataUrl && (
             // eslint-disable-next-line @next/next/no-img-element
@@ -126,6 +131,7 @@ export function OnboardingForm() {
     <div className="flex flex-col gap-4">
       <Card className="flex flex-col gap-2 text-center">
         <p className="text-sm text-ink/60">Connect an existing wallet, or create a new one instantly.</p>
+        <p className="text-xs text-ink/50">Sign a message to access your Liber account. This does not authorize a transfer.</p>
       </Card>
 
       {error && <p className="text-sm text-rose">{error}</p>}

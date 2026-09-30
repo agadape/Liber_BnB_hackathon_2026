@@ -1,3 +1,4 @@
+import { authHeaders } from "../auth/test-helpers.js";
 // backend/src/routes/history.test.ts
 import { test, before } from "node:test";
 import assert from "node:assert/strict";
@@ -29,7 +30,7 @@ test("GET /users/:id/history returns scans and topups merged, newest first", asy
   );
 
   const app = createApp();
-  const res = await app.request(`/users/${userId}/history`);
+  const res = await app.request(`/users/${userId}/history`, { headers: await authHeaders(userId) });
   const body = await res.json();
 
   assert.equal(res.status, 200);
@@ -50,7 +51,7 @@ test("GET /users/:id/history returns scans and topups merged, newest first", asy
 
 test("GET /users/:id/history returns 404 for nonexistent user", async () => {
   const app = createApp();
-  const res = await app.request("/users/00000000-0000-0000-0000-000000000000/history");
+  const res = await app.request("/users/00000000-0000-0000-0000-000000000000/history", { headers: await authHeaders() });
   const body = await res.json();
 
   assert.equal(res.status, 404);

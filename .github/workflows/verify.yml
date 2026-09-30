@@ -65,6 +65,7 @@ jobs:
           cache-dependency-path: backend/package-lock.json
       - run: npm ci
       - run: npm run typecheck
+      - run: npm run migrate
       - run: npm test
 
   contracts:
@@ -82,32 +83,19 @@ jobs:
       - run: forge test
 
   live-smoke:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
     steps:
-      - name: Check deployed BNB app and API
-        shell: bash
-        run: |
-          set -euo pipefail
-          curl --fail --silent --show-error --retry 5 --retry-delay 3 \
-            -D web.headers https://liber-bnb-web.vercel.app/ -o web.html
-          echo 'Frontend HTTP response:'
-          head -n 1 web.headers
-          grep -q '<title>Liber</title>' web.html
-
-          curl --fail --silent --show-error --retry 5 --retry-delay 3 \
-            -H 'Origin: https://liber-bnb-web.vercel.app' \
-            -D health.headers https://liber-bnb-api.vercel.app/health -o health.json
-          echo 'API health HTTP response:'
-          head -n 1 health.headers
-          cat health.json
-          grep -q '"status":"ok"' health.json
-          grep -qi 'access-control-allow-origin: https://liber-bnb-web.vercel.app' health.headers
-
-          status=$(curl --silent --show-error --retry 5 --retry-delay 3 \
-            -o user.json -w '%{http_code}' \
-            https://liber-bnb-api.vercel.app/users/by-address/0x0000000000000000000000000000000000000001)
-          echo "Unknown user HTTP status: $status"
-          cat user.json
-          test "$status" = 404
-          grep -q '"error":"user not found"' user.json
-
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - run: npm ci
+      - run: node --import tsx scripts/live-smoke.ts

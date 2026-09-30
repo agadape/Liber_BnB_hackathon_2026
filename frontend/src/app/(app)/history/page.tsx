@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/Card";
 import { StatusPill } from "@/components/ui/StatusPill";
 import { ScanIcon, SendIcon } from "@/components/icons";
 import { getHistory, type HistoryEntry } from "@/lib/api";
-import { explorerTxUrl } from "@/lib/chain";
+import { explorerTxUrl, IS_TESTNET, TOKEN_LABEL } from "@/lib/chain";
 
 const USER_ID_KEY = "liber:userId";
 
@@ -54,10 +54,10 @@ export default function HistoryPage() {
                 ) : (
                   <>
                     <div className="flex items-start justify-between gap-3">
-                      <span className="font-medium text-ink">Kolo Top-up</span>
-                      <StatusPill state="topup" label="Sent" />
+                      <span className="font-medium text-ink">{IS_TESTNET ? "Test transfer" : "Token transfer"}</span>
+                      <StatusPill state="topup" label={entry.verified ? "Verified" : "Unverified"} />
                     </div>
-                    <p className="text-sm tabular-nums text-ink/80">{entry.amountUsdc} USDC</p>
+                    <p className="text-sm tabular-nums text-ink/80">{entry.amountUsdc} {TOKEN_LABEL}</p>
                     {entry.txHash && (
                       <a
                         href={explorerTxUrl(entry.txHash)}

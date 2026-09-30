@@ -9,13 +9,15 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { ShieldIcon, DocumentIcon } from "@/components/icons";
 import { importWallet, LocalStorageWalletStorage } from "@/lib/wallet/storage";
-import { getActiveWallet, disconnectAndSwitchToLocal } from "@/lib/wallet/activeWallet";
+import { getActiveWallet, disconnectAndSwitchToLocal, setLocalWalletMode } from "@/lib/wallet/activeWallet";
+import { authenticateWallet, clearApiSession, signOutApi } from "@/lib/auth";
 import { getUserIdByAddress } from "@/lib/api";
 
 const USER_ID_KEY = "liber:userId";
 const KOLO_ADDRESS_KEY = "liber:koloAddress";
 
 function clearSession() {
+  clearApiSession();
   window.localStorage.removeItem(USER_ID_KEY);
   window.localStorage.removeItem(KOLO_ADDRESS_KEY);
 }
@@ -58,6 +60,7 @@ export default function SettingsPage() {
     setDisconnectError(null);
     setDisconnecting(true);
     try {
+      await signOutApi();
       await disconnectAndSwitchToLocal();
       clearSession();
       router.replace("/");
@@ -67,7 +70,8 @@ export default function SettingsPage() {
     }
   }
 
-  function handleLogOut() {
+  async function handleLogOut() {
+    await signOutApi().catch(() => undefined);
     clearSession();
     router.replace("/");
   }
@@ -87,8 +91,12 @@ export default function SettingsPage() {
     }
 
     try {
-      const match = await getUserIdByAddress(publicKey);
+      await signOutApi().catch(() => undefined);
+      clearSession();
       const wallet = await importWallet(new LocalStorageWalletStorage(), importInput.trim());
+      setLocalWalletMode();
+      await authenticateWallet({ mode: "local", publicKey, secretKey: wallet.secretKey });
+      const match = await getUserIdByAddress(publicKey);
       if (match) {
         window.localStorage.setItem(USER_ID_KEY, match.userId);
         if (match.koloAddress) window.localStorage.setItem(KOLO_ADDRESS_KEY, match.koloAddress);

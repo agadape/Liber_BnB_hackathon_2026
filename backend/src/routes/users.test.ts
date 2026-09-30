@@ -1,3 +1,4 @@
+import { authHeaders } from "../auth/test-helpers.js";
 // backend/src/routes/users.test.ts
 import { test, before } from "node:test";
 import assert from "node:assert/strict";
@@ -19,10 +20,10 @@ async function insertUser(walletAddress = randomAddress()): Promise<string> {
   return rows[0].id;
 }
 
-function postUsers(app: ReturnType<typeof createUsersRoute>, walletAddress: string) {
+async function postUsers(app: ReturnType<typeof createUsersRoute>, walletAddress: string) {
   return app.request("/users", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...(await authHeaders(undefined, walletAddress)) },
     body: JSON.stringify({ walletAddress }),
   });
 }
@@ -94,7 +95,7 @@ test("POST /users/:id/kolo-address saves a valid EVM address", async () => {
 
   const res = await createUsersRoute().request(`/users/${userId}/kolo-address`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...(await authHeaders(userId)) },
     body: JSON.stringify({ koloAddress }),
   });
 
@@ -108,7 +109,7 @@ test("POST /users/:id/kolo-address rejects an invalid address", async () => {
   const userId = await insertUser();
   const res = await createUsersRoute().request(`/users/${userId}/kolo-address`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...(await authHeaders(userId)) },
     body: JSON.stringify({ koloAddress: "not-a-real-address" }),
   });
   assert.equal(res.status, 400);
@@ -117,7 +118,7 @@ test("POST /users/:id/kolo-address rejects an invalid address", async () => {
 test("POST /users/:id/kolo-address returns 404 for an unknown user", async () => {
   const res = await createUsersRoute().request("/users/00000000-0000-0000-0000-000000000000/kolo-address", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...(await authHeaders()) },
     body: JSON.stringify({ koloAddress: randomAddress() }),
   });
   assert.equal(res.status, 404);
@@ -131,7 +132,7 @@ test("GET /users/by-address/:walletAddress returns the matching userId and saved
     [walletAddress, koloAddress]
   );
 
-  const res = await createUsersRoute().request(`/users/by-address/${walletAddress.toLowerCase()}`);
+  const res = await createUsersRoute().request(`/users/by-address/${walletAddress.toLowerCase()}`, { headers: await authHeaders(undefined, walletAddress) });
 
   assert.equal(res.status, 200);
   const body = await res.json();
@@ -140,11 +141,12 @@ test("GET /users/by-address/:walletAddress returns the matching userId and saved
 });
 
 test("GET /users/by-address/:walletAddress returns 404 when no user has that address", async () => {
-  const res = await createUsersRoute().request(`/users/by-address/${randomAddress()}`);
+  const address = randomAddress();
+  const res = await createUsersRoute().request(`/users/by-address/${address}`, { headers: await authHeaders(undefined, address) });
   assert.equal(res.status, 404);
 });
 
 test("GET /users/by-address/:walletAddress rejects a malformed address", async () => {
-  const res = await createUsersRoute().request("/users/by-address/not-a-real-address");
+  const res = await createUsersRoute().request("/users/by-address/not-a-real-address", { headers: await authHeaders() });
   assert.equal(res.status, 400);
 });

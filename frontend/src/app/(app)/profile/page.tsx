@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import QRCode from "qrcode";
-import Image from "next/image";
-import { isAddress, getAddress, type Address } from "viem";
+import { isAddress, getAddress, createPublicClient, http, type Address, type Hash } from "viem";
 import { PageShell } from "@/components/ui/PageShell";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -11,247 +10,149 @@ import { QrScanner } from "@/components/QrScanner";
 import { getActiveWallet, sendActiveWallet, type ActiveWallet } from "@/lib/wallet/activeWallet";
 import { buildTopUpTx } from "@/lib/wallet/topup";
 import { saveKoloAddress, logTopup, getUserIdByAddress } from "@/lib/api";
-import { USDC_ADDRESS, USDC_DECIMALS, explorerTxUrl } from "@/lib/chain";
+import { USDC_ADDRESS, USDC_DECIMALS, explorerTxUrl, TOKEN_LABEL, IS_TESTNET, CHAIN, RPC_URL } from "@/lib/chain";
 
-const USER_ID_KEY = "liber:userId";
-const KOLO_ADDRESS_KEY = "liber:koloAddress";
+interface PendingTransfer { txHash: string; amountUsdc: string; destination: string }
+const pendingKey = (address: string) => `liber:pendingTransfer:${CHAIN.id}:${address.toLowerCase()}`;
 
 export default function ProfilePage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [wallet, setWallet] = useState<ActiveWallet | null>(null);
-  const [address, setAddress] = useState<string | null>(null);
   const [qrDataUrl, setQrDataUrl] = useState("");
   const [copied, setCopied] = useState(false);
-
-  const [koloAddress, setKoloAddress] = useState<string | null>(null);
-  const [editingKolo, setEditingKolo] = useState(false);
+  const [destination, setDestination] = useState<string | null>(null);
+  const [editing, setEditing] = useState(false);
   const [scanning, setScanning] = useState(false);
   const [addressInput, setAddressInput] = useState("");
   const [amountInput, setAmountInput] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [pending, setPending] = useState<PendingTransfer | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
   useEffect(() => {
-    getActiveWallet().then(async (activeWallet) => {
-      setUserId(window.localStorage.getItem(USER_ID_KEY));
-      setKoloAddress(window.localStorage.getItem(KOLO_ADDRESS_KEY));
-      setWallet(activeWallet);
-      setAddress(activeWallet.publicKey);
-      setQrDataUrl(await QRCode.toDataURL(activeWallet.publicKey));
-
-      // The backend keeps the Kolo address even after this device's local
-      // cache is cleared (e.g. Log Out) - reconcile so it doesn't look "lost".
-      try {
-        const match = await getUserIdByAddress(activeWallet.publicKey);
-        if (match?.koloAddress) {
-          window.localStorage.setItem(KOLO_ADDRESS_KEY, match.koloAddress);
-          setKoloAddress(match.koloAddress);
-        }
-      } catch {
-        // Best-effort reconciliation; fall back to whatever's already cached locally.
-      }
-    });
+    let cancelled = false;
+    (async () => {
+      const active = await getActiveWallet();
+      const match = await getUserIdByAddress(active.publicKey);
+      if (cancelled) return;
+      setWallet(active);
+      setUserId(match?.userId ?? null);
+      setDestination(match?.koloAddress ?? null);
+      setQrDataUrl(await QRCode.toDataURL(active.publicKey));
+      const saved = window.sessionStorage.getItem(pendingKey(active.publicKey));
+      if (saved) { try { setPending(JSON.parse(saved)); } catch { /* Ignore corrupt local cache. */ } }
+    })().catch(err => { if (!cancelled) setError((err as Error).message); });
+    return () => { cancelled = true; };
   }, []);
 
-  function handleConnect(rawAddress: string) {
-    setError(null);
-    // Kolo's QR may carry an EIP-681 style "ethereum:0x...@56" URI; keep just the address part.
-    const candidate = rawAddress.trim().replace(/^ethereum:/i, "").split(/[@?/]/)[0];
-    if (!isAddress(candidate)) {
-      setError("Invalid Kolo address. It should be a BNB Chain (BEP-20) address starting with 0x.");
-      return;
-    }
-    const addressValue = getAddress(candidate);
-
-    window.localStorage.setItem(KOLO_ADDRESS_KEY, addressValue);
-    setKoloAddress(addressValue);
-    setEditingKolo(false);
-    if (userId) saveKoloAddress(userId, addressValue).catch((err) => console.error("failed to save Kolo address", err));
+  async function handleConnect(raw: string) {
+    setError(null); setSuccess(null);
+    if (!userId || pending) return;
+    const network = raw.trim().match(/^ethereum:[^@]*@(\d+)/i)?.[1];
+    if (network && Number(network) !== CHAIN.id) { setError(`This QR uses another network. Use an address for ${CHAIN.name}.`); return; }
+    const candidate = raw.trim().replace(/^ethereum:/i, "").split(/[@?/]/)[0];
+    if (!isAddress(candidate) || /^0x0{40}$/i.test(candidate)) { setError("Enter a valid destination address starting with 0x."); return; }
+    setSubmitting(true);
+    try {
+      const saved = await saveKoloAddress(userId, getAddress(candidate));
+      // Use the authenticated server response, never an optimistic cached destination.
+      setDestination(saved.koloAddress);
+      window.localStorage.setItem("liber:koloAddress", saved.koloAddress);
+      setEditing(false);
+    } catch (err) { setError((err as Error).message); }
+    finally { setSubmitting(false); }
   }
 
-  function handleStartEditKolo() {
+  async function recordTransfer(transfer: PendingTransfer) {
+    if (!wallet || !userId) return;
     setError(null);
-    setAddressInput(koloAddress ?? "");
-    setEditingKolo(true);
+    const client = createPublicClient({ chain: CHAIN, transport: http(RPC_URL) });
+    const receipt = await client.waitForTransactionReceipt({ hash: transfer.txHash as Hash, timeout: 90_000 });
+    if (receipt.status !== "success") {
+      window.sessionStorage.removeItem(pendingKey(wallet.publicKey));
+      setPending(null);
+      throw new Error("The transaction reverted. No token transfer was completed.");
+    }
+    await logTopup(userId, { amountUsdc: transfer.amountUsdc, txHash: transfer.txHash });
+    window.sessionStorage.removeItem(pendingKey(wallet.publicKey));
+    setPending(null);
+    setSuccess(`Verified ${transfer.amountUsdc} ${TOKEN_LABEL} transfer.${IS_TESTNET ? " This did not fund a real Kolo card." : ""}`);
+    setAmountInput("");
   }
 
   async function handleTopUp() {
-    setError(null);
-    setSuccess(null);
-    const amountUsdc = Number(amountInput);
-    if (!Number.isFinite(amountUsdc) || amountUsdc <= 0) {
-      setError("Invalid amount. Enter a number greater than 0.");
-      return;
+    if (!wallet || !destination || !userId || pending) return;
+    setError(null); setSuccess(null);
+    if (!/^\d+(\.\d{1,2})?$/.test(amountInput) || Number(amountInput) <= 0) {
+      setError("Enter a positive amount with up to two decimal places."); return;
     }
-    const amountUsdcRounded = (Math.floor(amountUsdc * 100) / 100).toFixed(2);
-    if (Number(amountUsdcRounded) <= 0) {
-      setError("Amount too small. Minimum is 0.01 USDC.");
-      return;
-    }
-    if (!userId || !koloAddress || !wallet) return;
-
+    const amount = amountInput;
     setSubmitting(true);
+    let broadcast: PendingTransfer | undefined;
     try {
-      if (!USDC_ADDRESS) throw new Error("USDC token address is not configured (NEXT_PUBLIC_USDC_ADDRESS).");
-      const tx = buildTopUpTx({
-        usdcAddress: USDC_ADDRESS,
-        destinationAddress: koloAddress as Address,
-        amountUsdc: amountUsdcRounded,
-        decimals: USDC_DECIMALS,
-      });
-      const txHash = await sendActiveWallet(wallet, tx);
-
-      await logTopup(userId, { amountUsdc: amountUsdcRounded, txHash });
-      setSuccess(`Sent ${amountUsdcRounded} USDC to Kolo. View on BscScan: ${explorerTxUrl(txHash)}`);
-      setAmountInput("");
+      if (!USDC_ADDRESS) throw new Error("Token contract is not configured.");
+      const txHash = await sendActiveWallet(wallet, buildTopUpTx({ usdcAddress: USDC_ADDRESS, destinationAddress: destination as Address, amountUsdc: amount, decimals: USDC_DECIMALS }));
+      broadcast = { txHash, amountUsdc: amount, destination };
+      window.sessionStorage.setItem(pendingKey(wallet.publicKey), JSON.stringify(broadcast));
+      setPending(broadcast);
+      await recordTransfer(broadcast);
     } catch (err) {
-      setError((err as Error).message);
-    } finally {
-      setSubmitting(false);
-    }
+      setError(broadcast ? `Transaction submitted. Check BscScan and retry verification with the same hash; do not send it again. ${(err as Error).message}` : (err as Error).message);
+    } finally { setSubmitting(false); }
   }
 
   return (
     <PageShell>
       <h1 className="font-display text-2xl italic text-ink">Profile</h1>
-
       <Card className="mt-6 flex flex-col items-center gap-4 text-center">
-        <p className="text-xs font-semibold uppercase tracking-wide text-ink/50">Your Wallet</p>
-        {address ? (
-          <>
-            <div className="rounded-3xl bg-ink p-4">
-              {qrDataUrl && <img src={qrDataUrl} alt="BNB Chain address" width={160} height={160} />}
-            </div>
-            <p className="break-all rounded-2xl bg-paper px-4 py-3 font-mono text-xs text-ink/70">{address}</p>
-            <Button
-              variant="secondary"
-              onClick={() => {
-                navigator.clipboard.writeText(address);
-                setCopied(true);
-                setTimeout(() => setCopied(false), 2000);
-              }}
-            >
-              {copied ? "Copied" : "Copy Address"}
-            </Button>
-          </>
-        ) : (
-          <p className="text-sm text-ink/60">Loading address...</p>
-        )}
+        <p className="text-xs font-semibold uppercase tracking-wide text-ink/50">Your Wallet · {CHAIN.name}</p>
+        {wallet ? <>
+          <div className="rounded-3xl bg-ink p-4">
+            {qrDataUrl && <img src={qrDataUrl} alt="Your BNB wallet address" width={160} height={160} />}
+          </div>
+          <p className="break-all rounded-2xl bg-paper px-4 py-3 font-mono text-xs text-ink/70">{wallet.publicKey}</p>
+          <Button variant="secondary" onClick={() => {
+            navigator.clipboard.writeText(wallet.publicKey); setCopied(true); setTimeout(() => setCopied(false), 2000);
+          }}>{copied ? "Copied" : "Copy Address"}</Button>
+        </> : <p className="text-sm text-ink/60">Loading your wallet...</p>}
       </Card>
 
-      <p className="mt-6 text-xs font-semibold uppercase tracking-wide text-ink/50">Kolo Card</p>
-
-      {!koloAddress && (
-        <Card className="mt-3 flex flex-col gap-4 bg-emerald/5">
-          <p className="text-xs font-semibold uppercase tracking-wide text-emerald-deep">New to Kolo?</p>
-
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-3">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white shadow-sm">
-                <Image src="/logos/kolo-logo.png" alt="Kolo" width={26} height={26} className="rounded-full" />
-              </span>
-              <p className="text-sm text-ink/70">
-                <span className="font-semibold text-ink">1. Sign up for Kolo.</span> Get your card and its BNB Chain
-                (BEP-20) USDC deposit address.
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center gap-0.5 rounded-full bg-white shadow-sm">
-                <Image src="/logos/gopay-logo.png" alt="GoPay" width={16} height={16} className="object-contain" />
-                <Image src="/logos/dana-logo.png" alt="DANA" width={16} height={16} className="rounded object-contain" />
-              </span>
-              <p className="text-sm text-ink/70">
-                <span className="font-semibold text-ink">2. Link the card.</span> In GoPay or DANA, add that Kolo
-                Visa card under payment methods.
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald text-white shadow-sm">
-                <span className="font-display text-sm italic">3</span>
-              </span>
-              <p className="text-sm text-ink/70">
-                <span className="font-semibold text-ink">Connect here.</span> Paste or scan the Kolo address below.
-              </p>
-            </div>
-          </div>
-
-          <a
-            href="https://kolo.xyz"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-center text-sm font-semibold text-emerald underline underline-offset-4"
-          >
-            Sign up at kolo.xyz
-          </a>
-        </Card>
-      )}
-
-      {!koloAddress || editingKolo ? (
-        <Card className="mt-3 flex flex-col gap-4">
-          <p className="text-sm text-ink/60">
-            Connect your Kolo BNB Chain (BEP-20) USDC deposit address. USDC sent there can be spent immediately
-            through your Kolo card linked to GoPay or DANA.
-          </p>
-          {scanning ? (
-            <QrScanner
-              onScan={(text) => {
-                setScanning(false);
-                setAddressInput(text);
-              }}
-              onError={setError}
-            />
-          ) : (
-            <>
-              <input
-                value={addressInput}
-                onChange={(e) => setAddressInput(e.target.value)}
-                placeholder="Kolo BNB Chain address (0x...)"
-                className="w-full rounded-2xl bg-paper px-4 py-3 text-sm text-ink placeholder:text-ink/40 outline-none ring-1 ring-transparent focus:ring-emerald"
-              />
-              <Button onClick={() => handleConnect(addressInput)} disabled={!addressInput}>
-                Connect
-              </Button>
-              <Button variant="ghost" onClick={() => setScanning(true)}>
-                Scan Kolo QR
-              </Button>
-              {koloAddress && (
-                <Button variant="ghost" onClick={() => setEditingKolo(false)}>
-                  Cancel
-                </Button>
-              )}
-            </>
-          )}
-        </Card>
-      ) : (
-        <Card className="mt-3 flex flex-col gap-4">
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex flex-col gap-1">
-              <p className="break-all font-mono text-xs text-ink/50">{koloAddress}</p>
-            </div>
-            <button
-              type="button"
-              onClick={handleStartEditKolo}
-              className="shrink-0 text-xs font-semibold text-emerald underline underline-offset-4"
-            >
-              Edit
-            </button>
-          </div>
-          <input
-            value={amountInput}
-            onChange={(e) => setAmountInput(e.target.value)}
-            placeholder="Amount (USDC)"
-            inputMode="decimal"
-            className="w-full rounded-2xl bg-paper px-4 py-3 text-sm text-ink placeholder:text-ink/40 outline-none ring-1 ring-transparent focus:ring-emerald"
-          />
-          <Button onClick={handleTopUp} disabled={submitting || !amountInput || !wallet}>
-            {submitting ? "Sending..." : "Top Up Kolo"}
-          </Button>
-        </Card>
-      )}
-
-      {error && <p className="mt-4 text-center text-sm text-rose">{error}</p>}
-      {success && <p className="mt-4 text-center text-sm text-emerald">{success}</p>}
+      <p className="mt-6 text-xs font-semibold uppercase tracking-wide text-ink/50">{IS_TESTNET ? "Test transfer destination" : "Transfer destination"}</p>
+      <Card className="mt-3 flex flex-col gap-3 bg-emerald/5">
+        <p className="text-sm text-ink/70">{IS_TESTNET ?
+          "Use another test wallet that you control. MockUSDC has no monetary value and cannot load a Kolo card or pay a QRIS merchant." :
+          "Confirm the exact network, token and deposit instructions with the recipient before sending."}</p>
+        <p className="text-xs text-ink/50">The proposed Kolo → GoPay/DANA payment route remains a prototype. Provider support and card compatibility need to be validated before real use.</p>
+        <a href="https://kolo.xyz" target="_blank" rel="noopener noreferrer" className="text-sm text-emerald underline">Learn about Kolo</a>
+      </Card>
+      {!destination || editing ? <Card className="mt-3 flex flex-col gap-4">
+        <p className="text-sm text-ink/60">Save the destination for {TOKEN_LABEL} on {CHAIN.name}.</p>
+        {scanning ? <QrScanner onScan={text => { setScanning(false); setAddressInput(text); }} onError={setError} /> : <>
+          <input aria-label="Transfer destination address" value={addressInput} onChange={e => setAddressInput(e.target.value)} placeholder="Test wallet address (0x...)" className="w-full rounded-2xl bg-paper px-4 py-3 text-sm outline-none" />
+          <Button onClick={() => handleConnect(addressInput)} disabled={!addressInput || submitting || !userId}>{submitting ? "Saving..." : "Save destination"}</Button>
+          <Button variant="ghost" onClick={() => setScanning(true)}>Scan destination QR</Button>
+          {destination && <Button variant="ghost" onClick={() => setEditing(false)}>Cancel</Button>}
+        </>}
+      </Card> : <Card className="mt-3 flex flex-col gap-4">
+        <p className="text-xs text-ink/60">Check the full destination before you sign.</p>
+        <p className="break-all font-mono text-xs text-ink/70">{destination}</p>
+        <Button variant="ghost" disabled={!!pending || submitting} onClick={() => { setAddressInput(destination); setEditing(true); }}>Edit destination</Button>
+        <input aria-label={`Amount in ${TOKEN_LABEL}`} value={amountInput} onChange={e => setAmountInput(e.target.value)} placeholder={`Amount (${TOKEN_LABEL})`} inputMode="decimal" className="w-full rounded-2xl bg-paper px-4 py-3 text-sm outline-none" />
+        <Button onClick={handleTopUp} disabled={submitting || !!pending || !amountInput || !wallet}>{submitting ? "Confirming..." : IS_TESTNET ? "Send test MockUSDC" : "Send USDC"}</Button>
+      </Card>}
+      {pending && <Card className="mt-4 flex flex-col gap-3">
+        <p className="text-sm text-ink/70">Transfer submitted. Verification can be retried without sending tokens again.</p>
+        <a href={explorerTxUrl(pending.txHash)} target="_blank" rel="noopener noreferrer" className="break-all text-xs text-emerald underline">View transaction on BscScan</a>
+        <Button disabled={submitting} onClick={async () => {
+          setSubmitting(true);
+          try { await recordTransfer(pending); } catch (err) { setError((err as Error).message); }
+          finally { setSubmitting(false); }
+        }}>Retry verification</Button>
+      </Card>}
+      {error && <p role="alert" className="mt-4 text-center text-sm text-rose">{error}</p>}
+      {success && <p role="status" className="mt-4 text-center text-sm text-emerald">{success}</p>}
     </PageShell>
   );
 }
+

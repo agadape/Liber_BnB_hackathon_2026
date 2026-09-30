@@ -3,6 +3,7 @@ import { Hono } from "hono";
 import { getAddress, isAddress } from "viem";
 import { getPool } from "../db/pool.js";
 import { getNativeBalance as defaultGetNativeBalance, isActivated } from "../chain/account.js";
+import { requireWallet, requireUser, type AuthEnv } from "../auth/auth.js";
 
 export interface UsersRouteDeps {
   getNativeBalance: typeof defaultGetNativeBalance;
@@ -12,16 +13,17 @@ const defaultDeps: UsersRouteDeps = {
   getNativeBalance: defaultGetNativeBalance,
 };
 
-export function createUsersRoute(deps: Partial<UsersRouteDeps> = {}): Hono {
+export function createUsersRoute(deps: Partial<UsersRouteDeps> = {}) {
   const { getNativeBalance } = { ...defaultDeps, ...deps };
-  const usersRoute = new Hono();
+  const usersRoute = new Hono<AuthEnv>();
 
-  usersRoute.post("/users", async (c) => {
+  usersRoute.post("/users", requireWallet, async (c) => {
     const body = await c.req.json<{ walletAddress: string }>();
     if (!isAddress(body.walletAddress ?? "")) {
       return c.json({ error: "walletAddress must be a valid EVM address" }, 400);
     }
     const walletAddress = getAddress(body.walletAddress);
+    if (walletAddress !== c.get("walletAddress")) return c.json({ error: "Wallet ownership required" }, 403);
 
     try {
       const existing = await getPool().query(`SELECT id FROM users WHERE wallet_address = $1`, [walletAddress]);
@@ -46,7 +48,7 @@ export function createUsersRoute(deps: Partial<UsersRouteDeps> = {}): Hono {
     }
   });
 
-  usersRoute.post("/users/:id/kolo-address", async (c) => {
+  usersRoute.post("/users/:id/kolo-address", requireUser, async (c) => {
     const { koloAddress } = await c.req.json<{ koloAddress: string }>();
     if (!isAddress(koloAddress ?? "")) {
       return c.json({ error: "koloAddress must be a valid EVM (BNB Chain) address" }, 400);
@@ -62,11 +64,12 @@ export function createUsersRoute(deps: Partial<UsersRouteDeps> = {}): Hono {
     return c.json({ koloAddress: normalized });
   });
 
-  usersRoute.get("/users/by-address/:walletAddress", async (c) => {
+  usersRoute.get("/users/by-address/:walletAddress", requireWallet, async (c) => {
     const raw = c.req.param("walletAddress");
     if (!isAddress(raw)) {
       return c.json({ error: "walletAddress must be a valid EVM address" }, 400);
     }
+    if (getAddress(raw) !== c.get("walletAddress")) return c.json({ error: "Wallet ownership required" }, 403);
 
     const { rows } = await getPool().query(`SELECT id, kolo_address FROM users WHERE wallet_address = $1`, [
       getAddress(raw),

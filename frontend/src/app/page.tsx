@@ -16,17 +16,17 @@ const STEPS = [
   },
   {
     Icon: ProfileIcon,
-    title: "Route to Kolo",
-    body: "Send that USDC to your own Kolo card over BNB Chain. It lands in seconds, no bridging, no bank in the middle.",
+    title: "Test the transfer",
+    body: "Send MockUSDC to another test wallet on BSC testnet and inspect the confirmed transaction on BscScan.",
   },
   {
     Icon: HistoryIcon,
-    title: "Pay in GoPay",
-    body: "Open GoPay, scan the same code, and pay with your linked Kolo card. Liber never touches the payment, you're always in control.",
+    title: "Explore the payment route",
+    body: "The proposed Kolo and QRIS payment route needs provider validation. Test transfers do not fund a card or pay a merchant.",
   },
 ] as const;
 
-const TRUST = ["Non-custodial", "Built on BNB Chain", "Works with any QRIS merchant"] as const;
+const TRUST = ["Non-custodial", "Built on BNB Chain", "QRIS scan and quote demo"] as const;
 
 export default function LandingPage() {
   const router = useRouter();
@@ -53,11 +53,11 @@ export default function LandingPage() {
         <section className="mt-12 flex flex-col items-center gap-10 md:mt-20 md:flex-row md:items-center md:gap-16">
           <div className="max-w-xl text-center md:text-left">
             <h1 className="fade-up font-display text-4xl leading-tight text-ink md:text-6xl" style={{ animationDelay: "80ms" }}>
-              Spend QRIS <span className="italic text-emerald">straight from USDC.</span>
+              Explore QRIS <span className="italic text-emerald">with a BNB wallet.</span>
             </h1>
             <p className="fade-up mt-5 text-base text-ink/60 md:text-lg" style={{ animationDelay: "160ms" }}>
-              A non-custodial BNB Chain wallet for Indonesia. Scan a QRIS code, see the USDC quote, top up your own
-              Kolo card on-chain, then complete the payment in a card-linked QRIS app.
+              A non-custodial BNB Chain wallet prototype for Indonesia. Scan a QRIS code, see an estimated USDC price,
+              and test a MockUSDC transfer on BSC testnet.
             </p>
             <div className="fade-up mt-8 flex flex-col items-center gap-3 md:items-start" style={{ animationDelay: "240ms" }}>
               <Link
@@ -87,8 +87,7 @@ export default function LandingPage() {
               <h2 className="font-display text-2xl italic text-ink md:text-3xl">The wall crypto hits every day.</h2>
               <p className="mt-3 text-sm text-ink/60 md:text-base">
                 Your USDC is real money, but no QRIS merchant takes it directly. Selling it on an exchange, waiting
-                for a bank transfer, then spending rupiah turns a coffee into a multi-day errand. Liber skips that
-                entirely.
+                for a bank transfer, then spending rupiah turns a coffee into a multi-day errand. Liber explores a simpler route through a self-custodial wallet and existing payment services.
               </p>
             </div>
           </div>
@@ -123,7 +122,7 @@ export default function LandingPage() {
         <section className="mt-16 flex flex-col items-center gap-4 rounded-[32px] bg-emerald-deep px-8 py-12 text-center text-white md:mt-20">
           <p className="font-display text-2xl italic md:text-3xl">Your money, borderless.</p>
           <p className="max-w-md text-sm text-white/70">
-            Create your wallet in about a minute and start paying QRIS merchants with USDC today.
+            Create a test wallet, scan a QRIS code, and explore a token transfer on BSC testnet.
           </p>
           <Link
             href="/onboarding"

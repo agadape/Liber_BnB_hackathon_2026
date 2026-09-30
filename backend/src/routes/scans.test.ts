@@ -1,3 +1,4 @@
+import { authHeaders } from "../auth/test-helpers.js";
 // backend/src/routes/scans.test.ts
 import { test, before } from "node:test";
 import assert from "node:assert/strict";
@@ -22,7 +23,7 @@ test("POST /users/:id/scans logs a scan and returns its id", async () => {
 
   const res = await scansRoute.request(`/users/${userId}/scans`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...(await authHeaders(userId)) },
     body: JSON.stringify({
       merchantName: "Warung Kopi Asa",
       merchantCity: "Jakarta",
@@ -49,7 +50,7 @@ test("POST /users/:id/scans logs a scan and returns its id", async () => {
 test("POST /users/:id/scans returns 404 for an unknown user", async () => {
   const res = await scansRoute.request("/users/00000000-0000-0000-0000-000000000000/scans", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...(await authHeaders()) },
     body: JSON.stringify({ merchantName: "X", merchantCity: "Y", amountIdr: "1000", amountUsdc: "0.06" }),
   });
 

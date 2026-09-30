@@ -9,6 +9,8 @@ import { StatusPill } from "@/components/ui/StatusPill";
 import { ScanIcon, SendIcon, ReceiveIcon } from "@/components/icons";
 import { getBalance, getHistory, type HistoryEntry } from "@/lib/api";
 
+import { TOKEN_LABEL, IS_TESTNET } from "@/lib/chain";
+
 const USER_ID_KEY = "liber:userId";
 
 export default function HomePage() {
@@ -45,7 +47,7 @@ export default function HomePage() {
         className="mt-4 flex items-center justify-center gap-2 rounded-3xl border border-ink/15 p-4 text-center text-sm font-semibold text-ink transition active:scale-[0.98]"
       >
         <ReceiveIcon className="h-5 w-5 text-emerald" />
-        Receive USDC
+        Receive {TOKEN_LABEL}
       </Link>
 
       <div className="mt-8 flex items-center justify-between">
@@ -64,10 +66,10 @@ export default function HomePage() {
                 {entry.type === "scan" ? <ScanIcon className="h-4 w-4" /> : <SendIcon className="h-4 w-4" />}
               </span>
               <div className="flex-1">
-                <p className="font-medium text-ink">{entry.type === "scan" ? entry.merchantName : "Kolo top-up"}</p>
+                <p className="font-medium text-ink">{entry.type === "scan" ? entry.merchantName : IS_TESTNET ? "Test transfer" : "Token transfer"}</p>
                 <p className="text-xs text-ink/40">{new Date(entry.createdAt).toLocaleDateString("en-GB")}</p>
               </div>
-              <StatusPill state={entry.type} label={entry.type === "scan" ? "QRIS" : "Top-up"} />
+              <StatusPill state={entry.type} label={entry.type === "scan" ? "QRIS" : entry.verified ? "Verified" : "Unverified"} />
             </Card>
           </li>
         ))}

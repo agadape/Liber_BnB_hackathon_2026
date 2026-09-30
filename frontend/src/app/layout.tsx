@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { newsreader, bricolage } from "./fonts";
 import "./globals.css";
+import { DemoNotice } from "@/components/DemoNotice";
 
 export const metadata: Metadata = {
   title: "Liber",
@@ -14,7 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${newsreader.variable} ${bricolage.variable}`}>
-      <body className="font-body antialiased">{children}</body>
+      <body className="font-body antialiased"><DemoNotice />{children}</body>
     </html>
   );
 }

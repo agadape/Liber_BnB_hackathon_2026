@@ -1,3 +1,4 @@
+import { authHeaders } from "../auth/test-helpers.js";
 // backend/src/routes/balance.test.ts
 import { test, before } from "node:test";
 import assert from "node:assert/strict";
@@ -26,7 +27,7 @@ test("GET /users/:id/balance returns USDC balance and an IDR estimate", async ()
     getRateIdrPerUsdc: async () => 16000,
   });
 
-  const res = await app.request(`/users/${userId}/balance`);
+  const res = await app.request(`/users/${userId}/balance`, { headers: await authHeaders(userId) });
 
   assert.equal(res.status, 200);
   assert.deepEqual(await res.json(), { usdcBalance: "12.5", idrEstimate: "200000" });
@@ -42,7 +43,7 @@ test("GET /users/:id/balance returns 404 when the user does not exist", async ()
     },
   });
 
-  const res = await app.request("/users/00000000-0000-0000-0000-000000000000/balance");
+  const res = await app.request("/users/00000000-0000-0000-0000-000000000000/balance", { headers: await authHeaders() });
 
   assert.equal(res.status, 404);
 });

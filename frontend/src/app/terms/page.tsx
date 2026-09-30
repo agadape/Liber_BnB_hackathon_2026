@@ -8,7 +8,7 @@ const SECTIONS = [
   },
   {
     title: "2. What Liber does and does not do",
-    body: "Liber quotes a USDC price for a scanned QRIS code and helps you send USDC, over BNB Chain, to your own Kolo card address. Liber never holds your funds and never executes the QRIS payment itself. The payment happens inside GoPay or DANA, using your own linked Kolo card, entirely outside Liber's systems.",
+    body: "Liber estimates the USDC equivalent of a QRIS amount and demonstrates token transfers on BSC testnet. MockUSDC has no monetary value and cannot fund a real Kolo card or pay a QRIS merchant. The proposed Kolo, GoPay and DANA route has not been validated end to end.",
   },
   {
     title: "3. Third-party services",
@@ -20,7 +20,7 @@ const SECTIONS = [
   },
   {
     title: "5. Beta software",
-    body: "Liber was built for a hackathon and is provided as is, without warranty of any kind. Use small amounts while you get familiar with it.",
+    body: "Liber was built for a hackathon and is provided as is, without warranty of any kind. Use test BNB and MockUSDC for the hosted demo. Confirm provider support before any future use of real assets.",
   },
   {
     title: "6. Your responsibility",

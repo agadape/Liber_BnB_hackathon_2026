@@ -3,6 +3,8 @@ import type { Address } from "viem";
 
 /** BNB Smart Chain: 97 = testnet (default), 56 = mainnet. */
 export const CHAIN = Number(process.env.NEXT_PUBLIC_CHAIN_ID ?? 97) === 56 ? bsc : bscTestnet;
+export const IS_TESTNET = CHAIN.id === 97;
+export const TOKEN_LABEL = IS_TESTNET ? "MockUSDC" : "USDC";
 
 export const RPC_URL = process.env.NEXT_PUBLIC_BSC_RPC_URL || CHAIN.rpcUrls.default.http[0];
 

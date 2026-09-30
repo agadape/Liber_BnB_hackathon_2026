@@ -6,6 +6,7 @@ import { historyRoute } from "./routes/history.js";
 import { quoteRoute } from "./routes/quote.js";
 import { scansRoute } from "./routes/scans.js";
 import { topupsRoute } from "./routes/topups.js";
+import { createAuthRoute } from "./auth/auth.js";
 
 const LOCALHOST_FALLBACK = "http://localhost:3000";
 
@@ -41,7 +42,8 @@ export function createApp() {
       origin: origins,
     }),
   );
-  app.get("/health", (c) => c.json({ status: "ok" }));
+  app.get("/health", (c) => c.json({ status: "ok", version: "wallet-auth-v1" }));
+  app.route("/", createAuthRoute());
   app.route("/", usersRoute);
   app.route("/", balanceRoute);
   app.route("/", historyRoute);

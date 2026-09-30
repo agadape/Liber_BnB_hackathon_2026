@@ -2,7 +2,9 @@
 
 **Indonesia Web3 Hackathon 2026 · Finance & Commerce / Consumer Apps**
 
-Liber is a self-custodial BNB Chain wallet that helps USDC holders pay at Indonesian QRIS merchants using existing card-linked payment apps. Users scan a QRIS code, see its price in USDC, top up their own Kolo Visa card with an on-chain BEP-20 transfer, then complete the QRIS payment in GoPay or DANA. Liber does not directly settle the merchant's QRIS payment.
+Liber is a self-custodial BNB Chain wallet prototype for Indonesia. The hosted BSC testnet demo scans QRIS codes, estimates their USDC equivalent, and demonstrates a confirmed MockUSDC transfer to another test wallet. MockUSDC has no monetary value and does not fund a real Kolo card or settle a merchant payment.
+
+The proposed real-world payment route through Kolo and GoPay/DANA remains a hypothesis. Exact BSC token deposit support, account eligibility, and card-linked QRIS compatibility require provider confirmation and an end-to-end test before being offered as a working payment route.
 
 **BNB live demo:** [web app](https://liber-bnb-web.vercel.app) · [API health](https://liber-bnb-api.vercel.app/health). The web app and Hono API run as separate Vercel projects; the API uses Neon Postgres.  
 **Earlier Stellar demo video:** [watch on YouTube](https://youtu.be/tAt_Gn67OII). This recording predates the BNB migration and should not be presented as a BNB walkthrough. The [older Stellar site](https://liber-qris.vercel.app) remains available for comparison.  
@@ -12,22 +14,21 @@ Liber is a self-custodial BNB Chain wallet that helps USDC holders pay at Indone
 
 Millions of Indonesians pay for everyday purchases through QRIS, but anyone holding their money in USDC or other crypto has no direct way to spend it there. Custodial exchanges hold the user's keys instead of the user. Off-ramping to a bank account is slow and fee-heavy. Not a single QRIS merchant accepts crypto directly. Today, spending crypto on daily life in Indonesia means selling it on an exchange, waiting for a bank transfer, then spending rupiah, a multi-day, multi-fee detour just to buy a coffee.
 
-## The solution
+## What the demo proves
 
-Liber closes that gap without inventing a new payment rail:
+1. Create or connect an EVM wallet and authenticate by signing a Liber sign-in message.
+2. Scan a QRIS payload and display a reference USDC quote.
+3. Save a destination owned by the tester and transfer MockUSDC on BSC testnet.
+4. Wait for confirmation and check the transaction on BscScan. The API verifies the token contract, sender, recipient, amount, and successful receipt before recording it.
 
-1. **Scan** any QRIS code. Liber reads the merchant and amount, and quotes the equivalent price in USDC instantly.
-2. **Route** that USDC over BNB Smart Chain (BEP-20), seconds, cents in gas, to your own Kolo crypto Visa card.
-3. **Pay** by opening GoPay or DANA, e-wallets that already support paying QRIS directly from a linked Visa card, scanning the same code, and paying.
-
-Liber never touches the payment itself. It holds the user's own keys, quotes the price, and hands off to infrastructure that is already live and regulated: BNB Chain settlement, Kolo's card program, and GoPay/DANA's own card-linked QRIS payment feature. Nothing new has to be built or trusted at the settlement layer.
+The wallet signs transfers on the device. Liber does not execute a QRIS payment or confirm card credit.
 
 ## Architecture
 
 This is a monorepo of two fully independent applications, each deployed separately, with no shared root package.json or workspace tooling:
 
 ```
-frontend/   Next.js 16 (App Router) app, ready for a separate Vercel deployment
+frontend/   Next.js 16 (App Router) app, deployed as a separate Vercel project
 backend/    Hono API, deployed as a separate Vercel project
 contracts/  Foundry: MockUSDC for BSC testnet only
 ```
@@ -42,7 +43,7 @@ Mobile-first Next.js app: a bottom-nav app shell (Home, Scan, Profile, History) 
 
 ### Backend
 
-A small Hono API handling account bootstrapping, QRIS quotes, and activity logging. It never executes a payment; it only funds new accounts and relays what the client already signed.
+A Hono API handling wallet authentication, registration, reference quotes, and activity logging. It checks the wallet gas balance before registration, never receives a private key, and does not fund accounts or relay transfers.
 
 - Hono on `@hono/node-server`
 - Postgres for user records and scan/top-up history
@@ -55,10 +56,19 @@ BNB Smart Chain (BSC) is the settlement and custody layer end to end (testnet ch
 - **Non-custodial wallets**: every user gets an EVM keypair generated and held client-side, or connects an injected wallet.
 - **No trustline needed**: USDC is a BEP-20 token (Binance-Peg USDC on mainnet, 18 decimals; `contracts/MockUSDC` on testnet).
 - **Activation**: the wallet only needs a little BNB (0.001) for gas; the backend registers it once that balance is seen on-chain.
-- **Kolo top-ups**: sending USDC to a user's Kolo BEP-20 deposit address is an ERC-20 `transfer` signed on-device and broadcast over BSC RPC.
+- **Test transfers**: an ERC-20 `transfer` signed on-device and broadcast over BSC RPC. The hosted demo sends MockUSDC to a test wallet; it does not fund a Kolo card.
 - **Live balance and quotes**: balances are read directly from BSC via `balanceOf`; tx links go to BscScan.
 
 See [MIGRATION-BNB.md](MIGRATION-BNB.md) for what changed from the original Stellar build and how to deploy.
+
+## Account and transaction security
+
+- EIP-4361 sign-in challenges expire after five minutes. A valid signature consumes its nonce atomically, preventing concurrent replay.
+- Random bearer sessions expire after 30 minutes; only SHA-256 token hashes are stored in Postgres. The browser keeps the session in sessionStorage. Log out revokes the current token.
+- Registration, wallet lookup, balance, history, scans, saved destinations, and transfer logs require authentication. Each user route checks wallet ownership. Public health and reference quotes remain accessible.
+- The API reads confirmed Transfer events from the configured chain and token; client-supplied amounts are checked against the receipt. A unique index prevents a transaction from being recorded twice.
+- Historical top-up rows remain unverified. A verified test transfer still does not prove Kolo card credit or QRIS settlement.
+- After broadcasting, the UI keeps the transaction hash and offers verification retry instead of prompting another transfer.
 
 ## Deployments
 
@@ -100,6 +110,8 @@ npm run dev
 ```
 
 Both apps have their own test suites (`npm test`) using Node's built-in test runner.
+
+For an existing database, apply `backend/src/db/security-migration.sql` before deploying the authentication update. The migration is additive. Users with an old browser session must verify their wallet again.
 
 ## Hackathon tracks
 

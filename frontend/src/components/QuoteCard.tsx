@@ -5,6 +5,8 @@ import type { Quote } from "@/lib/api";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 
+import { IS_TESTNET } from "@/lib/chain";
+
 const QUOTE_WINDOW_SECONDS = 30;
 
 export function QuoteCard({
@@ -47,14 +49,14 @@ export function QuoteCard({
             style={{ width: `${(secondsLeft / QUOTE_WINDOW_SECONDS) * 100}%` }}
           />
         </div>
-        <p className="mt-1 text-xs text-ink/40">Rate valid for {secondsLeft}s more</p>
+        <p className="mt-1 text-xs text-ink/40">Estimated reference rate · refresh in {secondsLeft}s</p>
       </div>
 
       <a href="gojek://gopay" className="w-full">
-        <Button>Open GoPay</Button>
+        <Button>{IS_TESTNET ? "Open GoPay (outside demo)" : "Open GoPay"}</Button>
       </a>
       <p className="text-center text-xs text-ink/40">
-        Scan the same QRIS in GoPay, then pay with your linked Kolo card.
+        This quote is a reference estimate. The demo does not pay the merchant or fund a card; Kolo and QRIS card compatibility requires provider confirmation.
       </p>
     </Card>
   );
