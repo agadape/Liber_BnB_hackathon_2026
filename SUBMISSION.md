@@ -13,6 +13,7 @@ The next step is a one-merchant QRIS pilot: buyers pay rupiah through Midtrans, 
 - Live demo: https://liber-bnb-web.vercel.app/demo
 - QRIS pilot and connection status: https://liber-bnb-web.vercel.app/pilot (setup: [PILOT.md](PILOT.md)).
 - Project contract: https://testnet.bscscan.com/address/0x2ad1785460b3c60b0131b0649b37dacf3dc17b1c
+- Pilot receipt registry, BscScan verified source: https://testnet.bscscan.com/address/0xf1267a5ab17b61c5c110b95d4dbb6197ffbbb46d#code
 - Exact source match: https://repo.sourcify.dev/97/0x2Ad1785460b3C60b0131b0649B37dACF3DC17b1C
 - Confirmed BNB payment proof: https://liber-bnb-web.vercel.app/receipt?id=0x9472aacf99e2369eaf65a51d2e7b0f515c6433ac32d0450da1b18e9465ded034
 - User-selected video: https://youtu.be/tAt_Gn67OII (earlier Stellar demo; label it accurately).
@@ -35,6 +36,6 @@ Wallet transactions require TEST BNB gas; get it from https://www.bnbchain.org/e
 - QR format/CRC checks do not authenticate merchants.
 - Native test-token invoices are separate from the Midtrans rupiah pilot. A registry hash is a timestamped statement, not independent proof of fiat settlement. Kolo credit and goods delivery are not verified.
 - Midtrans account onboarding, sandbox E2E and production activation are still pending. Do not present fixture-based tests as real QRIS payments.
-- Source is exactly verified on Sourcify; BscScan publication is currently pending its upstream daily submission limit.
+- LiberInvoice is exactly verified on Sourcify; its BscScan publication is pending. LiberReceiptRegistry source is verified with an exact match on both BscScan and Sourcify.
 - AI code is implemented and tested. Live model activation awaits the user's Vercel free-credit verification; the demo honestly falls back to checked facts.
 - No promise of hackathon ranking, independent security audit or production readiness.

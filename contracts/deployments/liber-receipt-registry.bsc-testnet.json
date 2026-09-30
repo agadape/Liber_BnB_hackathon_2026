@@ -1,0 +1,21 @@
+{
+  "chainId": 97,
+  "network": "bsc-testnet",
+  "deployedAt": "2026-09-30T13:49:26.392Z",
+  "deployer": "0x80a92Cac1a63799170af13d17313b45EB77661e5",
+  "contracts": {
+    "LiberReceiptRegistry": {
+      "address": "0xf1267a5ab17b61c5c110b95d4dbb6197ffbbb46d",
+      "txHash": "0xe39b20db754a5a01dd435cb5db78afecbd9c7d85a241c134d8c43fbd80335955",
+      "deploymentBlock": 134064917,
+      "compiler": "0.8.24+commit.e11b9ed9.Emscripten.clang",
+      "sourceVerified": true,
+      "purpose": "Timestamps receipt hashes; does not verify fiat payments or move money",
+      "verificationProvider": "Sourcify",
+      "verificationMatch": "exact_match",
+      "verificationUrl": "https://repo.sourcify.dev/97/0xF1267a5AB17b61C5c110B95d4dbb6197ffBbB46D",
+      "bscScanSourceStatus": "verified exact match",
+      "bscScanUrl": "https://testnet.bscscan.com/address/0xf1267a5ab17b61c5c110b95d4dbb6197ffbbb46d#code"
+    }
+  }
+}

@@ -45,3 +45,7 @@ QRIS settlement, Kolo card credit and goods delivery are outside this contract.
 `record(commitment)` timestamps a nonzero receipt hash on chain 97. Each hash can be recorded once, by any wallet, with no owner, upgrade or fund custody. The canonical statement binds environment, invoice amount, status and observation time inside the hash. The public event identifies the recorder; it does not certify that recorder as the merchant.
 
 The API accepts a chain proof only for an existing provider-confirmed statement and a successful transaction to the configured registry with the matching event. Midtrans remains the source of fiat status. See [PILOT.md](../PILOT.md) for account setup and current limitations. Compiler input is in `verification/LiberReceiptRegistry.standard-input.json`.
+
+Live registry: [0xf1267a5ab17b61c5c110b95d4dbb6197ffbbb46d — verified source on BscScan](https://testnet.bscscan.com/address/0xf1267a5ab17b61c5c110b95d4dbb6197ffbbb46d#code), also an [exact Sourcify match](https://repo.sourcify.dev/97/0xF1267a5AB17b61C5c110B95d4dbb6197ffBbB46D).
+
+To deploy this testnet-only registry yourself: `forge script script/DeployLiberReceiptRegistry.s.sol --rpc-url bsc_testnet --broadcast`. Its script reads the ignored deployment environment key. Set its address as `RECEIPT_REGISTRY_ADDRESS` on the API, never a private key.

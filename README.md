@@ -39,10 +39,13 @@ Liber makes those steps visible. Deterministic checks inspect the QR format and 
 |---|---|
 | **LiberInvoice** — project contract for submission | [0x2ad1785460b3c60b0131b0649b37dacf3dc17b1c](https://testnet.bscscan.com/address/0x2ad1785460b3c60b0131b0649b37dacf3dc17b1c) |
 | MockUSDC — open faucet, 18 decimals | [0x2116D4a3f11Aa7059Ad0911ad5C89897CC0BcC97](https://testnet.bscscan.com/address/0x2116D4a3f11Aa7059Ad0911ad5C89897CC0BcC97) |
+| **LiberReceiptRegistry** — pilot receipt hash timestamps | [0xf1267a5ab17b61c5c110b95d4dbb6197ffbbb46d](https://testnet.bscscan.com/address/0xf1267a5ab17b61c5c110b95d4dbb6197ffbbb46d#code) |
 
 LiberInvoice is testnet-only. It has no owner, upgrade, service fee or custody balance: transferFrom moves tokens directly from buyer to recipient, and the contract checks the recipient received the exact amount. Paid, cancelled, expired and unknown invoices reject payment. Merchants cannot pay their own invoice.
 
 Source verification has an [exact creation/runtime match on Sourcify](https://repo.sourcify.dev/97/0x2Ad1785460b3C60b0131b0649B37dACF3DC17b1C). BscScan source publication is pending because its upstream service reported a daily submission limit. Deployment records and compiler input are in contracts/deployments/ and contracts/verification/.
+
+LiberReceiptRegistry has an exact source match on [BscScan](https://testnet.bscscan.com/address/0xf1267a5ab17b61c5c110b95d4dbb6197ffbbb46d#code) and [Sourcify](https://repo.sourcify.dev/97/0xF1267a5AB17b61C5c110B95d4dbb6197ffBbB46D). It timestamps opaque receipt hashes without accepting funds. Its deployment does not mean the unconnected Midtrans account can process QRIS payments.
 
 [Inspect the confirmed test payment on BscScan](https://testnet.bscscan.com/tx/0x572e268f3a2a835dacfdfcadd1874997720f3b905f35bed52cc3f1101e263241). Its invoice ID and creation, approval and payment hashes are recorded in [demo-invoice.json](contracts/deployments/demo-invoice.json).
 
