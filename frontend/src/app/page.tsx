@@ -11,22 +11,22 @@ import { useSessionStatus } from "@/lib/useSessionStatus";
 const STEPS = [
   {
     Icon: ScanIcon,
-    title: "Scan",
-    body: "Point your camera at any QRIS code. Liber reads the merchant and amount, and quotes the equivalent in USDC instantly.",
+    title: "Scan and understand",
+    body: "Check an IDR merchant QR, inspect its checksum, and get a plain-language explanation with Payment Copilot.",
   },
   {
     Icon: ProfileIcon,
-    title: "Test the transfer",
-    body: "Send MockUSDC to another test wallet on BSC testnet and inspect the confirmed transaction on BscScan.",
+    title: "Create a Liber invoice",
+    body: "A merchant fixes the recipient, token amount and expiry on BNB. Share a separate Liber invoice QR with the buyer.",
   },
   {
     Icon: HistoryIcon,
-    title: "Explore the payment route",
-    body: "The proposed Kolo and QRIS payment route needs provider validation. Test transfers do not fund a card or pay a merchant.",
+    title: "Pay and verify",
+    body: "Approve the exact amount, sign a test payment, and verify both the invoice event and token transfer on BscScan.",
   },
 ] as const;
 
-const TRUST = ["Non-custodial", "Built on BNB Chain", "QRIS scan and quote demo"] as const;
+const TRUST = ["Device-held keys", "BNB invoice contract", "Public payment proofs"] as const;
 
 export default function LandingPage() {
   const router = useRouter();
@@ -53,20 +53,21 @@ export default function LandingPage() {
         <section className="mt-12 flex flex-col items-center gap-10 md:mt-20 md:flex-row md:items-center md:gap-16">
           <div className="max-w-xl text-center md:text-left">
             <h1 className="fade-up font-display text-4xl leading-tight text-ink md:text-6xl" style={{ animationDelay: "80ms" }}>
-              Explore QRIS <span className="italic text-emerald">with a BNB wallet.</span>
+              Scan. Understand. <span className="italic text-emerald">Verify on BNB.</span>
             </h1>
             <p className="fade-up mt-5 text-base text-ink/60 md:text-lg" style={{ animationDelay: "160ms" }}>
-              A non-custodial BNB Chain wallet prototype for Indonesia. Scan a QRIS code, see an estimated USDC price,
-              and test a MockUSDC transfer on BSC testnet.
+              A payment prototype for Indonesia: QR inspection, an Indonesian AI Copilot, and merchant invoices
+              with test-token payment proofs on BNB Smart Chain.
             </p>
             <div className="fade-up mt-8 flex flex-col items-center gap-3 md:items-start" style={{ animationDelay: "240ms" }}>
               <Link
-                href="/onboarding"
+                href="/demo"
                 className="rounded-full bg-gold px-8 py-4 text-base font-semibold text-ink shadow-[0_12px_30px_-12px_rgba(231,163,58,0.65)] transition active:scale-[0.98]"
               >
-                Get Started
+                Try the two-minute demo
               </Link>
-              <p className="text-xs text-ink/40">Takes about a minute. No bank account needed.</p>
+              <Link href="/merchant" className="text-sm text-emerald underline">Open Merchant Mode</Link>
+              <p className="text-xs text-ink/40">Start without a wallet. Connect one to try test payments.</p>
             </div>
           </div>
 
@@ -74,7 +75,7 @@ export default function LandingPage() {
             className="fade-up w-full max-w-[320px] shrink-0 overflow-hidden rounded-[28px] border-4 border-ink shadow-[10px_10px_0_rgba(16,30,26,0.85)] md:max-w-[380px]"
             style={{ animationDelay: "320ms" }}
           >
-            <Image src="/illustrations/hero-success.jpg" alt="A vendor paying with QRIS through Liber" width={760} height={760} className="h-auto w-full" priority />
+            <Image src="/illustrations/hero-success.jpg" alt="Illustration of a merchant and a customer exploring digital payments" width={760} height={760} className="h-auto w-full" priority />
           </div>
         </section>
 
@@ -86,8 +87,9 @@ export default function LandingPage() {
             <div>
               <h2 className="font-display text-2xl italic text-ink md:text-3xl">The wall crypto hits every day.</h2>
               <p className="mt-3 text-sm text-ink/60 md:text-base">
-                Your USDC is real money, but no QRIS merchant takes it directly. Selling it on an exchange, waiting
-                for a bank transfer, then spending rupiah turns a coffee into a multi-day errand. Liber explores a simpler route through a self-custodial wallet and existing payment services.
+                Wallet addresses, networks, token approvals and transaction hashes make digital payments hard to understand.
+                Liber puts the amount, recipient and evidence into one clear flow. QRIS inspection and Liber invoices are separate:
+                this demo does not settle QRIS or load a Kolo card.
               </p>
             </div>
           </div>
@@ -120,15 +122,15 @@ export default function LandingPage() {
         </section>
 
         <section className="mt-16 flex flex-col items-center gap-4 rounded-[32px] bg-emerald-deep px-8 py-12 text-center text-white md:mt-20">
-          <p className="font-display text-2xl italic md:text-3xl">Your money, borderless.</p>
+          <p className="font-display text-2xl italic md:text-3xl">A clear amount. A visible proof.</p>
           <p className="max-w-md text-sm text-white/70">
-            Create a test wallet, scan a QRIS code, and explore a token transfer on BSC testnet.
+            Inspect a sample QR, create a test invoice, and check what actually happened on BNB.
           </p>
           <Link
-            href="/onboarding"
+            href="/demo"
             className="mt-2 rounded-full bg-gold px-8 py-4 text-base font-semibold text-ink shadow-[0_12px_30px_-12px_rgba(231,163,58,0.65)] transition active:scale-[0.98]"
           >
-            Get Started
+            Try the demo
           </Link>
         </section>
 

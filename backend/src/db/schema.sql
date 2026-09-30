@@ -48,3 +48,5 @@ ALTER TABLE kolo_topups ADD COLUMN IF NOT EXISTS chain_id INTEGER;
 ALTER TABLE kolo_topups ADD COLUMN IF NOT EXISTS token_address TEXT;
 ALTER TABLE kolo_topups ADD COLUMN IF NOT EXISTS destination_address TEXT;
 CREATE UNIQUE INDEX IF NOT EXISTS kolo_topups_verified_tx_idx ON kolo_topups(chain_id, tx_hash) WHERE verified;
+CREATE TABLE IF NOT EXISTS copilot_usage (bucket TEXT PRIMARY KEY, requests INTEGER NOT NULL DEFAULT 0);
+CREATE TABLE IF NOT EXISTS invoice_receipts (invoice_id TEXT PRIMARY KEY, tx_hash TEXT NOT NULL UNIQUE, chain_id INTEGER NOT NULL, recorded_at TIMESTAMPTZ NOT NULL DEFAULT now());

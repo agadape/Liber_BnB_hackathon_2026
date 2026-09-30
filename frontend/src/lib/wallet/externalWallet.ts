@@ -56,6 +56,8 @@ export async function getConnectedExternalAddress(): Promise<string | null> {
 export async function sendWithExternalWallet(tx: EvmTxRequest, address: string): Promise<Hash> {
   const eth = provider();
   await ensureBnbChain(eth);
+  const accounts = await eth.request({ method: "eth_accounts" }) as string[];
+  if (!accounts[0] || getAddress(accounts[0]) !== getAddress(address)) throw new Error("Wallet account changed. Reconnect before signing.");
   const client = createWalletClient({ account: address as Address, chain: CHAIN, transport: custom(eth) });
   return client.sendTransaction({ to: tx.to, data: tx.data });
 }

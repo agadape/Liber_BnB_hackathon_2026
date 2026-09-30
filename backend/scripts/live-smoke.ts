@@ -13,13 +13,20 @@ for (let attempt = 0; attempt < 24; attempt++) {
   const page = await fetch(web, { signal: AbortSignal.timeout(10_000) }).catch(() => null);
   const body = await health?.json().catch(() => null);
   const html = await page?.text();
-  if (health?.ok && body?.version === "wallet-auth-v1" && page?.ok && html?.includes("BSC Testnet Demo")) {
+  if (health?.ok && body?.version === "merchant-copilot-v1" && page?.ok && html?.includes("BSC Testnet Demo")) {
     assert.equal(health.headers.get("access-control-allow-origin"), web);
     ready = true; break;
   }
   await new Promise(resolve => setTimeout(resolve, 5_000));
 }
 assert.ok(ready, "Updated production deployment did not become ready");
+const config = await (await fetch(`${api}/config`)).json();
+assert.equal(config.chainId, 97); assert.ok(config.contractAddress, "Invoice contract missing");
+const sample = await post("/copilot/demo", {sample:"valid"});
+assert.equal(sample.status,200); const inspected=await sample.json();
+assert.equal(inspected.facts.checksumValid,true); assert.equal(inspected.facts.merchantIdentityVerified,false);
+assert.equal((await post("/copilot/demo",{sample:"corrupt"})).status,400);
+assert.equal((await post("/copilot/explain",{payload:"anything"})).status,401);
 const challengeRes = await post("/auth/challenge", { walletAddress: owner.address });
 assert.equal(challengeRes.status, 200);
 const c = await challengeRes.json();

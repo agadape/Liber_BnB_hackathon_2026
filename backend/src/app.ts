@@ -7,6 +7,9 @@ import { quoteRoute } from "./routes/quote.js";
 import { scansRoute } from "./routes/scans.js";
 import { topupsRoute } from "./routes/topups.js";
 import { createAuthRoute } from "./auth/auth.js";
+import { createCopilotRoute } from "./routes/copilot.js";
+import { createInvoicesRoute } from "./routes/invoices.js";
+import { budgetedExplanation } from "./ai/copilot.js";
 
 const LOCALHOST_FALLBACK = "http://localhost:3000";
 
@@ -42,7 +45,7 @@ export function createApp() {
       origin: origins,
     }),
   );
-  app.get("/health", (c) => c.json({ status: "ok", version: "wallet-auth-v1" }));
+  app.get("/health", (c) => c.json({ status: "ok", version: "merchant-copilot-v1" }));
   app.route("/", createAuthRoute());
   app.route("/", usersRoute);
   app.route("/", balanceRoute);
@@ -50,10 +53,11 @@ export function createApp() {
   app.route("/", quoteRoute);
   app.route("/", scansRoute);
   app.route("/", topupsRoute);
+  app.route("/", createCopilotRoute(budgetedExplanation));
+  app.route("/", createInvoicesRoute());
   return app;
 }
 
 // Vercel's Hono runtime looks for a default-exported app. The named factory
 // remains available to the local Node server and tests.
 export default createApp();
-

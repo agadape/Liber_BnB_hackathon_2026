@@ -51,6 +51,11 @@ export default function HomePage() {
       </Link>
 
       <div className="mt-8 flex items-center justify-between">
+        <Link href="/merchant" className="rounded-full bg-emerald px-4 py-2 text-sm font-semibold text-white">Merchant Mode</Link>
+        <Link href="/demo" className="text-sm text-emerald underline">Demo guide</Link>
+      </div>
+
+      <div className="mt-8 flex items-center justify-between">
         <h2 className="text-sm font-semibold text-ink/70">Recent activity</h2>
         <Link href="/history" className="text-sm text-emerald underline underline-offset-4">
           See all
