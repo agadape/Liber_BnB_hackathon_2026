@@ -30,7 +30,7 @@ export default function HistoryPage() {
       <h1 className="font-display text-2xl italic text-ink">History</h1>
 
       {!entries && <p className="mt-8 text-center text-sm text-ink/60">Loading...</p>}
-      {entries?.length === 0 && <p className="mt-8 text-center text-sm text-ink/40">No activity yet.</p>}
+      {entries?.length === 0 && <p className="mt-8 text-center text-sm text-ink/65">No activity yet.</p>}
 
       <ul className="mt-6 flex flex-col gap-3">
         {entries?.map((entry) => (
@@ -46,7 +46,7 @@ export default function HistoryPage() {
                       <span className="font-medium text-ink">{entry.merchantName}</span>
                       <StatusPill state="scan" label="QRIS Scan" />
                     </div>
-                    <p className="text-xs text-ink/50">{entry.merchantCity}</p>
+                    <p className="text-xs text-ink/65">{entry.merchantCity}</p>
                     <p className="text-sm tabular-nums text-ink/80">
                       Rp {Number(entry.amountIdr).toLocaleString("en-US")} &middot; {entry.amountUsdc} USDC
                     </p>
@@ -63,14 +63,14 @@ export default function HistoryPage() {
                         href={explorerTxUrl(entry.txHash)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="font-mono text-xs text-ink/40 underline underline-offset-2"
+                        className="font-mono text-xs text-ink/65 underline underline-offset-2"
                       >
                         Tx: {truncateHash(entry.txHash)}
                       </a>
                     )}
                   </>
                 )}
-                <p className="text-xs text-ink/30">{new Date(entry.createdAt).toLocaleString("en-GB")}</p>
+                <p className="text-xs text-ink/65">{new Date(entry.createdAt).toLocaleString("en-GB")}</p>
               </div>
             </Card>
           </li>

@@ -17,7 +17,7 @@ export function CopilotCard({inspection,payload,onUpdate}:{inspection:Inspection
       try {const res=await authenticatedFetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/copilot/explain`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({payload,amountIdr:inspection.facts.amountIdr ?? undefined})});const body=await res.json();if(!res.ok)throw Error(body.error);onUpdate(body);if(body.copilot?.mode!=="ai")setError("AI is unavailable. The validated checks above remain available.");}
       catch(e){setError((e as Error).message);}finally{setBusy(false);}
     }}>{busy?"Explaining…":"Explain in Indonesian"}</Button>}
-    {payload && <p className="text-[11px] text-ink/45">AI receives the amount and check results only. It cannot sign or send transactions.</p>}
+    {payload && <p className="text-[11px] text-ink/65">AI receives the amount and check results only. It cannot sign or send transactions.</p>}
     {error && <p role="status" className="text-xs text-ink/60">{error}</p>}
   </Card>;
 }

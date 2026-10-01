@@ -33,7 +33,7 @@ export function QuoteCard({
   return (
     <Card className="flex flex-col gap-4">
       <div>
-        <p className="text-xs font-medium uppercase tracking-wide text-ink/50">
+        <p className="text-xs font-medium uppercase tracking-wide text-ink/65">
           {merchantName} &middot; {merchantCity}
         </p>
         <p className="mt-2 font-display text-4xl italic text-ink tabular-nums">
@@ -49,13 +49,13 @@ export function QuoteCard({
             style={{ width: `${(secondsLeft / QUOTE_WINDOW_SECONDS) * 100}%` }}
           />
         </div>
-        <p className="mt-1 text-xs text-ink/40">Estimated reference rate · refresh in {secondsLeft}s</p>
+        <p className="mt-1 text-xs text-ink/65">Estimated reference rate · refresh in {secondsLeft}s</p>
       </div>
 
       <a href="gojek://gopay" className="w-full">
         <Button>{IS_TESTNET ? "Open GoPay (outside demo)" : "Open GoPay"}</Button>
       </a>
-      <p className="text-center text-xs text-ink/40">
+      <p className="text-center text-xs text-ink/65">
         This quote is a reference estimate. The demo does not pay the merchant or fund a card; Kolo and QRIS card compatibility requires provider confirmation.
       </p>
     </Card>

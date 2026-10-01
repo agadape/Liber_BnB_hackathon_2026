@@ -32,7 +32,7 @@ export default function TermsPage() {
   return (
     <PageShell>
       <h1 className="font-display text-2xl italic text-ink">Terms &amp; Conditions</h1>
-      <p className="mt-2 text-sm text-ink/50">Last updated 2026.</p>
+      <p className="mt-2 text-sm text-ink/65">Last updated 2026.</p>
 
       <div className="mt-6 flex flex-col gap-5">
         {SECTIONS.map((s) => (

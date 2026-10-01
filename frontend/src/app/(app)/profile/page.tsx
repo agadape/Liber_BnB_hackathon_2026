@@ -106,7 +106,7 @@ export default function ProfilePage() {
     <PageShell>
       <h1 className="font-display text-2xl italic text-ink">Profile</h1>
       <Card className="mt-6 flex flex-col items-center gap-4 text-center">
-        <p className="text-xs font-semibold uppercase tracking-wide text-ink/50">Your Wallet · {CHAIN.name}</p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-ink/65">Your Wallet · {CHAIN.name}</p>
         {wallet ? <>
           <div className="rounded-3xl bg-ink p-4">
             {qrDataUrl && <img src={qrDataUrl} alt="Your BNB wallet address" width={160} height={160} />}
@@ -118,12 +118,12 @@ export default function ProfilePage() {
         </> : <p className="text-sm text-ink/60">Loading your wallet...</p>}
       </Card>
 
-      <p className="mt-6 text-xs font-semibold uppercase tracking-wide text-ink/50">{IS_TESTNET ? "Test transfer destination" : "Transfer destination"}</p>
+      <p className="mt-6 text-xs font-semibold uppercase tracking-wide text-ink/65">{IS_TESTNET ? "Test transfer destination" : "Transfer destination"}</p>
       <Card className="mt-3 flex flex-col gap-3 bg-emerald/5">
         <p className="text-sm text-ink/70">{IS_TESTNET ?
           "Use another test wallet that you control. MockUSDC has no monetary value and cannot load a Kolo card or pay a QRIS merchant." :
           "Confirm the exact network, token and deposit instructions with the recipient before sending."}</p>
-        <p className="text-xs text-ink/50">The proposed Kolo → GoPay/DANA payment route remains a prototype. Provider support and card compatibility need to be validated before real use.</p>
+        <p className="text-xs text-ink/65">The proposed Kolo → GoPay/DANA payment route remains a prototype. Provider support and card compatibility need to be validated before real use.</p>
         <a href="https://kolo.xyz" target="_blank" rel="noopener noreferrer" className="text-sm text-emerald underline">Learn about Kolo</a>
       </Card>
       {!destination || editing ? <Card className="mt-3 flex flex-col gap-4">

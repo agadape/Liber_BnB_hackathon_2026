@@ -121,7 +121,7 @@ export default function SettingsPage() {
     <PageShell>
       <h1 className="font-display text-2xl italic text-ink">Settings</h1>
 
-      <p className="mt-6 text-xs font-semibold uppercase tracking-wide text-ink/50">Backup &amp; Recovery</p>
+      <p className="mt-6 text-xs font-semibold uppercase tracking-wide text-ink/65">Backup &amp; Recovery</p>
       <Card className="mt-3 flex flex-col gap-4">
         {isExternalWallet ? (
           <>
@@ -179,7 +179,7 @@ export default function SettingsPage() {
 
             <div>
               <p className="text-sm font-semibold text-ink">Restore on this device</p>
-              <p className="mt-1 text-xs text-ink/50">
+              <p className="mt-1 text-xs text-ink/65">
                 Already have a Liber secret key from another device? Paste it here to switch this device to that
                 wallet. This replaces the wallet currently active on this device.
               </p>
@@ -188,7 +188,7 @@ export default function SettingsPage() {
               value={importInput}
               onChange={(e) => setImportInput(e.target.value)}
               placeholder="Private key (0x...)"
-              className="w-full rounded-2xl bg-paper px-4 py-3 font-mono text-sm text-ink placeholder:text-ink/40 outline-none ring-1 ring-transparent focus:ring-emerald"
+              className="w-full rounded-2xl bg-paper px-4 py-3 font-mono text-sm text-ink placeholder:text-ink/65 outline-none ring-1 ring-transparent focus:ring-emerald"
             />
             <Button variant="ghost" onClick={handleImport} disabled={importing || !importInput}>
               {importing ? "Restoring..." : "Restore Wallet"}
@@ -198,7 +198,7 @@ export default function SettingsPage() {
 
             <div className="h-px bg-ink/10" />
 
-            <p className="text-xs text-ink/50">
+            <p className="text-xs text-ink/65">
               Signs this device out and sends you back to the start screen. Your wallet stays on this device - log
               back in any time to pick up right where you left off.
             </p>
@@ -209,12 +209,12 @@ export default function SettingsPage() {
         )}
       </Card>
 
-      <p className="mt-6 text-xs font-semibold uppercase tracking-wide text-ink/50">Wallet Address</p>
+      <p className="mt-6 text-xs font-semibold uppercase tracking-wide text-ink/65">Wallet Address</p>
       <Card className="mt-3">
         <p className="break-all font-mono text-xs text-ink/60">{address ?? "Loading..."}</p>
       </Card>
 
-      <p className="mt-6 text-xs font-semibold uppercase tracking-wide text-ink/50">Legal</p>
+      <p className="mt-6 text-xs font-semibold uppercase tracking-wide text-ink/65">Legal</p>
       <Link href="/terms" className="mt-3 block">
         <Card className="flex items-center gap-3">
           <DocumentIcon className="h-5 w-5 text-emerald" />
@@ -222,7 +222,7 @@ export default function SettingsPage() {
         </Card>
       </Link>
 
-      <p className="mt-8 text-center text-xs text-ink/30">Liber v0.1, built on BNB Chain</p>
+      <p className="mt-8 text-center text-xs text-ink/65">Wallet on BNB Smart Chain.</p>
     </PageShell>
   );
 }

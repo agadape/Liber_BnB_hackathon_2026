@@ -129,17 +129,14 @@ export function OnboardingForm() {
 
   return (
     <div className="flex flex-col gap-4">
-      <Card className="flex flex-col gap-2 text-center">
-        <p className="text-sm text-ink/60">Connect an existing wallet, or create a new one instantly.</p>
-        <p className="text-xs text-ink/50">Sign a message to access your Liber account. This does not authorize a transfer.</p>
-      </Card>
+      <p className="mb-1 text-xs leading-relaxed text-ink/65">Sign a message to access your account. This does not authorize a transfer.</p>
 
       {error && <p className="text-sm text-rose">{error}</p>}
 
       <Button onClick={handleCreateWallet} disabled={submitting}>
         {submitting ? "Setting up..." : "Create New Wallet"}
       </Button>
-      <Button variant="secondary" onClick={handleConnectWallet} disabled={submitting}>
+      <Button variant="ghost" onClick={handleConnectWallet} disabled={submitting}>
         {submitting ? "Connecting..." : "Connect Wallet"}
       </Button>
     </div>

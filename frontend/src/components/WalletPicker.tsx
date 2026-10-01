@@ -30,9 +30,9 @@ export function WalletPicker() {
   }
 
   return <dialog ref={dialog} aria-labelledby="wallet-picker-title" onCancel={event => { event.preventDefault(); finish(null); }}
-    className="m-auto w-[calc(100%_-_2rem)] max-w-sm rounded-3xl bg-paper p-6 text-ink shadow-xl backdrop:bg-black/40">
+    className="m-auto w-[calc(100%_-_2rem)] max-w-sm rounded-2xl border border-ink/15 bg-paper p-6 text-ink shadow-xl backdrop:bg-ink/40">
     <h2 id="wallet-picker-title" className="font-display text-2xl italic">Choose your wallet</h2>
-    <p className="mt-3 text-sm text-ink/60">Unlock your wallet and select the account you want to connect. For merchant sign-in, use your configured merchant account.</p>
+    <p className="mt-3 text-sm text-ink/65">Select an unlocked account. Merchant sign-in requires the configured merchant wallet.</p>
     <div className="mt-5 flex flex-col gap-3">{options?.map((option, index) => <Button key={`${option.id}:${index}`} onClick={() => finish(option)}>{option.name}</Button>)}</div>
     <Button variant="ghost" className="mt-4" onClick={() => finish(null)}>Cancel</Button>
   </dialog>;

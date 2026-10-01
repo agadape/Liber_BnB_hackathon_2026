@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${newsreader.variable} ${bricolage.variable}`}>
-      <body className="font-body antialiased"><DemoNotice /><AppHeader /><WalletPicker />{children}</body>
+      <body className="font-body antialiased"><AppHeader /><DemoNotice /><WalletPicker />{children}</body>
     </html>
   );
 }
