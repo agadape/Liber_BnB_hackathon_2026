@@ -14,7 +14,7 @@ export default function LandingPage() {
       <div className="grid items-center gap-8 lg:grid-cols-[1.2fr_1fr]">
         <div className="fade-up">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold">Indonesia payments · BNB proof</p>
-          <h1 className="mt-5 max-w-xl font-display text-5xl leading-[1.08] sm:text-6xl">A clear payment.<br/><span className="italic text-gold">A visible receipt.</span></h1>
+          <h1 className="mt-5 max-w-xl font-display text-4xl leading-[1.08] sm:text-6xl">A clear payment.<br/><span className="italic text-gold">A visible receipt.</span></h1>
           <p className="mt-5 max-w-lg text-sm leading-relaxed text-white/75 sm:text-base">Liber connects a QRIS sandbox checkout to a public receipt hash on BNB Smart Chain. One place to create, check and verify.</p>
           <div className="mt-7 flex flex-wrap items-center gap-4">
             <Link href="/demo" className="rounded-xl bg-gold px-5 py-3 text-sm font-semibold text-ink transition hover:brightness-95">Explore the demo →</Link>
@@ -23,7 +23,7 @@ export default function LandingPage() {
           <p className="mt-4 text-xs text-white/55">Start without a wallet. Sandbox only; no real-money payments.</p>
         </div>
         <Link href={DEMO_LINKS.sandboxReceipt} aria-label="Inspect the completed Rp10,000 sandbox receipt" className="fade-up rounded-2xl border border-white/15 bg-white p-6 text-ink shadow-xl transition hover:-translate-y-1">
-          <div className="flex items-center justify-between gap-3"><span className="text-xs font-semibold uppercase tracking-widest text-ink/45">Completed test run</span><span className="rounded-full bg-emerald/10 px-3 py-1 text-xs font-semibold text-emerald">Confirmed ✓</span></div>
+          <div className="flex items-center justify-between gap-3"><span className="text-[10px] font-semibold uppercase tracking-widest text-ink/45 sm:text-xs">Completed test run</span><span className="shrink-0 whitespace-nowrap rounded-full bg-emerald/10 px-3 py-1 text-[10px] font-semibold text-emerald sm:text-xs">Confirmed ✓</span></div>
           <p className="mt-6 text-xs text-ink/50">QRIS sandbox invoice</p><p className="mt-1 text-4xl font-semibold tracking-tight">Rp10.000</p>
           <div className="mt-6 space-y-4 border-t border-ink/10 pt-5">
             {[ ["01", "Provider confirmation", "Midtrans reports sandbox settlement"], ["02", "Receipt commitment", "Receipt statement hashed for verification"], ["03", "BNB record", "Recorded on BSC Testnet · block 134186616"] ].map(([n,title,body])=><div key={n} className="flex items-start gap-3"><span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald/10 text-[10px] font-bold text-emerald">{n}</span><div><p className="text-sm font-semibold">{title}</p><p className="mt-0.5 text-xs text-ink/55">{body}</p></div></div>)}

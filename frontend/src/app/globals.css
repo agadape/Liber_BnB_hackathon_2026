@@ -23,8 +23,8 @@ button, a, input, select, summary { -webkit-tap-highlight-color: transparent; }
 button:not(:disabled), summary { cursor: pointer; }
 :focus-visible { outline: 3px solid var(--color-emerald); outline-offset: 4px; }
 input, select { min-height: 44px; }
-.skip-link { position: absolute; left: 1rem; top: -5rem; padding: 0.6rem 1rem; border-radius: 0.75rem; background: white; z-index: 50; }
-.skip-link:focus { top: 0.5rem; }
+.skip-link { position: fixed; left: 1rem; top: 0; transform: translateY(-200%); padding: 0.6rem 1rem; border-radius: 0.75rem; background: white; z-index: 50; }
+.skip-link:focus { top: 0.5rem; transform: translateY(0); }
 .action-link { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 44px; border-radius: 0.75rem; padding: 0.7rem 1.15rem; font-size: 0.875rem; font-weight: 600; transition: background 150ms, transform 150ms; }
 .action-link:hover { filter: brightness(0.96); }
 .hero-grid { background-image: linear-gradient(to right, #ffffff06 1px, transparent 1px), linear-gradient(to bottom, #ffffff06 1px, transparent 1px); background-size: 40px 40px; }
