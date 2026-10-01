@@ -13,7 +13,7 @@ for (let attempt = 0; attempt < 24; attempt++) {
   const page = await fetch(`${web}/pilot`, { signal: AbortSignal.timeout(10_000) }).catch(() => null);
   const body = await health?.json().catch(() => null);
   const html = await page?.text();
-  if (health?.ok && body?.version === "qris-pilot-v1" && page?.ok && html?.includes("Merchant QRIS pilot")) {
+  if (health?.ok && body?.version === "qris-pilot-v1" && page?.ok && html?.includes("QRIS sandbox. BNB receipts.")) {
     assert.equal(health.headers.get("access-control-allow-origin"), web);
     ready = true; break;
   }
@@ -26,6 +26,7 @@ const pilotResponse = await fetch(`${api}/pilot/config`);
 assert.equal(pilotResponse.status,200);
 assert.match(pilotResponse.headers.get("cache-control") ?? "", /no-store/);
 const pilot = await pilotResponse.json();
+assert.equal(pilot.environment,"sandbox", "Hackathon QRIS must remain in Midtrans Sandbox");
 assert.equal(pilot.registryChainId,97);
 assert.ok(pilot.registryAddress, "Receipt registry missing");
 assert.ok(!("serverKey" in pilot) && !("owner" in pilot) && !("merchantId" in pilot));
