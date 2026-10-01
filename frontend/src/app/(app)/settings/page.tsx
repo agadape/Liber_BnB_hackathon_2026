@@ -46,7 +46,7 @@ export default function SettingsPage() {
       if (wallet.mode === "local") {
         setWalletSecretKey(wallet.secretKey);
       }
-    });
+    }).catch(err => setDisconnectError((err as Error).message));
   }, []);
 
   function handleReveal() {

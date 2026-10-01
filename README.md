@@ -2,7 +2,7 @@
 
 **Scan. Understand. Verify on BNB.**
 
-Liber combines a merchant QRIS pilot for rupiah payments through Midtrans with receipt hashes on BNB, and a separate self-custodial test-token invoice demo. The hosted on-chain flows use **BSC Testnet (97)** and **MockUSDC with no monetary value**. The QRIS pilot awaits the merchant's Midtrans account; real payments are not active.
+Liber combines a merchant QRIS pilot for rupiah payments through Midtrans with receipt hashes on BNB, and a separate self-custodial test-token invoice demo. The hosted on-chain flows use **BSC Testnet (97)** and **MockUSDC with no monetary value**. Sandbox credentials and webhook are configured; the first provider account E2E test awaits merchant wallet sign-in. Real payments are not active.
 
 **Indonesia Web3 Hackathon 2026 · Finance & Commerce / Consumer Apps**
 
@@ -45,7 +45,7 @@ LiberInvoice is testnet-only. It has no owner, upgrade, service fee or custody b
 
 Source verification has an [exact creation/runtime match on Sourcify](https://repo.sourcify.dev/97/0x2Ad1785460b3C60b0131b0649B37dACF3DC17b1C). BscScan source publication is pending because its upstream service reported a daily submission limit. Deployment records and compiler input are in contracts/deployments/ and contracts/verification/.
 
-LiberReceiptRegistry has an exact source match on [BscScan](https://testnet.bscscan.com/address/0xf1267a5ab17b61c5c110b95d4dbb6197ffbbb46d#code) and [Sourcify](https://repo.sourcify.dev/97/0xF1267a5AB17b61C5c110B95d4dbb6197ffBbB46D). It timestamps opaque receipt hashes without accepting funds. Its deployment does not mean the unconnected Midtrans account can process QRIS payments.
+LiberReceiptRegistry has an exact source match on [BscScan](https://testnet.bscscan.com/address/0xf1267a5ab17b61c5c110b95d4dbb6197ffbbb46d#code) and [Sourcify](https://repo.sourcify.dev/97/0xF1267a5AB17b61C5c110B95d4dbb6197ffBbB46D). It timestamps opaque receipt hashes without accepting funds. Its deployment does not establish production QRIS payment capability.
 
 [Inspect the confirmed test payment on BscScan](https://testnet.bscscan.com/tx/0x572e268f3a2a835dacfdfcadd1874997720f3b905f35bed52cc3f1101e263241). Its invoice ID and creation, approval and payment hashes are recorded in [demo-invoice.json](contracts/deployments/demo-invoice.json).
 

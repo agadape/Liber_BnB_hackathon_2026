@@ -41,7 +41,7 @@ Keep the hosted release on chain 97. Mainnet token transfers need a separate dep
 
 ## Merchant QRIS pilot
 
-The pilot adds separate `pilot_orders` and `pilot_receipts` tables and a `LiberReceiptRegistry` contract. Buyers pay IDR via Midtrans; the contract timestamps receipt hashes without moving funds or authenticating fiat settlement. Account setup and activation gates are in [PILOT.md](PILOT.md). The provider account is not connected yet, so real payments remain disabled.
+The pilot adds separate `pilot_orders` and `pilot_receipts` tables and a `LiberReceiptRegistry` contract. Buyers pay IDR via Midtrans; the contract timestamps receipt hashes without moving funds or authenticating fiat settlement. Account setup and activation gates are in [PILOT.md](PILOT.md). Sandbox credentials and webhook are configured; provider account E2E validation and production activation remain pending. Real payments are disabled.
 
 ## Hosted BSC testnet demo
 

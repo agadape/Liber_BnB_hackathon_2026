@@ -79,8 +79,8 @@ export async function signOutApi() {
 }
 
 export async function hasApiSession(): Promise<boolean> {
-  const wallet = await getActiveWallet();
   try {
+    const wallet = await getActiveWallet();
     const session: Session = JSON.parse(window.sessionStorage.getItem(SESSION_KEY) ?? "null");
     return !!session && session.walletAddress === getAddress(wallet.publicKey) && Date.parse(session.expiresAt) > Date.now() + 10_000;
   } catch { return false; }

@@ -2,7 +2,7 @@
 
 One merchant issues a rupiah invoice through Midtrans. The buyer scans its QRIS using a banking or e-wallet app. Liber checks the provider directly and produces a receipt statement; anyone may timestamp its hash on BSC Testnet.
 
-**Current status:** integration implemented; the merchant has not connected a Midtrans account. Real QRIS payments are not active. Provider tests use fixtures in CI and do not establish that the account can receive payments.
+**Current status (1 October 2026):** sandbox Server Key and merchant configuration are stored on the backend, the sandbox webhook is configured, and the API deployment is live. Only the configured merchant wallet may issue invoices; the browser's different device wallet was correctly rejected. The first provider account E2E test still awaits merchant wallet sign-in. Real QRIS payments are not active, and fixture-based CI tests do not establish production payment capability.
 
 ## Payment and evidence
 
@@ -52,6 +52,8 @@ Customer identity, raw provider transaction IDs, merchant provider IDs, credenti
 4. Set the Midtrans payment notification URL to `https://liber-bnb-api.vercel.app/pilot/midtrans/notification`.
 5. Open [the pilot](https://liber-bnb-web.vercel.app/pilot), sign in with the configured merchant wallet, and create a Rp10,000 sandbox invoice. Use the provider's sandbox tools to simulate payment; **do not send real money**.
 6. Check that settlement appears only after the canonical provider query. Exercise duplicate notifications, expired invoices and refund updates. Record the settlement hash using TEST BNB, then verify its event through the public receipt. Save the provider test evidence separately.
+
+For the first connected-account test, use a browser with the configured wallet extension, sign in on `/pilot`, and create a Rp10,000 sandbox invoice. The Codex in-app browser has no injected wallet extension; its device wallet may be a different address. Do not change the merchant address merely to bypass this check. Use the official [QRIS simulator](https://simulator.sandbox.midtrans.com/v2/qris/index), not a real banking app.
 
 No Client Key is required: this integration uses server-side Core API and a proxied provider QR image. Buyer checkout does not require a crypto wallet. The merchant wallet identifies who can issue an invoice; its sign-in signature never authorizes a rupiah payment.
 

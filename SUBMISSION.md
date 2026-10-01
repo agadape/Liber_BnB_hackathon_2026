@@ -4,7 +4,7 @@
 
 Liber helps Indonesian crypto users read a merchant QR, understand what has actually been checked, and review a separate native BNB invoice before signing. Its BSC Testnet contract transfers an exact token amount directly to the recipient, and its public receipt verifies both the invoice event and token movement. Optional AI explains validated, redacted facts in Indonesian; it never controls payments.
 
-The next step is a one-merchant QRIS pilot: buyers pay rupiah through Midtrans, while BNB timestamps a hash of the provider-confirmed receipt. Merchant authentication, idempotent order creation, independent provider checks and refund history are implemented. The merchant account is not connected yet; real payments and provider account E2E validation remain pending.
+The next step is a one-merchant QRIS pilot: buyers pay rupiah through Midtrans, while BNB timestamps a hash of the provider-confirmed receipt. Merchant authentication, idempotent order creation, independent provider checks and refund history are implemented. Sandbox credentials and webhook are configured; the first provider account E2E test awaits merchant wallet sign-in. Real payments remain disabled.
 
 ## Submission links
 
@@ -35,7 +35,7 @@ Wallet transactions require TEST BNB gas; get it from https://www.bnbchain.org/e
 - This is a BSC Testnet prototype using tokens with no monetary value.
 - QR format/CRC checks do not authenticate merchants.
 - Native test-token invoices are separate from the Midtrans rupiah pilot. A registry hash is a timestamped statement, not independent proof of fiat settlement. Kolo credit and goods delivery are not verified.
-- Midtrans account onboarding, sandbox E2E and production activation are still pending. Do not present fixture-based tests as real QRIS payments.
+- Sandbox credentials are configured. Sandbox E2E, production business onboarding and live activation are still pending. Do not present fixture-based tests as real QRIS payments.
 - LiberInvoice is exactly verified on Sourcify; its BscScan publication is pending. LiberReceiptRegistry source is verified with an exact match on both BscScan and Sourcify.
 - AI code is implemented and tested. Live model activation awaits the user's Vercel free-credit verification; the demo honestly falls back to checked facts.
 - No promise of hackathon ranking, independent security audit or production readiness.

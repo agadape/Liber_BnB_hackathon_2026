@@ -35,9 +35,7 @@ export async function getActiveWallet(
   if (getWalletMode() === "external") {
     const publicKey = await getExternalAddress();
     if (publicKey) return { mode: "external", publicKey };
-    // The user was in external mode but nothing is actually connected anymore
-    // (e.g. they revoked access in their wallet) - fall back to a local wallet
-    // rather than getting stuck.
+    throw new Error("Wallet disconnected. Reconnect your browser wallet, or explicitly choose the device wallet.");
   }
   const wallet = await getOrCreateWallet(storage);
   return { mode: "local", publicKey: wallet.publicKey, secretKey: wallet.secretKey };

@@ -55,14 +55,13 @@ test("getActiveWallet returns an external wallet when mode is external and a wal
   assert.deepEqual(wallet, { mode: "external", publicKey: "0xEXTERNALADDRESS" });
 });
 
-test("getActiveWallet falls back to local when mode is external but nothing is actually connected", async () => {
+test("a disconnected external wallet does not silently create or authenticate a device wallet", async () => {
   setExternalWalletMode();
   const storage = new MemoryWalletStorage();
-  const expected = await getOrCreateWallet(storage);
-
-  const wallet = await getActiveWallet(storage, async () => null);
-
-  assert.deepEqual(wallet, { mode: "local", publicKey: expected.publicKey, secretKey: expected.secretKey });
+  await assert.rejects(getActiveWallet(storage, async () => null), /Wallet disconnected/);
+  assert.equal(getWalletMode(), "external");
+  assert.equal(await storage.get("liber:wallet:secretKey"), null);
+  assert.equal(await storage.get("liber:wallet:publicKey"), null);
 });
 
 const TX = { to: "0x000000000000000000000000000000000000dEaD" as const, data: "0xa9059cbb" as const };
