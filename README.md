@@ -1,12 +1,12 @@
 # Liber
 
-**Scan. Understand. Verify on BNB.**
+**A clear payment. A visible receipt.**
 
 Liber combines a merchant QRIS pilot for rupiah payments through Midtrans with receipt hashes on BNB, and a separate self-custodial test-token invoice demo. The hosted on-chain flows use **BSC Testnet (97)** and **MockUSDC with no monetary value**. A connected Midtrans account has completed a Rp10,000 sandbox payment and a verified BNB receipt recording. Real payments are not active.
 
 **Indonesia Web3 Hackathon 2026 · Finance & Commerce / Consumer Apps**
 
-- [Two-minute demo](https://liber-bnb-web.vercel.app/demo) — no wallet needed to inspect valid and corrupted QR samples.
+- [Two-minute demo](https://liber-bnb-web.vercel.app/demo) — QRIS sandbox, BNB invoices and QR checks in one compact walkthrough; completed proofs need no wallet.
 - [Merchant QRIS pilot](https://liber-bnb-web.vercel.app/pilot) — connection status, rupiah checkout and provider-backed receipts; [setup and limits](PILOT.md).
 - [Confirmed QRIS sandbox receipt](https://liber-bnb-web.vercel.app/pilot/receipt?id=5e28547c-4936-4fdf-970b-198fc623fcf4) — Rp10,000 simulated through the official Midtrans simulator, with a verified receipt hash on BSC Testnet; [test evidence](contracts/deployments/pilot-sandbox-e2e.json).
 - [Merchant Mode](https://liber-bnb-web.vercel.app/merchant) — create, share and cancel on-chain invoices.
@@ -14,6 +14,10 @@ Liber combines a merchant QRIS pilot for rupiah payments through Midtrans with r
 - [API health](https://liber-bnb-api.vercel.app/health) · [CI](https://github.com/agadape/Liber_BnB_hackathon_2026/actions).
 
 ## Problem and solution
+
+### Hackathon scope: sandbox throughout
+
+The hosted demo deliberately stays on **Midtrans Sandbox + BSC Testnet**. Production onboarding is deferred. The landing page opens for everyone, including returning wallet users, and links directly to completed evidence. The QRIS workspace identifies the payment environment before invoice creation and checkout; provider confirmation is kept distinct from the BNB hash recording.
 
 A familiar merchant QR does not tell a crypto user which on-chain payment they can safely authorize. Reading an amount, confirming the recipient, and distinguishing an estimate from actual settlement are separate steps.
 

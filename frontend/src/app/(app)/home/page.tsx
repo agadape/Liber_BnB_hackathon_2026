@@ -50,12 +50,11 @@ export default function HomePage() {
         Receive {TOKEN_LABEL}
       </Link>
 
-      <div className="mt-8 flex items-center justify-between">
-        <Link href="/merchant" className="rounded-full bg-emerald px-4 py-2 text-sm font-semibold text-white">Merchant Mode</Link>
-        <Link href="/demo" className="text-sm text-emerald underline">Demo guide</Link>
+      <div className="mt-5 grid grid-cols-2 gap-3">
+        <Link href="/pilot" className="rounded-2xl border border-emerald/20 bg-white p-4"><p className="text-sm font-semibold text-emerald">QRIS sandbox →</p><p className="mt-1 text-xs text-ink/50">Rupiah test invoices</p></Link>
+        <Link href="/merchant" className="rounded-2xl border border-ink/10 bg-white p-4"><p className="text-sm font-semibold">BNB invoices →</p><p className="mt-1 text-xs text-ink/50">MockUSDC on chain</p></Link>
       </div>
-
-      <Link href="/pilot" className="mt-4 block rounded-3xl border border-emerald/20 p-4 text-sm font-semibold text-emerald">Merchant QRIS pilot · rupiah checkout</Link>
+      <Link href="/demo" className="mt-4 text-center text-xs text-emerald underline">Explore completed test receipts ↗</Link>
 
       <div className="mt-8 flex items-center justify-between">
         <h2 className="text-sm font-semibold text-ink/70">Recent activity</h2>

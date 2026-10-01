@@ -24,11 +24,13 @@ Team/member/contact details are completed by the team in the submission portal.
 
 ## Two-minute judge walkthrough
 
-1. **0:00–0:30** Open /demo. Click the valid Rp25,000 synthetic QR. Show format/checksum results and the explicit merchant identity and settlement limits. If AI is unavailable, identify the explanation as checks-only.
-2. **0:30–0:45** Click corrupted sample. Show rejection instead of a quote or payment prompt.
-3. **0:45–1:15** Open Merchant Mode. With a funded test wallet, create a 5 MockUSDC invoice. Share its QR/link with a different buyer wallet. This QR is a Liber checkout link, not a QRIS settlement request.
-4. **1:15–1:45** Buyer reviews recipient, amount, expiry and BSC Testnet. Approve the exact amount, then sign payment separately. The recipient receives test tokens directly.
-5. **1:45–2:00** Open public payment proof. Show verified receipt and both events, then the BscScan transaction. The built-in confirmed receipt works without a wallet if a live walkthrough takes longer.
+1. **0:00–0:20** Open `/`. Show the three available flows and the completed Rp10,000 sandbox run. Open the demo; no wallet is required.
+2. **0:20–0:55** In **QRIS sandbox**, open the completed receipt. Show its explicit sandbox label, provider-confirmed status, receipt statement and BscScan recording. Midtrans confirms the payment status; BNB timestamps its hash.
+3. **0:55–1:20** Switch to **BNB invoice**. Open the completed 5 MockUSDC receipt. Show the verified invoice event and exact token transfer. This is a separate test-token payment flow.
+4. **1:20–1:45** Switch to **QR checks**. Try the valid Rp25,000 synthetic QR, then the corrupted sample. Show the checked facts and rejection. If AI is unavailable, describe the explanation as checks-only.
+5. **1:45–2:00** Open the QRIS workspace or BNB invoices. Show wallet-based merchant access and invoice creation controls. Connect funded test wallets for a longer live creation/payment walkthrough.
+
+The submission uses **Midtrans Sandbox + BSC Testnet** throughout. Production onboarding is deferred; do not describe simulated payments as real-money settlement.
 
 Wallet transactions require TEST BNB gas; get it from https://www.bnbchain.org/en/testnet-faucet. MockUSDC is available from the test-token faucet inside checkout.
 

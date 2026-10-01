@@ -6,6 +6,8 @@ One merchant issues a rupiah invoice through Midtrans. The buyer scans its QRIS 
 
 ## Completed sandbox test
 
+**Hackathon decision:** keep the hosted project in sandbox. Production activation and merchant business onboarding are deferred. A reviewer can open `/demo` or the completed receipt below without a wallet. New invoices remain restricted to the configured merchant wallet; sandbox QR payments must use the simulator, never real funds.
+
 - [Public receipt](https://liber-bnb-web.vercel.app/pilot/receipt?id=5e28547c-4936-4fdf-970b-198fc623fcf4): Rp10,000, IDR, environment `sandbox`, status `settlement`.
 - [BSC Testnet recording](https://testnet.bscscan.com/tx/0x12b0809769aac39b4274d08f9c0b37f1308048b5f4811232276cb7a2a55dcc83): successful transaction to LiberReceiptRegistry, with a matching `ReceiptRecorded` event at block 134186616.
 - [Portable evidence](contracts/deployments/pilot-sandbox-e2e.json): canonical receipt statement, commitment, chain transaction, recorder and test scope. No provider credentials or raw provider IDs are included.

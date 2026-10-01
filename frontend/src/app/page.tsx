@@ -1,145 +1,41 @@
-"use client";
-
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
-import { Logo } from "@/components/Logo";
-import { ScanIcon, ProfileIcon, HistoryIcon } from "@/components/icons";
-import { useSessionStatus } from "@/lib/useSessionStatus";
+import { PageShell } from "@/components/ui/PageShell";
+import { DEMO_LINKS } from "@/lib/demo-links";
 
-const STEPS = [
-  {
-    Icon: ScanIcon,
-    title: "Scan and understand",
-    body: "Check an IDR merchant QR, inspect its checksum, and get a plain-language explanation with Payment Copilot.",
-  },
-  {
-    Icon: ProfileIcon,
-    title: "Create a Liber invoice",
-    body: "A merchant fixes the recipient, token amount and expiry on BNB. Share a separate Liber invoice QR with the buyer.",
-  },
-  {
-    Icon: HistoryIcon,
-    title: "Pay and verify",
-    body: "Approve the exact amount, sign a test payment, and verify both the invoice event and token transfer on BscScan.",
-  },
+const flows = [
+  { number: "01", title: "QRIS sandbox", body: "Create a rupiah invoice. Confirm it with Midtrans. Timestamp its receipt hash on BNB.", href: "/pilot", action: "Open QRIS workspace", tag: "Midtrans + BNB" },
+  { number: "02", title: "BNB invoices", body: "Fix the recipient, amount and expiry in a contract. Pay with MockUSDC and verify the transfer.", href: "/merchant", action: "Create a test invoice", tag: "BSC Testnet · chain 97" },
+  { number: "03", title: "QR checks", body: "Inspect the merchant, amount and checksum before a payment. Try an intact or corrupted sample.", href: "/demo?view=checks", action: "Inspect a sample QR", tag: "No wallet needed" },
 ] as const;
 
-const TRUST = ["Device-held keys", "BNB invoice contract", "Public payment proofs"] as const;
-
 export default function LandingPage() {
-  const router = useRouter();
-  const session = useSessionStatus();
-
-  useEffect(() => {
-    if (session === true) {
-      router.replace("/home");
-    }
-  }, [router, session]);
-
-  if (session !== false) return null;
-
-  return (
-    <div className="relative min-h-dvh overflow-x-hidden bg-paper text-ink">
-      <div className="liber-mesh" />
-
-      <div className="relative mx-auto flex max-w-5xl flex-col px-6 py-8 md:px-12 md:py-12">
-        <header className="fade-up flex items-center gap-2.5">
-          <Logo className="h-8 w-8" />
-          <span className="font-display text-lg italic text-emerald">Liber</span>
-        </header>
-
-        <section className="mt-12 flex flex-col items-center gap-10 md:mt-20 md:flex-row md:items-center md:gap-16">
-          <div className="max-w-xl text-center md:text-left">
-            <h1 className="fade-up font-display text-4xl leading-tight text-ink md:text-6xl" style={{ animationDelay: "80ms" }}>
-              Scan. Understand. <span className="italic text-emerald">Verify on BNB.</span>
-            </h1>
-            <p className="fade-up mt-5 text-base text-ink/60 md:text-lg" style={{ animationDelay: "160ms" }}>
-              A payment prototype for Indonesia: QR inspection, an Indonesian AI Copilot, and merchant invoices
-              with test-token payment proofs on BNB Smart Chain.
-            </p>
-            <div className="fade-up mt-8 flex flex-col items-center gap-3 md:items-start" style={{ animationDelay: "240ms" }}>
-              <Link
-                href="/demo"
-                className="rounded-full bg-gold px-8 py-4 text-base font-semibold text-ink shadow-[0_12px_30px_-12px_rgba(231,163,58,0.65)] transition active:scale-[0.98]"
-              >
-                Try the two-minute demo
-              </Link>
-              <Link href="/merchant" className="text-sm text-emerald underline">Open Merchant Mode</Link>
-              <Link href="/pilot" className="text-sm text-emerald underline">Explore the merchant QRIS pilot</Link>
-              <p className="text-xs text-ink/40">Start without a wallet. Connect one to try test payments.</p>
-            </div>
+  return <PageShell wide>
+    <section className="hero-grid relative overflow-hidden rounded-3xl bg-emerald-deep p-6 text-white sm:p-10">
+      <div className="grid items-center gap-8 lg:grid-cols-[1.2fr_1fr]">
+        <div className="fade-up">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold">Indonesia payments · BNB proof</p>
+          <h1 className="mt-5 max-w-xl font-display text-5xl leading-[1.08] sm:text-6xl">A clear payment.<br/><span className="italic text-gold">A visible receipt.</span></h1>
+          <p className="mt-5 max-w-lg text-sm leading-relaxed text-white/75 sm:text-base">Liber connects a QRIS sandbox checkout to a public receipt hash on BNB Smart Chain. One place to create, check and verify.</p>
+          <div className="mt-7 flex flex-wrap items-center gap-4">
+            <Link href="/demo" className="rounded-xl bg-gold px-5 py-3 text-sm font-semibold text-ink transition hover:brightness-95">Explore the demo →</Link>
+            <Link href={DEMO_LINKS.sandboxReceipt} className="text-sm font-semibold text-white underline underline-offset-4">Open a completed receipt ↗</Link>
           </div>
-
-          <div
-            className="fade-up w-full max-w-[320px] shrink-0 overflow-hidden rounded-[28px] border-4 border-ink shadow-[10px_10px_0_rgba(16,30,26,0.85)] md:max-w-[380px]"
-            style={{ animationDelay: "320ms" }}
-          >
-            <Image src="/illustrations/hero-success.jpg" alt="Illustration of a merchant and a customer exploring digital payments" width={760} height={760} className="h-auto w-full" priority />
+          <p className="mt-4 text-xs text-white/55">Start without a wallet. Sandbox only; no real-money payments.</p>
+        </div>
+        <Link href={DEMO_LINKS.sandboxReceipt} aria-label="Inspect the completed Rp10,000 sandbox receipt" className="fade-up rounded-2xl border border-white/15 bg-white p-6 text-ink shadow-xl transition hover:-translate-y-1">
+          <div className="flex items-center justify-between gap-3"><span className="text-xs font-semibold uppercase tracking-widest text-ink/45">Completed test run</span><span className="rounded-full bg-emerald/10 px-3 py-1 text-xs font-semibold text-emerald">Confirmed ✓</span></div>
+          <p className="mt-6 text-xs text-ink/50">QRIS sandbox invoice</p><p className="mt-1 text-4xl font-semibold tracking-tight">Rp10.000</p>
+          <div className="mt-6 space-y-4 border-t border-ink/10 pt-5">
+            {[ ["01", "Provider confirmation", "Midtrans reports sandbox settlement"], ["02", "Receipt commitment", "Receipt statement hashed for verification"], ["03", "BNB record", "Recorded on BSC Testnet · block 134186616"] ].map(([n,title,body])=><div key={n} className="flex items-start gap-3"><span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald/10 text-[10px] font-bold text-emerald">{n}</span><div><p className="text-sm font-semibold">{title}</p><p className="mt-0.5 text-xs text-ink/55">{body}</p></div></div>)}
           </div>
-        </section>
-
-        <section className="mt-20 md:mt-28">
-          <div className="mx-auto flex max-w-3xl flex-col items-center gap-8 text-center md:flex-row md:text-left">
-            <div className="w-full max-w-[240px] shrink-0 overflow-hidden rounded-[24px] border-4 border-ink shadow-[8px_8px_0_rgba(16,30,26,0.85)]">
-              <Image src="/illustrations/problem-hook.jpg" alt="Crypto stuck behind a wall, unable to reach a coffee shop" width={600} height={600} className="h-auto w-full" />
-            </div>
-            <div>
-              <h2 className="font-display text-2xl italic text-ink md:text-3xl">The wall crypto hits every day.</h2>
-              <p className="mt-3 text-sm text-ink/60 md:text-base">
-                Wallet addresses, networks, token approvals and transaction hashes make digital payments hard to understand.
-                Liber puts the amount, recipient and evidence into one clear flow. QRIS inspection and Liber invoices are separate:
-                the test-token demo does not settle QRIS. The merchant QRIS pilot uses a separate Midtrans connection.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        <section className="mt-24 md:mt-32">
-          <h2 className="text-center font-display text-2xl italic text-ink md:text-3xl">How it works</h2>
-          <div className="mt-10 grid gap-6 md:grid-cols-3 md:gap-8">
-            {STEPS.map(({ Icon, title, body }, i) => (
-              <div key={title} className="relative rounded-3xl bg-white/90 p-6 shadow-[0_20px_45px_-25px_rgba(11,107,78,0.45)]">
-                <div className="flex items-center gap-3">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald/10 text-emerald">
-                    <Icon className="h-5 w-5" />
-                  </span>
-                  <span className="font-display text-sm italic text-ink/40">0{i + 1}</span>
-                </div>
-                <p className="mt-4 font-semibold text-ink">{title}</p>
-                <p className="mt-2 text-sm text-ink/60">{body}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="mt-16 flex flex-wrap items-center justify-center gap-3 md:mt-20">
-          {TRUST.map((label) => (
-            <span key={label} className="rounded-full border border-ink/10 bg-white/60 px-4 py-2 text-xs font-semibold text-ink/60">
-              {label}
-            </span>
-          ))}
-        </section>
-
-        <section className="mt-16 flex flex-col items-center gap-4 rounded-[32px] bg-emerald-deep px-8 py-12 text-center text-white md:mt-20">
-          <p className="font-display text-2xl italic md:text-3xl">A clear amount. A visible proof.</p>
-          <p className="max-w-md text-sm text-white/70">
-            Inspect a sample QR, create a test invoice, and check what actually happened on BNB.
-          </p>
-          <Link
-            href="/demo"
-            className="mt-2 rounded-full bg-gold px-8 py-4 text-base font-semibold text-ink shadow-[0_12px_30px_-12px_rgba(231,163,58,0.65)] transition active:scale-[0.98]"
-          >
-            Try the demo
-          </Link>
-        </section>
-
-        <footer className="mt-16 flex flex-col items-center gap-2 pb-8 text-center">
-          <Logo className="h-6 w-6" />
-          <p className="text-xs text-ink/40">Built on BNB Chain.</p>
-        </footer>
+          <p className="mt-6 flex items-center justify-between border-t border-ink/10 pt-4 text-sm font-semibold text-emerald">Inspect receipt & BscScan proof <span>↗</span></p>
+        </Link>
       </div>
-    </div>
-  );
+    </section>
+    <section className="mt-8" aria-labelledby="flows-heading">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2"><h2 id="flows-heading" className="text-lg font-semibold">Three flows. Clear evidence.</h2><span className="text-xs text-ink/50">Choose your starting point</span></div>
+      <div className="grid gap-4 md:grid-cols-3">{flows.map(flow=><Link key={flow.number} href={flow.href} className="group flex flex-col rounded-2xl border border-ink/10 bg-white p-5 transition hover:border-emerald/40 hover:shadow-md"><div className="flex items-center justify-between"><span className="font-mono text-xs text-ink/40">{flow.number}</span><span className="rounded-full bg-paper px-2.5 py-1 text-[10px] font-semibold text-ink/60">{flow.tag}</span></div><h3 className="mt-5 text-xl font-semibold">{flow.title}</h3><p className="mt-2 flex-1 text-sm leading-relaxed text-ink/60">{flow.body}</p><p className="mt-5 text-sm font-semibold text-emerald">{flow.action} <span className="inline-block transition group-hover:translate-x-1">→</span></p></Link>)}</div>
+    </section>
+    <footer className="mt-7 flex flex-wrap items-center justify-between gap-4 border-t border-ink/10 pt-5 text-xs text-ink/55"><p>Provider confirms rupiah status. BNB records the receipt hash.</p><div className="flex gap-4"><a href={DEMO_LINKS.registry} target="_blank" rel="noopener noreferrer" className="text-emerald underline">BNB contract ↗</a><a href={DEMO_LINKS.source} target="_blank" rel="noopener noreferrer" className="text-emerald underline">Source ↗</a></div></footer>
+  </PageShell>;
 }
