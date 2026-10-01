@@ -20,7 +20,7 @@ and the hosted payment contracts are restricted to chain 97. Legacy wallet netwo
 | DB schema | `stellar_public_key`, `kolo_stellar_address`, `kolo_memo`, `stellar_tx_hash` | `wallet_address` (EIP-55), `kolo_address`, `tx_hash`. Written as a **fresh schema**, so use a new database |
 | API | `POST /users {stellarPublicKey}`, `/users/by-key/:key`, `kolo-address {koloStellarAddress,koloMemo}`, `topups {stellarTxHash}` | `POST /users {walletAddress}` (returns `{userId}`), `/users/by-address/:walletAddress`, `kolo-address {koloAddress}`, `topups {txHash}` |
 | Contracts | none | `LiberInvoice` for native merchant invoices and `MockUSDC` (18 decimals, open faucet), BSC Testnet only |
-| Copy | "Built on Stellar", "Stellar address", etc. | BNB Chain across the app and README. The recorded video still shows the earlier Stellar build. |
+| Copy | "Built on Stellar", "Stellar address", etc. | BNB Chain across the app and README. The current demo video shows the BNB sandbox/testnet product. |
 
 Env vars:
 - backend: `CHAIN_ID`, `BSC_RPC_URL`, `USDC_ADDRESS`. These replace `STELLAR_NETWORK_PASSPHRASE`, `HORIZON_URL` and `USDC_ISSUER`.
@@ -56,7 +56,7 @@ Before upgrading an existing deployment, apply `backend/src/db/security-migratio
 
 The frontend uses `NEXT_PUBLIC_BACKEND_URL`, `NEXT_PUBLIC_CHAIN_ID=97`, `NEXT_PUBLIC_BSC_RPC_URL`, `NEXT_PUBLIC_USDC_ADDRESS`, and `NEXT_PUBLIC_USDC_DECIMALS=18`. The backend uses `DATABASE_URL`, `FRONTEND_ORIGINS`, `CHAIN_ID=97`, `BSC_RPC_URL`, and `USDC_ADDRESS`. Keep production URLs in the matching Vercel projects and redeploy after changing environment variables. The Neon query editor accepts one SQL statement per execution when creating the schema manually.
 
-GitHub Actions checks frontend tests, types, lint and build; backend tests and types against Postgres; and Foundry build and tests. The video at https://youtu.be/tAt_Gn67OII is from the earlier Stellar version.
+GitHub Actions checks frontend tests, types, lint and build; backend tests and types against Postgres; and Foundry build and tests. The current 90-second BNB demo is https://youtu.be/WyFs-pF5AYM (English narration and subtitles). Historical Stellar recordings remain archived material.
 
 ## Merchant invoices and Payment Copilot
 
@@ -77,4 +77,4 @@ See [README.md](README.md) for deployed evidence and [SUBMISSION.md](SUBMISSION.
 
 - **Real payment route validation.** Confirm the exact token contract/network, deposit attribution, card eligibility and GoPay/DANA QRIS compatibility with the providers. A testnet transfer is not a card top-up; switching token addresses alone does not validate a payment integration.
 - Optional: sponsor gas or use an ERC-4337 paymaster so new users don't need to hold BNB.
-- The historical docs (`LIBER-CONCEPT.md`, `BRIDGE-PATHS.md`, `RESEARCH-QRIS-RAILS.md`, `ideasubmission.md`, `.superpowers/`, pitch deck PDF, recorded demo videos) still describe the Stellar build and were left as-is.
+- The historical docs (`LIBER-CONCEPT.md`, `BRIDGE-PATHS.md`, `RESEARCH-QRIS-RAILS.md`, `ideasubmission.md`, `.superpowers/`, legacy pitch deck PDF and archived demo videos) still describe the Stellar build and were left as-is.

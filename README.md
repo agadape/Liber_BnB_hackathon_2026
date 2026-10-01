@@ -6,6 +6,7 @@ Liber combines a merchant QRIS pilot for rupiah payments through Midtrans with r
 
 **Indonesia Web3 Hackathon 2026 · Finance & Commerce / Consumer Apps**
 
+- [90-second BNB video](https://youtu.be/WyFs-pF5AYM) — English narration and subtitles; QR checks, sandbox checkout and public testnet receipts.
 - [Two-minute demo](https://liber-bnb-web.vercel.app/demo) — QRIS sandbox, BNB invoices and QR checks in one compact walkthrough; completed proofs need no wallet.
 - [Merchant QRIS pilot](https://liber-bnb-web.vercel.app/pilot) — connection status, rupiah checkout and provider-backed receipts; [setup and limits](PILOT.md).
 - [Confirmed QRIS sandbox receipt](https://liber-bnb-web.vercel.app/pilot/receipt?id=5e28547c-4936-4fdf-970b-198fc623fcf4) — Rp10,000 simulated through the official Midtrans simulator, with a verified receipt hash on BSC Testnet; [test evidence](contracts/deployments/pilot-sandbox-e2e.json).
@@ -119,4 +120,4 @@ Run npm test in each app, and forge test in contracts/. See [MIGRATION-BNB.md](M
 
 ## Demo video
 
-The user-selected [YouTube video](https://youtu.be/tAt_Gn67OII) is the earlier Stellar walkthrough. It is supporting historical material, not evidence of these BNB features. The current BNB evidence is the live demo, contract and public payment receipt linked above.
+[Watch the current BNB demo on YouTube](https://youtu.be/WyFs-pF5AYM) — 90 seconds with English narration and subtitles. It demonstrates QR checks, the Midtrans QRIS sandbox checkout, public BNB receipt commitments and the completed 5 MockUSDC invoice. All demonstrated payment flows use sandbox/testnet funds.

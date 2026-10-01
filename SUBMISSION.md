@@ -1,5 +1,32 @@
 # Liber — submission notes
 
+## Form-ready submission fields
+
+- **Mode:** Solo, as selected in the portal.
+- **Project Name:** Liber
+- **Tagline:** Familiar checkout, verifiable payment receipts on BNB Chain.
+- **Tracks:** Finance & Commerce; Consumer Apps. AI Agents is not selected because live AI is not active.
+- **Contract Address:** `0x2ad1785460b3c60b0131b0649b37dacf3dc17b1c`
+- **Network:** BNB Smart Chain Testnet (chain ID 97). Do not use the form's default Mainnet selection for this address.
+- **Project Logo:** `submission/liber-logo.png` (the existing Liber icon, exported as 512×512 PNG).
+- **GitHub Repo:** https://github.com/agadape/Liber_BnB_hackathon_2026
+- **Project Website:** https://liber-bnb-web.vercel.app/
+- **Demo Video:** https://youtu.be/WyFs-pF5AYM
+- **X / Twitter and LinkedIn:** Leave blank unless the owner supplies project links.
+- **Pitch Deck — Canva/Drive:** The owner must supply a publicly viewable Canva or Google Drive link to the current BNB deck. The legacy Stellar deck is not used as current BNB evidence.
+
+### Problem Statement
+
+Payments are easy to initiate but harder to verify across systems. Buyers need to know who receives their money, how much they are authorizing, and what proves a payment completed. QRIS provider status and blockchain transaction records exist in separate systems, while a transaction hash alone does not explain the invoice or confirm a rupiah payment. Liber addresses this gap with a clear checkout and public receipts that distinguish checked QR facts, provider-confirmed payment status, and verified token transfers.
+
+### Solution
+
+Liber combines three flows in one payment workspace: deterministic QR inspection, merchant-created QRIS sandbox checkouts through Midtrans, and native token invoices on BNB Smart Chain Testnet. QR inspection checks format, amount, and checksum before any payment begins. Midtrans confirms simulated QRIS payment status, then Liber records a commitment to the receipt statement on BNB. For token invoices, the buyer approves the exact MockUSDC amount and signs a separate payment; the contract transfers tokens directly to the merchant. Public receipts verify the successful transaction, matching invoice event, and exact token transfer. Completed examples let judges explore both payment flows without connecting a wallet.
+
+### Project Detail
+
+Copy the contents of [submission/project-detail.md](submission/project-detail.md) into the Project Detail field; it includes markdown and a Mermaid architecture diagram.
+
 ## Project description
 
 Liber helps Indonesian crypto users read a merchant QR, understand what has actually been checked, and review a separate native BNB invoice before signing. Its BSC Testnet contract transfers an exact token amount directly to the recipient, and its public receipt verifies both the invoice event and token movement. Optional AI explains validated, redacted facts in Indonesian; it never controls payments.
@@ -18,7 +45,7 @@ The one-merchant QRIS pilot adds rupiah invoices through Midtrans, while BNB tim
 - Pilot receipt registry, BscScan verified source: https://testnet.bscscan.com/address/0xf1267a5ab17b61c5c110b95d4dbb6197ffbbb46d#code
 - Exact source match: https://repo.sourcify.dev/97/0x2Ad1785460b3C60b0131b0649B37dACF3DC17b1C
 - Confirmed BNB payment proof: https://liber-bnb-web.vercel.app/receipt?id=0x9472aacf99e2369eaf65a51d2e7b0f515c6433ac32d0450da1b18e9465ded034
-- User-selected video: https://youtu.be/tAt_Gn67OII (earlier Stellar demo; label it accurately).
+- Current BNB demo video: https://youtu.be/WyFs-pF5AYM (90 seconds, English narration and subtitles).
 
 Team/member/contact details are completed by the team in the submission portal.
 
