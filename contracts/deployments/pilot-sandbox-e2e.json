@@ -1,0 +1,39 @@
+{
+  "testedAt": "2026-10-01T05:02:16.494Z",
+  "environment": "sandbox",
+  "realMoneyMoved": false,
+  "provider": "midtrans",
+  "method": "Official Midtrans QRIS sandbox simulator, followed by canonical provider status confirmation through the Liber API",
+  "orderId": "5e28547c-4936-4fdf-970b-198fc623fcf4",
+  "amountIdr": 10000,
+  "currency": "IDR",
+  "providerStatus": "settlement",
+  "receiptStatement": {
+    "status": "settlement",
+    "version": 1,
+    "currency": "IDR",
+    "orderRef": "5e28547c-4936-4fdf-970b-198fc623fcf4",
+    "provider": "midtrans",
+    "amountIdr": 10000,
+    "observedAt": "2026-10-01T04:59:51.187Z",
+    "receiptRef": "df9d5497-795c-4bf3-9382-088a33412409",
+    "environment": "sandbox"
+  },
+  "commitment": "0x1e8977c155f40683ea41cccd1b093b2fe533b5123adb43dee4d12161ee8ffe00",
+  "checkoutUrl": "https://liber-bnb-web.vercel.app/pilot/pay?id=5e28547c-4936-4fdf-970b-198fc623fcf4",
+  "receiptUrl": "https://liber-bnb-web.vercel.app/pilot/receipt?id=5e28547c-4936-4fdf-970b-198fc623fcf4",
+  "chainProof": {
+    "chainId": 97,
+    "registry": "0xf1267a5ab17b61c5c110b95d4dbb6197ffbbb46d",
+    "txHash": "0x12b0809769aac39b4274d08f9c0b37f1308048b5f4811232276cb7a2a55dcc83",
+    "blockNumber": 134186616,
+    "recordedBy": "0x80a92Cac1a63799170af13d17313b45EB77661e5",
+    "transactionFeeTestBnbWei": "4589000000000",
+    "explorerUrl": "https://testnet.bscscan.com/tx/0x12b0809769aac39b4274d08f9c0b37f1308048b5f4811232276cb7a2a55dcc83"
+  },
+  "limitations": [
+    "Sandbox simulation only; no real QRIS funds or bank disbursement tested",
+    "BNB records the receipt hash; Midtrans supplies payment status",
+    "Production activation and merchant approval remain pending"
+  ]
+}

@@ -2,12 +2,13 @@
 
 **Scan. Understand. Verify on BNB.**
 
-Liber combines a merchant QRIS pilot for rupiah payments through Midtrans with receipt hashes on BNB, and a separate self-custodial test-token invoice demo. The hosted on-chain flows use **BSC Testnet (97)** and **MockUSDC with no monetary value**. Sandbox credentials and webhook are configured; the first provider account E2E test awaits merchant wallet sign-in. Real payments are not active.
+Liber combines a merchant QRIS pilot for rupiah payments through Midtrans with receipt hashes on BNB, and a separate self-custodial test-token invoice demo. The hosted on-chain flows use **BSC Testnet (97)** and **MockUSDC with no monetary value**. A connected Midtrans account has completed a Rp10,000 sandbox payment and a verified BNB receipt recording. Real payments are not active.
 
 **Indonesia Web3 Hackathon 2026 · Finance & Commerce / Consumer Apps**
 
 - [Two-minute demo](https://liber-bnb-web.vercel.app/demo) — no wallet needed to inspect valid and corrupted QR samples.
 - [Merchant QRIS pilot](https://liber-bnb-web.vercel.app/pilot) — connection status, rupiah checkout and provider-backed receipts; [setup and limits](PILOT.md).
+- [Confirmed QRIS sandbox receipt](https://liber-bnb-web.vercel.app/pilot/receipt?id=5e28547c-4936-4fdf-970b-198fc623fcf4) — Rp10,000 simulated through the official Midtrans simulator, with a verified receipt hash on BSC Testnet; [test evidence](contracts/deployments/pilot-sandbox-e2e.json).
 - [Merchant Mode](https://liber-bnb-web.vercel.app/merchant) — create, share and cancel on-chain invoices.
 - [Confirmed payment proof](https://liber-bnb-web.vercel.app/receipt?id=0x9472aacf99e2369eaf65a51d2e7b0f515c6433ac32d0450da1b18e9465ded034) — a real transfer of 5 test tokens between two test wallets.
 - [API health](https://liber-bnb-api.vercel.app/health) · [CI](https://github.com/agadape/Liber_BnB_hackathon_2026/actions).
@@ -30,7 +31,7 @@ Liber makes those steps visible. Deterministic checks inspect the QR format and 
 | Buyer checkout | Exact token approval, followed by a separate payment signature; no server transaction signer. |
 | Public receipt | Successful transaction receipt, matching InvoicePaid event **and** exact MockUSDC Transfer event. Chain state is read again on refresh. |
 | Wallet app | Local test wallet or injected EVM wallet, signed authentication, balances, scanning and verified transfer history. |
-| QRIS pilot integration | Merchant-only creation, stable retry keys, canonical Midtrans status verification, duplicate and refund handling. Provider fixture tests pass; a connected-account E2E test is still pending. |
+| QRIS pilot integration | Merchant-only creation, stable retry keys, canonical Midtrans status verification, duplicate and refund handling. Connected-account sandbox E2E passed for Rp10,000; production activation remains pending. |
 | Receipt hash registry | Permissionless, immutable hash timestamps on BSC Testnet. Environment/status are bound inside the statement hash; BNB does not independently confirm fiat payment. |
 
 ## Native BNB contract

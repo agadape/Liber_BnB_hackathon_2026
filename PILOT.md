@@ -2,7 +2,15 @@
 
 One merchant issues a rupiah invoice through Midtrans. The buyer scans its QRIS using a banking or e-wallet app. Liber checks the provider directly and produces a receipt statement; anyone may timestamp its hash on BSC Testnet.
 
-**Current status (1 October 2026):** sandbox Server Key and merchant configuration are stored on the backend, the sandbox webhook is configured, and the API deployment is live. Only the configured merchant wallet may issue invoices; the browser's different device wallet was correctly rejected. The first provider account E2E test still awaits merchant wallet sign-in. Real QRIS payments are not active, and fixture-based CI tests do not establish production payment capability.
+**Current status (1 October 2026):** the configured merchant signed in through MetaMask and issued a Rp10,000 sandbox invoice. The official Midtrans QRIS simulator completed its payment, the Liber API confirmed `settlement` through the canonical provider status query, and a matching receipt hash was recorded and verified on BSC Testnet. Sandbox credentials and webhook are configured. Real QRIS payments and bank disbursement are not active or tested.
+
+## Completed sandbox test
+
+- [Public receipt](https://liber-bnb-web.vercel.app/pilot/receipt?id=5e28547c-4936-4fdf-970b-198fc623fcf4): Rp10,000, IDR, environment `sandbox`, status `settlement`.
+- [BSC Testnet recording](https://testnet.bscscan.com/tx/0x12b0809769aac39b4274d08f9c0b37f1308048b5f4811232276cb7a2a55dcc83): successful transaction to LiberReceiptRegistry, with a matching `ReceiptRecorded` event at block 134186616.
+- [Portable evidence](contracts/deployments/pilot-sandbox-e2e.json): canonical receipt statement, commitment, chain transaction, recorder and test scope. No provider credentials or raw provider IDs are included.
+
+The simulator scanned the public proxied QR image. After confirmation, checkout hid its QR and the API persisted the chain proof for that exact stored receipt. No real money moved. This test establishes the connected-account happy path; production onboarding, disbursement and provider-backed refund/expiry scenarios remain separate work. Duplicate, forged-notification and refund-ordering behavior is covered by automated tests; this run does not establish independent live webhook delivery or live refund handling.
 
 ## Payment and evidence
 
