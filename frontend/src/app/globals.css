@@ -63,3 +63,67 @@ input, select { min-height: 44px; }
     animation: none;
   }
 }
+
+/* Landing: preserve the printed illustration palette. Square artwork,
+   pill actions, one quiet divider per group; product screens keep their tokens. */
+.landing-page, .landing-header { background: #f5f3e9; }
+.landing-container { width: min(100% - 80px, 1120px); margin-inline: auto; }
+.landing-header-inner { display: flex; align-items: center; justify-content: space-between; gap: 28px; height: 80px; }
+.landing-brand { display: flex; align-items: center; gap: 10px; }
+.landing-nav { display: flex; align-items: center; gap: 30px; }
+.landing-nav a, .landing-wallet { font-size: 13px; font-weight: 600; }
+.landing-nav a { padding-block: 14px; color: #44534c; }
+.landing-nav a:hover { color: var(--color-emerald); }
+.landing-header-actions { display: flex; align-items: center; gap: 20px; }
+.landing-environment { font-size: 11px; color: #53634f; border: 1px solid #b9c1ac; border-radius: 100px; padding: 5px 10px; }
+.landing-wallet { display: inline-flex; align-items: center; min-height: 44px; }
+.landing-mobile-menu { display: none; }
+.landing-hero { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 42px; padding: 48px 0 56px; }
+.landing-eyebrow { font-size: 12px; font-weight: 600; color: var(--color-emerald); margin-bottom: 22px; }
+.landing-intro h1 { font-family: var(--font-display); font-size: clamp(42px, 4.6vw, 60px); line-height: 1.1; letter-spacing: -0.035em; font-weight: 500; }
+.landing-description { max-width: 340px; margin-top: 24px; font-size: 15px; line-height: 1.7; color: #536158; }
+.landing-primary { display: inline-flex; align-items: center; justify-content: space-between; gap: 42px; min-height: 52px; margin-top: 30px; padding: 12px 24px; background: var(--color-emerald-deep); color: #f5f3e9; border-radius: 100px; font-size: 14px; font-weight: 600; transition: background 150ms; }
+.landing-primary:hover { background: var(--color-emerald); }
+.landing-primary span { font-size: 20px; }
+.landing-hero-image { width: 100%; height: auto; max-width: 520px; justify-self: end; border-radius: 16px; }
+.landing-tools { display: flex; border-block: 1px solid #101e1a26; gap: 48px; padding-block: 24px; }
+.landing-tool { display: flex; align-items: center; justify-content: space-between; flex: 1; gap: 24px; min-height: 58px; }
+.landing-tool h2 { font-size: 16px; font-weight: 600; }
+.landing-tool p { margin-top: 5px; font-size: 12px; color: #536158; }
+.landing-tool > span { font-size: 24px; color: var(--color-emerald); transition: transform 150ms; }
+.landing-tool:hover > span { transform: translate(2px, -2px); }
+.landing-proof { display: grid; grid-template-columns: 270px 1fr; align-items: center; gap: 80px; max-width: 800px; margin-inline: auto; padding-block: 80px; }
+.landing-proof-image { width: 270px; height: auto; border-radius: 16px; }
+.landing-proof h2 { font-family: var(--font-display); font-size: 40px; line-height: 1.1; letter-spacing: -0.02em; font-weight: 500; }
+.landing-proof p { margin-top: 20px; font-size: 14px; line-height: 1.7; color: #536158; }
+.landing-text-link { display: inline-flex; align-items: center; gap: 24px; min-height: 44px; margin-top: 16px; font-size: 13px; font-weight: 600; color: var(--color-emerald); text-decoration: underline; text-underline-offset: 5px; }
+.landing-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; padding: 22px 0 28px; border-top: 1px solid #101e1a26; font-size: 11px; color: #536158; }
+.landing-footer > div { display: flex; flex-wrap: wrap; gap: 24px; }
+.landing-footer a { display: inline-flex; align-items: center; min-height: 44px; color: var(--color-emerald); }
+.landing-footer a:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+@media (max-width: 767px) {
+  .landing-container { width: calc(100% - 48px); }
+  .landing-header-inner { height: 72px; gap: 16px; }
+  .landing-nav, .landing-wallet { display: none; }
+  .landing-header-actions { margin-left: auto; }
+  .landing-mobile-menu { display: block; position: relative; }
+  .landing-mobile-menu summary { display: flex; align-items: center; min-height: 44px; font-size: 12px; font-weight: 600; list-style: none; }
+  .landing-mobile-menu summary::-webkit-details-marker { display: none; }
+  .landing-mobile-menu nav { position: absolute; right: 0; top: 48px; width: 190px; padding: 8px; border: 1px solid #101e1a26; background: #f5f3e9; border-radius: 16px; box-shadow: 0 12px 24px #101e1a12; z-index: 20; }
+  .landing-mobile-menu nav a { display: flex; align-items: center; min-height: 44px; padding-inline: 12px; font-size: 13px; border-radius: 8px; }
+  .landing-mobile-menu nav a:hover { background: #101e1a08; }
+  .landing-hero { grid-template-columns: 1fr; gap: 32px; padding: 28px 0 36px; }
+  .landing-eyebrow { margin-bottom: 16px; font-size: 11px; }
+  .landing-intro h1 { font-size: clamp(32px, 9vw, 46px); }
+  .landing-description { margin-top: 18px; font-size: 14px; max-width: 310px; }
+  .landing-primary { margin-top: 22px; min-height: 48px; padding: 10px 22px; }
+  .landing-hero-image { max-width: 390px; justify-self: center; }
+  .landing-tools { flex-direction: column; gap: 20px; padding-block: 24px; }
+  .landing-tool { min-height: 48px; }
+  .landing-proof { grid-template-columns: 1fr; gap: 28px; padding-block: 48px; }
+  .landing-proof-image { width: 200px; }
+  .landing-proof h2 { font-size: 36px; }
+  .landing-footer { align-items: flex-start; padding-block: 20px; gap: 6px; }
+  .landing-footer > div { column-gap: 20px; }
+}
