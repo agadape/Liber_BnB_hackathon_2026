@@ -1332,16 +1332,16 @@ ACTIVE_WORKSPACE: C:/Project_Dave/Liber_bnb
 APP_CHECKOUT: C:/Project_Dave/Liber_bnb/app
 APP_BASELINE: 3f451ec527b98de1da39e158a8c502d0f62638e4
 APP_FIRST_IMPLEMENTATION_HEAD: 33f5316dd109774d9aac20a4ed54230f81e3341e
-APP_BRANCH: codex/ghost-protocol
-APP_VERIFIED_IMPLEMENTATION_HEAD: e9fcaac3ebca64c6c66f85e307887d0556bcbead
-CURRENT_MILESTONE: responsive browser layout, hosted UI/API proof and UI expiry/reclaim verified; physical/device release gates pending
-NEXT_TASK: two-device image-handover/phone-off test using GHOST-TWO-DEVICE-TEST.md; printed-paper check later; keep production promotion gated
-REVIEW: https://github.com/agadape/Liber_BnB_hackathon_2026/pull/1 (draft)
-CODE_CI: https://github.com/agadape/Liber_BnB_hackathon_2026/actions/runs/36993517659 (success at e9fcaac; frontend/backend/contracts and both Vercel previews passed)
+APP_BRANCH: main
+APP_VERIFIED_IMPLEMENTATION_HEAD: 8df8cadbc5bffed5941674b8048404bd82d18d50
+CURRENT_MILESTONE: user-requested main merge and primary-site deployment completed; primary Ghost API activation awaits approval for server-only Production HMAC secret
+NEXT_TASK: complete approved production HMAC setup if consent arrives; verify primary Ghost config; then two-device image-handover/phone-off test; printed-paper check later
+REVIEW: https://github.com/agadape/Liber_BnB_hackathon_2026/pull/1 (merged 2026-10-02T11:51:03Z at user request)
+CODE_CI: https://github.com/agadape/Liber_BnB_hackathon_2026/actions/runs/37003284691 (success on main; frontend/backend/contracts/live-smoke and both Vercel deployments passed)
 PROTOCOL_VERSION: ghost-v1 (implemented, shared codec/chain generated)
 GHOST_VAULT_ADDRESS: 0x0837ac35ec54F678ba08912dcfd6166a299FCA31
 GHOST_DEPLOYMENT_BLOCK: 134372464
-GHOST_FEATURE_FLAGS: enabled only for Preview branch codex/ghost-protocol
+GHOST_FEATURE_FLAGS: Preview enabled; Production public values configured, but primary API safely reports disabled because Production HMAC is absent
 DATABASE_MIGRATION: three Ghost tables + three indexes applied to existing Neon sandbox
 E2E_PROOF: app/contracts/deployments/ghost-demo-e2e.json (separate processes; no physical phone-off claim)
 UI_E2E_PROOF: app/contracts/deployments/ghost-ui-e2e.json (buyer page closed; no physical phone-off claim)
@@ -1350,7 +1350,7 @@ RESPONSIVE_EVIDENCE: app/contracts/deployments/ghost-responsive-check.json (brow
 API_EVIDENCE: app/contracts/deployments/ghost-hosted-check.json
 API_PUBLIC_EXCEPTION: only stable liber-bnb-api codex-ghost-protocol branch domain; project auth remains enabled
 FRONTEND_PUBLIC_EXCEPTION: only stable liber-bnb-web codex-ghost-protocol branch domain; separately user-approved for two-device sandbox test
-PRODUCTION_SCOPE: old main still deployed; promotion gated
+PRODUCTION_SCOPE: Ghost code published on primary web/API at explicit user request; remains BSC Testnet with no cash value
 ```
 
 ### Implementation evidence and remaining gates
@@ -1376,6 +1376,14 @@ PRODUCTION_SCOPE: old main still deployed; promotion gated
 - G-023..025 remain production release gates until physical/device/print checks finish. G-026 README/runbook/public evidence updated. G-027 video/deck and G-028 new production design remain separate follow-ups; no mainnet promotion occurred.
 
 Append/update this record when code work starts:
+
+### Session 2026-10-02 main publication
+- User instruction: “Push ke main, ke utama.” This authorizes the main merge/publication before the remaining physical/device checks; those checks are still pending and are not claimed passed.
+- PR1 marked ready and merged at `2026-10-02T11:51:03Z` (18:51:03 WIB). Merge commit `8df8cadbc5bffed5941674b8048404bd82d18d50`; local checkout switched to `main` and synchronized without conflicts. Branch commits and history preserved.
+- Main CI run `37003284691` passed, including existing production live-smoke. Main frontend deployment `H1YTD8dmYUjcVrVeqmbEgf2acgWr` and API deployment `DZA2erStQeMQKrXTMMjx8NaRSHRM` succeeded. Primary web returned 200 and displayed the Ghost landing and existing illustration.
+- Production-only non-secret settings added: six `NEXT_PUBLIC_GHOST_*` frontend values and seven `GHOST_*` API values matching chain 97, existing vault/token/deployment block and 12 confirmations. Existing backend URL, provider, database and wallet configuration retained; no migration, contract deployment or payment executed.
+- Automatic approval review rejected generating/saving a new Production `GHOST_SERVER_HMAC_SECRET` because the user had authorized main publication but had not explicitly authorized this security-sensitive configuration. A specific approval question was sent; no workaround attempted and no secret saved. Primary `/ghost/config` returns `enabled:false`, reason `Ghost metadata protection is not configured.` The main merge and landing are live; primary Ghost issuance is not yet active.
+- Next: if the user approves, create the random HMAC only in the API's Vercel Secret/Production field, redeploy the API and verify config/proofs/CORS on primary domains. Never print or commit the value. If consent is declined, retain disabled primary Ghost and use the working branch sandbox. Real phone-off, saved PNG, paper and injected-wallet checks remain pending in either case.
 
 ### Session 2026-10-02 17:03 WIB
 - Workspace / branch / verified UI code HEAD: `C:/Project_Dave/Liber_bnb/app`, `codex/ghost-protocol`, `2b02d16b6510130d577bab1802ded2be08d2faeb`.
