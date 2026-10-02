@@ -1333,11 +1333,11 @@ APP_CHECKOUT: C:/Project_Dave/Liber_bnb/app
 APP_BASELINE: 3f451ec527b98de1da39e158a8c502d0f62638e4
 APP_FIRST_IMPLEMENTATION_HEAD: 33f5316dd109774d9aac20a4ed54230f81e3341e
 APP_BRANCH: codex/ghost-protocol
-APP_VERIFIED_IMPLEMENTATION_HEAD: a7cf37ef7c9c9960e969f702562c639fb16f8fe1
-CURRENT_MILESTONE: hosted UI/API proof and recovery hardening verified; physical/device release gates pending
-NEXT_TASK: physical print/phone-off/device gate; keep production promotion gated
+APP_VERIFIED_IMPLEMENTATION_HEAD: e9fcaac3ebca64c6c66f85e307887d0556bcbead
+CURRENT_MILESTONE: responsive browser layout, hosted UI/API proof and UI expiry/reclaim verified; physical/device release gates pending
+NEXT_TASK: two-device image-handover/phone-off test using GHOST-TWO-DEVICE-TEST.md; printed-paper check later; keep production promotion gated
 REVIEW: https://github.com/agadape/Liber_BnB_hackathon_2026/pull/1 (draft)
-CODE_CI: https://github.com/agadape/Liber_BnB_hackathon_2026/actions/runs/36981441878 (success)
+CODE_CI: https://github.com/agadape/Liber_BnB_hackathon_2026/actions/runs/36993517659 (success at e9fcaac; frontend/backend/contracts and both Vercel previews passed)
 PROTOCOL_VERSION: ghost-v1 (implemented, shared codec/chain generated)
 GHOST_VAULT_ADDRESS: 0x0837ac35ec54F678ba08912dcfd6166a299FCA31
 GHOST_DEPLOYMENT_BLOCK: 134372464
@@ -1345,6 +1345,8 @@ GHOST_FEATURE_FLAGS: enabled only for Preview branch codex/ghost-protocol
 DATABASE_MIGRATION: three Ghost tables + three indexes applied to existing Neon sandbox
 E2E_PROOF: app/contracts/deployments/ghost-demo-e2e.json (separate processes; no physical phone-off claim)
 UI_E2E_PROOF: app/contracts/deployments/ghost-ui-e2e.json (buyer page closed; no physical phone-off claim)
+UI_RECLAIM_PROOF: app/contracts/deployments/ghost-ui-reclaim.json (exact 1 MockUSDC returned after expiry)
+RESPONSIVE_EVIDENCE: app/contracts/deployments/ghost-responsive-check.json (browser viewports only, not real mobile devices)
 API_EVIDENCE: app/contracts/deployments/ghost-hosted-check.json
 API_PUBLIC_EXCEPTION: only stable liber-bnb-api codex-ghost-protocol branch domain; project auth remains enabled
 FRONTEND_PUBLIC_EXCEPTION: only stable liber-bnb-web codex-ghost-protocol branch domain; separately user-approved for two-device sandbox test
