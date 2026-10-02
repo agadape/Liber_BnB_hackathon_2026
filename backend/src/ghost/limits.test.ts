@@ -10,3 +10,7 @@ test("recovery cursors are authenticated, expire, and use a separate MAC purpose
  assert.throws(()=>decodeCursor(encodeCursor({...cursor,expires:Math.floor(Date.now()/1000)-1})));
  assert.notEqual(serverMac("ghost-rate-v1","same"),serverMac("ghost-recovery-v1","same"));
 });
+test("dense-block log offsets stay authenticated and must be nonnegative integers",()=>{
+ assert.deepEqual(decodeCursor(encodeCursor({...cursor,afterLog:12})),{...cursor,afterLog:12});
+ for(const afterLog of [-1,1.5,Number.MAX_SAFE_INTEGER+1])assert.throws(()=>decodeCursor(encodeCursor({...cursor,afterLog})));
+});

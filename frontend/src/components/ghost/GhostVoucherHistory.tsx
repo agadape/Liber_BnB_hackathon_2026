@@ -34,7 +34,7 @@ export function GhostVoucherHistory(){
   async function recoverHistory(){if(!wallet||!config)return;setBusy(true);setError(null);try{
     requireDeployedConfig(config);const base=process.env.NEXT_PUBLIC_BACKEND_URL;if(!base)throw uiError("History API unavailable. Recover using a reserve transaction hash instead.");
     const r=await authenticatedFetch(base+"/ghost/me/recover",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(cursor?{cursor}:{}),signal:AbortSignal.timeout(50_000)});
-    if(!r.ok)throw uiError(r.status===429?"Recovery rate limit reached. Retry next minute.":"Verified history recovery is unavailable. Use the transaction-hash recovery below.");
+    if(r.status!==200)throw uiError(r.status===202?"Recovery proof is waiting for confirmations. Keep this page and retry verification.":r.status===429?"Recovery rate limit reached. Retry next minute.":"Verified history recovery is unavailable. Use the transaction-hash recovery below.");
     const result=await r.json();for(const proof of result.items??[]){if(proof.voucher&&getAddress(proof.owner)===getAddress(wallet.publicKey))saveJournal({id:proof.voucherId,vault:config.vaultAddress,owner:proof.owner,voucher:proof.voucher,reserveTxHash:proof.txHash,createdAt:new Date().toISOString()});}
     setCursor(result.next);setStatus(result.next?"Recovery page checked. Continue to inspect the next block range.":"Recovery reached the checked chain head.");await refresh();
   }catch(e){setError(safeGhostError(e));}finally{setBusy(false);}}

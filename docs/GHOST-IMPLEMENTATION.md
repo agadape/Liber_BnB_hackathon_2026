@@ -6,7 +6,7 @@
 
 **Tanggal:** 2 October 2026, Asia/Jakarta
 **Versi dokumen:** 1.0 / protocol `ghost-v1`
-**Status:** protokol dan aplikasi telah diimplementasikan; vault testnet dideploy dan transaksi redeem/reclaim telah dibuktikan. Preview hosting dan pengujian fisik paper/phone-off masih menjadi gate rilis.
+**Status:** protokol, aplikasi, API dan preview testnet telah diimplementasikan. Transaksi redeem/reclaim serta alur UI reserve → QR → redeem → penolakan ulang telah dibuktikan. Pengujian fisik paper/phone-off dan perangkat wallet masih menjadi gate rilis production.
 **Nama file:** `IMPLEMENTATHOIN.MD`, mengikuti nama yang diminta pengguna.
 **Pemilik keputusan produk:** pemilik proyek Liber.
 **Lingkungan MVP:** BSC Testnet, chain ID `97`, MockUSDC tanpa nilai uang.
@@ -933,6 +933,8 @@ Rate rows memiliki TTL 10 menit. Cleanup hanya menyentuh `ghost_rate_limits`, ma
 
 Query `VoucherReserved` filtered by indexed owner and exact configured vault, from deployment block in bounded ranges. Default chunk 1,000 blocks, max 5,000, adapt downward on provider limits; no unbounded all-chain scan in one serverless request. Cursor format: base64url of canonical server JSON plus HMAC-SHA256 with purpose prefix `ghost-recovery-v1`. Signed cursor includes version, chain, vault, authenticated owner, next block, frozen upper block, and expiry 15 minutes after issuance. Reject mismatched owner/config, invalid MAC, expired cursor, range outside deployment..current head, or range >5,000 before RPC. Persist recovered records only after canonical reserve proof verification.
 
+Implemented hardening: at most **five reserve proofs per request**, with an optional authenticated `afterLog` index at `next` block for dense-block continuation. Sorting and position validation prevent skipping or duplicating events across pages. The initial upper block excludes the 11 newest blocks for the 12-confirmation policy; every proof is still rechecked. Owner history reads at most three vouchers concurrently, and a 202 response must not be presented as completed recovery.
+
 Fallback for very old records: owner provides reserve tx hash; recover event/fields from receipt. UI must explain partial recovery while pagination is incomplete. No background daemon or paid RPC subscription is required for MVP.
 
 ---
@@ -1247,20 +1249,20 @@ Document wrong wallet, low gas, lost QR, lost browser signature, lost owner key,
 
 ### 23.1 MVP done
 
-- [ ] V1 protocol, golden fixture, ABI and contract hash agree.
-- [ ] New vault deployed on chain97; exact source/bytecode/deployment manifest available.
+- [x] V1 protocol, golden fixture, ABI and contract hash agree.
+- [x] New vault deployed on chain97; exact source/bytecode/deployment manifest available.
 - [ ] Owner signs, reserves and prints without signature appearing in reserve calldata.
 - [ ] Actual printed voucher works while owner phone is off and merchant is online.
-- [ ] Correct merchant receives exact MockUSDC; proof links resolve.
-- [ ] Wrong merchant cannot redeem; changed amount/expiry/recipient rejected.
-- [ ] Duplicate claim denied in contract and UI.
-- [ ] Exact expiry boundary and actual expired reclaim proven.
+- [x] Correct merchant receives exact MockUSDC; proof links resolve.
+- [x] Wrong merchant cannot redeem; changed amount/expiry/recipient rejected.
+- [x] Duplicate claim denied in contract and UI.
+- [x] Exact expiry boundary and actual expired reclaim proven.
 - [ ] Pending/reload/replacement/error states cannot cause automatic duplicate transfers.
-- [ ] Signature absent from API/database/URLs/analytics/logs.
+- [x] Signature absent from API/database/URLs/analytics/logs in the reviewed implementation and tested hosted flow.
 - [ ] Existing QRIS sandbox, native invoices and receipts remain usable.
 - [ ] Responsive/print UX reviewed; existing Liber illustrations retained.
-- [ ] Public copy states test tokens, buyer-offline/merchant-online, custody/expiry limits.
-- [ ] README, runbook, demo script and E2E artifact describe current implementation honestly.
+- [x] Public copy states test tokens, buyer-offline/merchant-online, custody/expiry limits.
+- [x] README, runbook, demo script and E2E artifact describe current implementation honestly.
 
 ### 23.2 Hard blockers
 
@@ -1329,14 +1331,18 @@ APP_CHECKOUT: C:/Project_Dave/Liber_bnb/app
 APP_BASELINE: 3f451ec527b98de1da39e158a8c502d0f62638e4
 APP_FIRST_IMPLEMENTATION_HEAD: 33f5316dd109774d9aac20a4ed54230f81e3341e
 APP_BRANCH: codex/ghost-protocol
-CURRENT_MILESTONE: G-021 hosted preview; G-022 physical proof pending
-NEXT_TASK: Verify branch preview API/UI, then physical print/phone-off gate
+APP_VERIFIED_IMPLEMENTATION_HEAD: 710f8afb43d800df36320c1a45acbcf316962aba
+CURRENT_MILESTONE: hosted UI/API proof completed; recovery hardening added; physical/device release gates pending
+NEXT_TASK: CI + hosted recovery verification for final hardening, then physical print/phone-off/device gate
 PROTOCOL_VERSION: ghost-v1 (implemented, shared codec/chain generated)
 GHOST_VAULT_ADDRESS: 0x0837ac35ec54F678ba08912dcfd6166a299FCA31
 GHOST_DEPLOYMENT_BLOCK: 134372464
 GHOST_FEATURE_FLAGS: enabled only for Preview branch codex/ghost-protocol
 DATABASE_MIGRATION: three Ghost tables + three indexes applied to existing Neon sandbox
 E2E_PROOF: app/contracts/deployments/ghost-demo-e2e.json (separate processes; no physical phone-off claim)
+UI_E2E_PROOF: app/contracts/deployments/ghost-ui-e2e.json (buyer page closed; no physical phone-off claim)
+API_EVIDENCE: app/contracts/deployments/ghost-hosted-check.json
+API_PUBLIC_EXCEPTION: only stable liber-bnb-api codex-ghost-protocol branch domain; project auth remains enabled
 PRODUCTION_SCOPE: old main still deployed; promotion gated
 ```
 
@@ -1344,15 +1350,19 @@ PRODUCTION_SCOPE: old main still deployed; promotion gated
 
 - G-001..013, G-015..020: implemented. Shared codec and verifier, golden Solidity/viem fixture, immutable prefunded vault, owner/merchant/recovery pages, auth and durable rate limits are in `app/`.
 - G-014: funded-only QR/print implemented; actual paper readability remains pending.
-- G-019: signed bounded owner-log cursor and paginated history implemented; hosted authenticated sync/recovery still needs preview verification.
+- G-019: signed bounded owner-log cursor and paginated history implemented; five-proof dense-block cap and three-at-a-time history reads added in final hardening. Hosted authenticated sync/history passed; new recovery checks await the next preview deployment.
 - G-020: deployment tx `0x22c1e28a6974bf9b092abff60e9315ce72b4a158e13c60cf4661f7d473080bdf`. Sourcify exact creation/runtime matches recorded in `contracts/verification/LiberGhostVault.sourcify-result.json`. No unverified BscScan badge claim.
 - G-022: actual 5 MockUSDC redemption `0xea11ffb59b93e621f6f08ef221f91303e3c74c4392967e655bd2e6b7ec414b00`; wrong merchant and replay rejected. Actual 2 MockUSDC reclaim `0x0f8b2ecf962ffc1ba6e14aa3a27b407d3fcb4871f39a01c4f7227780f44eceb2`; early reclaim rejected. All require canonical matching event/transfer and 12 confirmations. Buyer and merchant ran as separate processes. Physical printed paper + phone-off footage is NOT yet proven.
-- Initial CI run `36964948722`: frontend 59/59, backend 75/75 on disposable PostgreSQL, Foundry 26/26 including fuzz and three invariants (8,192 calls each). Frontend typecheck/lint/build and backend typecheck/migration passed. Next was updated to pinned 16.3.8 after dependency audit; npm audit returned zero vulnerabilities.
-- Subsequent local frontend suite: 60/60 after recovery split; frontend/backend typechecks passed. New database constraint/concurrent-rate tests and wrong-chain recovery tests await the next CI run. Do not claim their result before it completes.
+- Latest complete CI before final hardening: run `36967253337` at `710f8af`: frontend 61/61, backend 78/78 on disposable PostgreSQL, Foundry 26/26 including fuzz and three invariants (8,192 handler calls). Frontend typecheck/lint/build and backend typecheck/migration passed. Next pinned 16.3.8; prior npm audit returned zero vulnerabilities. Final hardening adds four backend tests; full CI result is pending until recorded below.
+- Final hardening focused recovery/cursor tests: 5/5 passed locally without a database; frontend/backend types passed before the last small error-state/ownership edits. No test suite ran against the shared Neon database.
+- Hosted API passed configuration/CORS, unauthenticated 401, both SIWE roles, wrong-owner 403, concurrent idempotent reservation persistence, signature-field 400, canonical redeem/reclaim public proofs and owner history. SIWE sessions were revoked at the end. No Ghost authorization packet was read or sent by this check.
+- Hosted UI run: buyer `0xde6fBA63bBcD1F2E81a2c498b7880EEbf12Faf64`, merchant `0x6EAdd91fc2FAc8c7110ADac362982FE881A3f1E1`, voucher `0xea0ade9bb3b58bcb01854d3a1ec93f13b86f6a6718ae41cae806bbe957bae860`. Reserve `0xacceb4dd859f8b11616e37f323e9637b00caa4488b65035a95664ec35630e9bd`; redeem `0xc6671085ab00f55cc9a4cdf231060343a785ae917c82302c444b6cdfc3abb91b`. Funded local PNG decoded by merchant; buyer page closed before redeem; exact 5 MockUSDC received; rescanning the same PNG showed “Already redeemed. No new transaction will be sent.” Chain proofs independently rechecked. Browser private keys were never extracted.
+- QR download-event automation did not complete reliably; Save QR button / print dialog, actual paper, actual phone-off, injected MetaMask and real mobile checks remain pending. Browser viewport override did not take effect; desktop screenshots are not mobile evidence. Merchant used a second frontend origin for a separate device wallet; its terminal API sync was not attempted. The separate scripted run proved authenticated terminal sync on the configured stable origin.
 - Frontend/backend Vercel Ghost variables are scoped to `codex/ghost-protocol` Preview only. API HMAC is server-only; Neon credentials are not copied into files or chat. Frontend points to the stable API branch URL; API origin is the stable frontend branch URL.
 - Existing invoice/registry/Midtrans sandbox flows remain available. Old video and deck do not prove Ghost and are pending a separate truthful update.
 - Rollback correction: issuance disabled blocks new handover through the UI but keeps existing-state verification and expired-owner reclaim with valid deployment settings. An immutable vault cannot revoke signed paper or block direct redemption before expiry.
-- G-023..025 remain release gates until hosted UI/auth/proof and responsive checks finish; G-026 runbook/evidence updates in progress. G-027 video/deck and G-028 new production design are outside the current implementation release.
+- User explicitly approved opening the sandbox API. Only the stable API branch domain was added as an Unprotected Domain; project-wide Vercel authentication and other deployments remain protected. Frontend requires the existing Vercel team login.
+- G-023..025 remain production release gates until physical/device/print checks finish. G-026 README/runbook/public evidence updated. G-027 video/deck and G-028 new production design remain separate follow-ups; no mainnet promotion occurred.
 
 Append/update this record when code work starts:
 

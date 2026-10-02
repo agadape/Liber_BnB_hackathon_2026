@@ -1,0 +1,18 @@
+{
+  "scope": "BSC Testnet / hosted sandbox metadata only",
+  "checkedAt": "2026-10-02T05:08:38.523Z",
+  "api": "https://liber-bnb-api-git-codex-ghost-protocol-daves-projects-3628ad99.vercel.app",
+  "origin": "https://liber-bnb-web-git-codex-ghost-protocol-daves-projects-3628ad99.vercel.app",
+  "checks": {
+    "config": true,
+    "cors": true,
+    "authenticationRequired": true,
+    "siwe": true,
+    "ownerIsolation": true,
+    "idempotentConcurrentSync": true,
+    "capabilityFieldsRejected": true,
+    "redeemPublicProof": true,
+    "reclaimPublicProof": true,
+    "ownerHistory": true
+  }
+}

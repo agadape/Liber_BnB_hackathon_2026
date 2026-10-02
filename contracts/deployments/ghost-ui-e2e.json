@@ -1,0 +1,79 @@
+{
+  "scope": "BSC Testnet / hosted browser UI / no cash value",
+  "checkedAt": "2026-10-02T07:31:52.444Z",
+  "vault": "0x0837ac35ec54F678ba08912dcfd6166a299FCA31",
+  "token": "0x2116D4a3f11Aa7059Ad0911ad5C89897CC0BcC97",
+  "voucherId": "0xea0ade9bb3b58bcb01854d3a1ec93f13b86f6a6718ae41cae806bbe957bae860",
+  "transactions": {
+    "reserve": "0xacceb4dd859f8b11616e37f323e9637b00caa4488b65035a95664ec35630e9bd",
+    "redeem": "0xc6671085ab00f55cc9a4cdf231060343a785ae917c82302c444b6cdfc3abb91b"
+  },
+  "proofs": {
+    "reserve": {
+      "voucherId": "0xea0ade9bb3b58bcb01854d3a1ec93f13b86f6a6718ae41cae806bbe957bae860",
+      "action": "reserve",
+      "txHash": "0xacceb4dd859f8b11616e37f323e9637b00caa4488b65035a95664ec35630e9bd",
+      "logIndex": 1,
+      "blockNumber": "134380279",
+      "blockHash": "0x93c6d8e2269be72dcc1e0f8ca7c1cd8bd47ee909ca3da59984fc82f38ab3c433",
+      "blockTimestamp": "1790918082",
+      "confirmations": 18286,
+      "owner": "0xde6fBA63bBcD1F2E81a2c498b7880EEbf12Faf64",
+      "merchant": "0x6EAdd91fc2FAc8c7110ADac362982FE881A3f1E1",
+      "amountRaw": "5000000000000000000",
+      "verified": true,
+      "scope": "reservationProof",
+      "voucher": {
+        "owner": "0xde6fBA63bBcD1F2E81a2c498b7880EEbf12Faf64",
+        "merchant": "0x6EAdd91fc2FAc8c7110ADac362982FE881A3f1E1",
+        "amountRaw": "5000000000000000000",
+        "validBefore": "1790921592",
+        "salt": "0x3643948d4e230643d5037da5ae22df27147e77f8508f9c355fd4f90ea8bb26b7"
+      }
+    },
+    "redeem": {
+      "voucherId": "0xea0ade9bb3b58bcb01854d3a1ec93f13b86f6a6718ae41cae806bbe957bae860",
+      "action": "redeem",
+      "txHash": "0xc6671085ab00f55cc9a4cdf231060343a785ae917c82302c444b6cdfc3abb91b",
+      "logIndex": 2,
+      "blockNumber": "134381667",
+      "blockHash": "0x1adc78ad06063e112700af654a76dc1c2e3290def24f34023b4953374c4601c9",
+      "blockTimestamp": "1790918707",
+      "confirmations": 16898,
+      "owner": "0xde6fBA63bBcD1F2E81a2c498b7880EEbf12Faf64",
+      "merchant": "0x6EAdd91fc2FAc8c7110ADac362982FE881A3f1E1",
+      "amountRaw": "5000000000000000000",
+      "verified": true,
+      "scope": "redemptionProof"
+    }
+  },
+  "state": {
+    "voucherId": "0xea0ade9bb3b58bcb01854d3a1ec93f13b86f6a6718ae41cae806bbe957bae860",
+    "owner": "0xde6fBA63bBcD1F2E81a2c498b7880EEbf12Faf64",
+    "merchant": "0x6EAdd91fc2FAc8c7110ADac362982FE881A3f1E1",
+    "amountRaw": "5000000000000000000",
+    "validBefore": "1790921592",
+    "storageStatus": 2,
+    "effectiveStatus": "redeemed",
+    "checkedBlockNumber": "134398564",
+    "checkedBlockHash": "0x659d8833eb08a34c704cef73b090ba31d65d70bdbce8c248f17b39e6906ab1ba",
+    "checkedBlockTimestamp": "1790926310"
+  },
+  "uiObservations": {
+    "method": "Observed through browser controls; chain receipts independently rechecked by this script",
+    "wallets": "Separate browser origins using device test wallets; browser private keys never extracted",
+    "buyerPageClosedBeforeRedeem": true,
+    "fundedQrDisplayed": true,
+    "ownerReservationHistorySynced": true,
+    "merchantLocalPngDecoded": true,
+    "paymentConfirmedDisplayed": true,
+    "samePngRescan": "Already redeemed. No new transaction will be sent."
+  },
+  "pending": [
+    "Physical paper print and scan",
+    "Actual buyer phone-off footage",
+    "Save QR download button and print dialog verification",
+    "Injected MetaMask / real mobile device checks"
+  ],
+  "metadataSync": "Owner reservation synced through SIWE. This run used a second frontend origin for the merchant; its terminal API sync was not attempted. See ghost-hosted-check.json for separately verified authenticated terminal proof sync."
+}

@@ -70,6 +70,10 @@ Deployment order: backend additive schema → disabled backend preview → disab
 
 202 means confirmations pending; it must never produce a paid state. Terminal proof metadata requires reservation sync first. Metadata can fail without reversing a confirmed on-chain transfer. Store no voucher signature, raw QR, private key or raw wallet request. Do not log viem exception objects from signing/redeem; their arguments can contain the signature.
 
+Recovery scans at most 1,000 blocks and verifies at most five events per request. An authenticated block/log-index continuation handles dense blocks without skipping a voucher. The initial scan upper bound leaves 12 confirmations; every recovered receipt is independently checked and must belong to the authenticated owner. Owner history has a 20-row page and at most three concurrent voucher reads.
+
+The hosted Ghost API branch domain is public through one Vercel Unprotected Domain exception. Project-wide Vercel authentication remains enabled. SIWE still protects owner and merchant writes/history. The frontend preview remains behind team login. Neither feature flags nor this exception promote the branch to production.
+
 ## Transaction recovery
 
 - Persist public transaction hashes immediately after broadcast. Unknown result means check the saved hash, never automatically resend.
@@ -96,6 +100,10 @@ node --import tsx scripts/ghost-e2e.mts reclaim
 ```
 
 Public report must distinguish these automated testnet proofs from a **physical phone-off test**. For that final test: issue through UI, export only after funding checks, print, turn the buyer phone off, scan with the online merchant, approve once, show exact confirmed transfer, scan the same paper again, then show expiry/reclaim on a second voucher. Record English narration with truthful labels. The previous video is not evidence for Ghost.
+
+`contracts/deployments/ghost-ui-e2e.json` records a separate hosted UI run using two browser-origin device wallets. The buyer page was closed before merchant redemption, 5 MockUSDC transferred and the same PNG was rejected on a second scan. `frontend/scripts/ghost-ui-check.mts` rechecks only public receipts. This is not physical phone-off or printed-paper evidence. The Save QR download event and mobile viewport could not be verified through the automation; real device/print checks remain pending.
+
+`frontend/scripts/ghost-hosted-check.mts` uses only the project's fixed sandbox origins, dedicated local test-wallet keys and SIWE messages. It never reads the Ghost handover packet. It checks auth, concurrent/idempotent metadata, public canonical proofs and bounded owner recovery, then revokes its sessions. `ghost-hosted-check.json` contains no session tokens or signatures.
 
 ## Release blockers
 

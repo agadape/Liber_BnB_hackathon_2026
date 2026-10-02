@@ -9,6 +9,7 @@ import {getGhost,proveGhost,saveGhostProof,ghostRpc} from "../ghost/service.js";
 import {ghostLimit,decodeCursor,encodeCursor,type RecoveryCursor} from "../ghost/limits.js";
 import {ghostAbi} from "../ghost/ghost-abi.js";
 import {getPool} from "../db/pool.js";
+import {recoveryPage} from "../ghost/recovery.js";
 import type {Context} from "hono";
 function failure(c:Context,e:unknown) {
   if(e instanceof GhostChainError) {
@@ -66,7 +67,8 @@ export function createGhostRoute(deps={config:ghostConfig,read:getGhost,prove:pr
       if(!await deps.limit("private_proof",owner))return c.json({error:"Try again in a minute",code:"RATE_LIMITED"},429);
       const before=c.req.query("before")??"0x"+"f".repeat(64);if(!hashPattern.test(before))return c.json({error:"Invalid list cursor"},400);
       const result=await getPool().query("SELECT voucher_id,reserve_tx_hash FROM ghost_vouchers WHERE owner_address=$1 AND chain_id=97 AND vault_address=$2 AND voucher_id<$3 ORDER BY voucher_id DESC LIMIT 20",[owner,config.vaultAddress.toLowerCase(),before.toLowerCase()]);
-      const items=await Promise.all(result.rows.map(async(row:{voucher_id:Hash;reserve_tx_hash:Hash})=>({...await deps.read(row.voucher_id),reserveTxHash:row.reserve_tx_hash})));
+      const items=[];
+      for(let i=0;i<result.rows.length;i+=3)items.push(...await Promise.all(result.rows.slice(i,i+3).map(async(row:{voucher_id:Hash;reserve_tx_hash:Hash})=>({...await deps.read(row.voucher_id),reserveTxHash:row.reserve_tx_hash}))));
       return c.json({items,next:items.length===20?result.rows.at(-1)?.voucher_id:null});
     }catch(e){return failure(c,e);}
   });
@@ -76,23 +78,26 @@ export function createGhostRoute(deps={config:ghostConfig,read:getGhost,prove:pr
       const config=deps.config();requireDeployedConfig(config);const owner=getAddress(c.get("walletAddress"));
       if(!await deps.limit("owner_recovery",owner))return c.json({error:"Recovery rate limit; retry next minute",code:"RATE_LIMITED"},429);
       const rpc=ghostRpc(),head=await rpc.getBlockNumber();
-      let cursor:RecoveryCursor={v:1,chain:97,vault:config.vaultAddress.toLowerCase(),owner:owner.toLowerCase(),next:config.deploymentBlock,upper:head.toString(),expires:Math.floor(Date.now()/1000)+900};
+      const confirmedHead=head>=BigInt(config.confirmationsRequired-1)?head-BigInt(config.confirmationsRequired-1):0n;
+      if(!body.cursor && confirmedHead<BigInt(config.deploymentBlock))return c.json({items:[],next:null});
+      let cursor:RecoveryCursor={v:1,chain:97,vault:config.vaultAddress.toLowerCase(),owner:owner.toLowerCase(),next:config.deploymentBlock,upper:confirmedHead.toString(),expires:Math.floor(Date.now()/1000)+900};
       if(body.cursor) { try {cursor=decodeCursor(body.cursor);}catch{return c.json({error:"Invalid or expired recovery cursor"},400);} }
       if(cursor.owner!==owner.toLowerCase() || cursor.vault!==config.vaultAddress.toLowerCase() || BigInt(cursor.next)<BigInt(config.deploymentBlock) || BigInt(cursor.upper)>head || BigInt(cursor.next)>BigInt(cursor.upper)+1n)return c.json({error:"Recovery cursor does not match this owner or deployment"},400);
       const from=BigInt(cursor.next),upper=BigInt(cursor.upper);
       if(from>upper)return c.json({items:[],next:null});
-      let range=1000n,logs;
+      let range=1000n,logs,to:bigint;
       for(;;) {
-        const to=from+range-1n<upper?from+range-1n:upper;
+        to=from+range-1n<upper?from+range-1n:upper;
         try {logs=await rpc.getContractEvents({address:config.vaultAddress,abi:ghostAbi,eventName:"VoucherReserved",args:{owner},fromBlock:from,toBlock:to,strict:true});break;}
         catch(e){if(range<=32n)throw e;range/=2n;}
       }
-      const items=[];
-      for(const log of logs) {
-        const proof=await verifyGhostProof(rpc,config,log.args.voucherId,log.transactionHash!,"reserve");await deps.save(proof);items.push(proof);
+      const page=recoveryPage(logs,cursor,to),items=[];
+      for(const log of page.items) {
+        const proof=await verifyGhostProof(rpc,config,log.args.voucherId,log.transactionHash!,"reserve");
+        if(getAddress(proof.owner)!==owner)throw new GhostChainError("PROOF_MISMATCH","Recovered event belongs to another owner.");
+        await deps.save(proof);items.push(proof);
       }
-      const nextBlock=from+range<upper+1n?from+range:upper+1n;
-      return c.json({items,next:nextBlock<=upper?encodeCursor({...cursor,next:nextBlock.toString()}):null});
+      return c.json({items,next:page.next?encodeCursor(page.next):null});
     }catch(e){return failure(c,e);}
   });
   return route;
