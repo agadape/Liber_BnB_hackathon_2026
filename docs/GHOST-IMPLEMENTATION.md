@@ -1334,7 +1334,7 @@ APP_BASELINE: 3f451ec527b98de1da39e158a8c502d0f62638e4
 APP_FIRST_IMPLEMENTATION_HEAD: 33f5316dd109774d9aac20a4ed54230f81e3341e
 APP_BRANCH: main
 APP_VERIFIED_IMPLEMENTATION_HEAD: 8df8cadbc5bffed5941674b8048404bd82d18d50
-CURRENT_MILESTONE: user-requested main publication and primary Ghost API activation completed; all 12 primary hosted checks passed
+CURRENT_MILESTONE: primary Ghost API active with 12 hosted checks passed; compact Ghost frontend refresh implemented and locally verified
 NEXT_TASK: two-device image-handover/phone-off test using primary URLs; saved-image, injected-wallet and printed-paper verification remain open
 REVIEW: https://github.com/agadape/Liber_BnB_hackathon_2026/pull/1 (merged 2026-10-02T11:51:03Z at user request)
 CODE_CI: https://github.com/agadape/Liber_BnB_hackathon_2026/actions/runs/37003284691 (success on main; frontend/backend/contracts/live-smoke and both Vercel deployments passed)
@@ -1376,6 +1376,14 @@ PRODUCTION_SCOPE: Ghost code published on primary web/API at explicit user reque
 - G-023..025 remain production release gates until physical/device/print checks finish. G-026 README/runbook/public evidence updated. G-027 video/deck and G-028 new production design remain separate follow-ups; no mainnet promotion occurred.
 
 Append/update this record when code work starts:
+
+### Session 2026-10-02 Ghost frontend refresh
+- User feedback: “fe nya jelek banget, perbaiki!” Scope: Ghost overview and shared issue/redeem/history/voucher/proof workspace. Retained existing illustrated merchant artwork and warm paper / green Liber identity.
+- Rebuilt `/ghost` as one integrated hero with a single H1, clear buyer/merchant actions, a recorded 5 MockUSDC transaction link, concise three-step explanation and expandable limits. No invented payment, phone-off or live-finality claim is used as a visual decoration.
+- Shared shell now has current-page navigation and compact mobile tabs; duplicate workspace branding is omitted at mobile widths. Transaction pages have shorter headings, wallet onboarding labels, bordered inputs, visible feedback, and a shared forest-green illustration panel. History has an illustrated disconnected state instead of an empty second column.
+- Extracted Ghost styles into `frontend/src/app/ghost.css`, imported by globals. Other product/landing selectors retained. Existing funded-ticket QR generation, export checks, 60-second expiry suppression and print dimensions/white QR background retained. No wallet, signature, chain, API, auth, reservation, redeem or reclaim logic changed.
+- Local verification: frontend typecheck, lint (zero errors, three existing image warnings) and production build passed. Browser checks at 320 and 390 px confirmed no horizontal document overflow; connected device test wallet exposed buyer inputs and merchant scan/image controls. Empty merchant address was rejected before review. Overview, issue, merchant and history navigation states were observed. No token transfer, camera permission or active QR upload was performed.
+- These are browser viewport checks, not physical mobile/MetaMask/print tests. Existing two-device phone-off and export gates remain pending. Publish this UI through the already-authorized main hosting flow and confirm its CI/deployment before reporting it live.
 
 ### Session 2026-10-02 primary Ghost API activation
 - User instruction: “gasssssss API ghost nyalain”, resolving the specific pending approval for Production HMAC setup and API activation. Generated a fresh 32-byte random hex HMAC in memory and saved it as Secret / Production only in Vercel `liber-bnb-api`. No wallet key, provider credential or database migration was changed; no new token transaction was sent.
