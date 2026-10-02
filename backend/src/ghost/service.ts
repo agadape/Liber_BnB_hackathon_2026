@@ -5,6 +5,9 @@ import { GhostChainError, readGhostState, verifyGhostProof, requireDeployedConfi
 import { getPool } from "../db/pool.js";
 import type { GhostVoucher } from "./codec.js";
 export const ghostRpc=()=>createPublicClient({chain:bscTestnet,transport:http(process.env.BSC_TESTNET_RPC_URL||bscTestnet.rpcUrls.default.http[0],{timeout:12_000,retryCount:1})});
+// Discovery only: public dataseed RPCs may reject eth_getLogs even for small ranges.
+// Every discovered event is verified against the primary RPC before persistence.
+export const ghostRecoveryRpc=()=>createPublicClient({chain:bscTestnet,transport:http(process.env.GHOST_RECOVERY_RPC_URL||"https://bsc-testnet-rpc.publicnode.com",{timeout:8000,retryCount:0})});
 export async function getGhost(id:Hash) {
   const config=ghostConfig();requireDeployedConfig(config);
   const state=await readGhostState(ghostRpc(),config,id);

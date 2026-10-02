@@ -44,7 +44,9 @@ try {
     result.checks[action+"PublicProof"]=true;
   }
   const history=await request("/ghost/me/vouchers","GET",undefined,owner);check(history.status===200&&history.data.items.length>=2,"owner verified history");result.checks.ownerHistory=true;
-  const recovered=await request("/ghost/me/recover","POST",{},owner);check(recovered.status===200&&Array.isArray(recovered.data.items)&&recovered.data.items.length<=5,"bounded owner recovery");
+  const recovered=await request("/ghost/me/recover","POST",{},owner);
+  console.log(JSON.stringify({recoveryStatus:recovered.status,code:recovered.data.code,error:recovered.data.error,itemCount:recovered.data.items?.length}));
+  check(recovered.status===200&&Array.isArray(recovered.data.items)&&recovered.data.items.length<=5,"bounded owner recovery");
   check(recovered.data.items.every((p:{owner:string;verified:boolean;confirmations:number})=>p.owner===report.owner&&p.verified&&p.confirmations>=12),"recovered owner canonical proofs");result.checks.boundedOwnerRecovery=true;
   if(recovered.data.next){const foreign=await request("/ghost/me/recover","POST",{cursor:recovered.data.next},merchant);check(foreign.status===400,"recovery cursor owner binding");result.checks.recoveryCursorIsolation=true;}
   await writeFile(resolve(localDir,"ghost-hosted-check.json"),JSON.stringify(result,null,2)+"\n");console.log(JSON.stringify(result,null,2));

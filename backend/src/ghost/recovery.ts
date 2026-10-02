@@ -1,8 +1,14 @@
 import type {RecoveryCursor} from "./limits.js";
+import {GhostChainError,type GhostProof} from "./chain.js";
 
 // A block-range bound alone does not bound verification work in a dense block.
 export const RECOVERY_PROOFS_PER_PAGE = 5;
 type PositionedLog = {blockNumber:bigint|null;logIndex:number|null};
+type IndexedReserveLog = PositionedLog & {blockHash:string|null;transactionHash:string|null;removed?:boolean;args:{voucherId:string}};
+export function assertRecoveryEvent(log:IndexedReserveLog,proof:GhostProof,owner:string):void{
+  if(proof.action!=="reserve"||proof.owner.toLowerCase()!==owner.toLowerCase()||log.removed||proof.voucherId.toLowerCase()!==log.args.voucherId.toLowerCase()||proof.txHash.toLowerCase()!==log.transactionHash?.toLowerCase()||proof.blockNumber!==log.blockNumber?.toString()||proof.blockHash.toLowerCase()!==log.blockHash?.toLowerCase()||proof.logIndex!==log.logIndex)
+    throw new GhostChainError("PROOF_MISMATCH","History index event does not match this owner's canonical reservation receipt.");
+}
 export function recoveryPage<T extends PositionedLog>(logs:readonly T[],cursor:RecoveryCursor,to:bigint){
   const from=BigInt(cursor.next),upper=BigInt(cursor.upper);
   if(to<from||to>upper||to-from>=1000n)throw Error("Invalid recovery range");

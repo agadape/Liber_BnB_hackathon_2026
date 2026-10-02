@@ -72,6 +72,8 @@ Deployment order: backend additive schema → disabled backend preview → disab
 
 Recovery scans at most 1,000 blocks and verifies at most five events per request. An authenticated block/log-index continuation handles dense blocks without skipping a voucher. The initial scan upper bound leaves 12 confirmations; every recovered receipt is independently checked and must belong to the authenticated owner. Owner history has a 20-row page and at most three concurrent voucher reads.
 
+The default dataseed was observed rejecting `eth_getLogs` with `-32005`, even over 31 blocks. `GHOST_RECOVERY_RPC_URL` defaults to the [PublicNode testnet endpoint](https://bsc.publicnode.com/?testnet), `https://bsc-testnet-rpc.publicnode.com`, for event discovery only. Index network and head are checked; every returned owner/ID/transaction/block/log position is verified against the original primary RPC. The index cannot establish a token payment, and unavailable/omitted index data may make history incomplete. Recovering from the reserve transaction hash does not require this index. No paid RPC account was created.
+
 The hosted Ghost API branch domain is public through one Vercel Unprotected Domain exception. Project-wide Vercel authentication remains enabled. SIWE still protects owner and merchant writes/history. The frontend preview remains behind team login. Neither feature flags nor this exception promote the branch to production.
 
 ## Transaction recovery

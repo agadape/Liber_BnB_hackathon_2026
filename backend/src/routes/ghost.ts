@@ -5,11 +5,11 @@ import {requireWallet,type AuthEnv} from "../auth/auth.js";
 import {ghostConfig} from "../ghost/config.js";
 import {GhostChainError,requireDeployedConfig,verifyGhostProof,type GhostAction} from "../ghost/chain.js";
 import {hashPattern,deserializeVoucher,voucherId,validateVoucher,type GhostVoucher} from "../ghost/codec.js";
-import {getGhost,proveGhost,saveGhostProof,ghostRpc} from "../ghost/service.js";
+import {getGhost,proveGhost,saveGhostProof,ghostRpc,ghostRecoveryRpc} from "../ghost/service.js";
 import {ghostLimit,decodeCursor,encodeCursor,type RecoveryCursor} from "../ghost/limits.js";
 import {ghostAbi} from "../ghost/ghost-abi.js";
 import {getPool} from "../db/pool.js";
-import {recoveryPage} from "../ghost/recovery.js";
+import {recoveryPage,assertRecoveryEvent} from "../ghost/recovery.js";
 import type {Context} from "hono";
 function failure(c:Context,e:unknown) {
   if(e instanceof GhostChainError) {
@@ -85,16 +85,19 @@ export function createGhostRoute(deps={config:ghostConfig,read:getGhost,prove:pr
       if(cursor.owner!==owner.toLowerCase() || cursor.vault!==config.vaultAddress.toLowerCase() || BigInt(cursor.next)<BigInt(config.deploymentBlock) || BigInt(cursor.upper)>head || BigInt(cursor.next)>BigInt(cursor.upper)+1n)return c.json({error:"Recovery cursor does not match this owner or deployment"},400);
       const from=BigInt(cursor.next),upper=BigInt(cursor.upper);
       if(from>upper)return c.json({items:[],next:null});
+      const index=ghostRecoveryRpc();
+      const [indexChain,indexHead]=await Promise.all([index.getChainId(),index.getBlockNumber()]);
+      if(indexChain!==97||indexHead<upper)throw new GhostChainError("RPC_UNAVAILABLE","History index is on the wrong network or still syncing. Recover with the reserve hash instead.");
       let range=1000n,logs,to:bigint;
       for(;;) {
         to=from+range-1n<upper?from+range-1n:upper;
-        try {logs=await rpc.getContractEvents({address:config.vaultAddress,abi:ghostAbi,eventName:"VoucherReserved",args:{owner},fromBlock:from,toBlock:to,strict:true});break;}
+        try {logs=await index.getContractEvents({address:config.vaultAddress,abi:ghostAbi,eventName:"VoucherReserved",args:{owner},fromBlock:from,toBlock:to,strict:true});break;}
         catch(e){if(range<=32n)throw e;range/=2n;}
       }
       const page=recoveryPage(logs,cursor,to),items=[];
       for(const log of page.items) {
         const proof=await verifyGhostProof(rpc,config,log.args.voucherId,log.transactionHash!,"reserve");
-        if(getAddress(proof.owner)!==owner)throw new GhostChainError("PROOF_MISMATCH","Recovered event belongs to another owner.");
+        assertRecoveryEvent(log,proof,owner);
         await deps.save(proof);items.push(proof);
       }
       return c.json({items,next:page.next?encodeCursor(page.next):null});
