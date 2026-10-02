@@ -1,4 +1,17 @@
-# Liber
+# liber:Ghost Protocol
+
+**Your phone can die. Your permission doesn't have to.**
+
+Ghost adds a prefunded, merchant-bound paper payment authorization to Liber. A buyer prepares online, signs an EIP-712 voucher and reserves MockUSDC. The online merchant scans the paper and redeems once using their own wallet. Unused funds can be reclaimed by the owner after expiry. Reserved tokens are held in the vault until redemption or reclaim.
+
+**BSC Testnet only. MockUSDC has no monetary value.** Buyer offline does not mean merchant offline. Handing over the QR lets its named merchant claim immediately; Ghost does not guarantee delivery, pay QRIS, convert crypto to rupiah or establish production regulatory compliance.
+
+- [Ghost vault on BscScan](https://testnet.bscscan.com/address/0x0837ac35ec54F678ba08912dcfd6166a299FCA31)
+- [Deployment identity](contracts/deployments/liber-ghost-vault.bsc-testnet.json) · [technical runbook](docs/GHOST-RUNBOOK.md)
+- Routes: `/ghost`, `/ghost/create`, `/ghost/merchant`, `/ghost/vouchers`, `/ghost/receipt?id=…`.
+- Feature flags default **off** until release verification passes. The old public video below documents the previous QRIS/invoice scope.
+
+## Existing Liber flows
 
 **A clear payment. A visible receipt.**
 

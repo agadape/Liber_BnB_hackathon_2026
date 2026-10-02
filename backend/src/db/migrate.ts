@@ -8,6 +8,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 export async function migrate() {
   const sql = readFileSync(join(__dirname, "schema.sql"), "utf-8");
   await getPool().query(sql);
+  const ghostSql = readFileSync(join(__dirname, "ghost-migration.sql"), "utf-8");
+  await getPool().query(ghostSql);
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

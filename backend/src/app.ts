@@ -11,6 +11,7 @@ import { createCopilotRoute } from "./routes/copilot.js";
 import { createInvoicesRoute } from "./routes/invoices.js";
 import { budgetedExplanation } from "./ai/copilot.js";
 import { createPilotRoute } from "./routes/pilot.js";
+import { createGhostRoute } from "./routes/ghost.js";
 
 const LOCALHOST_FALLBACK = "http://localhost:3000";
 
@@ -57,6 +58,7 @@ export function createApp() {
   app.route("/", createCopilotRoute(budgetedExplanation));
   app.route("/", createInvoicesRoute());
   app.route("/", createPilotRoute());
+  app.route("/", createGhostRoute());
   return app;
 }
 

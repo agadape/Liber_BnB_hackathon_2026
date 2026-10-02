@@ -3,7 +3,8 @@
 .DS_Store
 
 # internal planning docs, not part of the shipped project
-docs/
+docs/*
+!docs/GHOST-*.md
 BRIDGE-PATHS.md
 LIBER-CONCEPT.md
 RESEARCH-QRIS-RAILS.md

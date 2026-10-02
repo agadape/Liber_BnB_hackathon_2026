@@ -1,6 +1,6 @@
 {
-  "name": "Liber",
-  "short_name": "Liber",
+  "name": "liber:Ghost Protocol",
+  "short_name": "liber:Ghost",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#063D2C",

@@ -6,7 +6,7 @@ import {invoiceAbi} from "./invoice-abi.js";
 const address="0x0000000000000000000000000000000000000001" as Address;
 test("explicit device-wallet selection replaces external mode and clears its session",async()=>{
   const data=new Map<string,string>([["liber:wallet:mode","external"],["liber:wallet:publicKey",address],["liber:wallet:secretKey","test-device-key"]]);let cleared=false;
-  Object.defineProperty(globalThis,"window",{configurable:true,value:{localStorage:{getItem:(k:string)=>data.get(k)??null,setItem:(k:string,v:string)=>data.set(k,v)},sessionStorage:{removeItem:()=>{cleared=true;}}}});
+  Object.defineProperty(globalThis,"window",{configurable:true,value:{dispatchEvent:()=>true,localStorage:{getItem:(k:string)=>data.get(k)??null,setItem:(k:string,v:string)=>data.set(k,v)},sessionStorage:{length:0,removeItem:()=>{cleared=true;}}}});
   const wallet=await selectWallet(false);assert.equal(wallet.mode,"local");assert.equal(wallet.publicKey,address);assert.equal(cleared,true);assert.equal(data.get("liber:wallet:mode"),"local");
 });
 test("invoice draft locks amount and rejects invalid input",()=>{

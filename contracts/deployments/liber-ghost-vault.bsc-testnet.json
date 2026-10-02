@@ -1,0 +1,35 @@
+{
+  "status": "confirmed",
+  "productName": "liber:Ghost Protocol",
+  "contractName": "LiberGhostVault",
+  "chainId": 97,
+  "network": "BSC Testnet",
+  "vaultAddress": "0x0837ac35ec54F678ba08912dcfd6166a299FCA31",
+  "tokenAddress": "0x2116D4a3f11Aa7059Ad0911ad5C89897CC0BcC97",
+  "tokenDecimals": 18,
+  "deployer": "0x80a92Cac1a63799170af13d17313b45EB77661e5",
+  "txHash": "0x22c1e28a6974bf9b092abff60e9315ce72b4a158e13c60cf4661f7d473080bdf",
+  "deploymentBlock": "134372464",
+  "blockHash": "0x693733c7a2380d156c971e0f754a9c39fa09105ed0a48a5fd29ff3d26bb6e12c",
+  "confirmationsRequired": 12,
+  "domain": {
+    "name": "LiberGhost",
+    "version": "1",
+    "chainId": 97,
+    "verifyingContract": "0x0837ac35ec54F678ba08912dcfd6166a299FCA31"
+  },
+  "compiler": "0.8.24+commit.e11b9ed9",
+  "optimizer": {
+    "enabled": true,
+    "runs": 200
+  },
+  "evmVersion": "paris",
+  "constructorArgs": "0x0000000000000000000000002116d4a3f11aa7059ad0911ad5c89897cc0bcc97",
+  "runtimeCodeHash": "0xa904e42cb1969ada8dea21cabc274629401ff763e1fa6cf903b35e557c93d8c4",
+  "sourceSha256": "3989eee91689eadc3f34956d01c518057cec303bc162e58239b2e09ddd5c2050",
+  "artifactSha256": "589f98917475e35465e5f7ed47b9b1d3bc586bc0af06e5240e7d3f97587125f0",
+  "sourceVerification": "verified on Sourcify",
+  "confirmedAt": "2026-10-02T04:16:12.865Z",
+  "sourceVerificationJob": "b1729344-81e4-46fd-a985-da613e843b3a",
+  "sourceVerificationUrl": "https://repo.sourcify.dev/97/0x0837ac35ec54F678ba08912dcfd6166a299FCA31"
+}
