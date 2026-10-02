@@ -2,6 +2,7 @@ import { getAddress } from "viem";
 import { createSiweMessage } from "viem/siwe";
 import { CHAIN } from "./chain";
 import { getActiveWallet, signActiveWallet, type ActiveWallet } from "./wallet/activeWallet";
+import { clearGhostSignatures } from "./ghost/storage";
 
 const SESSION_KEY = "liber:apiSession";
 const STATEMENT = "Sign in to Liber. This does not authorize a transfer or grant access to your funds.";
@@ -23,7 +24,11 @@ export function challengeMessage(challenge: Challenge, walletAddress: string, or
     expirationTime: new Date(expires), statement: STATEMENT });
 }
 
-export function clearApiSession() { generation++; pending = undefined; window.sessionStorage.removeItem(SESSION_KEY); }
+export function clearApiSession() {
+  generation++; pending = undefined;
+  window.sessionStorage.removeItem(SESSION_KEY); clearGhostSignatures(window.sessionStorage);
+  window.dispatchEvent(new Event("liber:ghost-clear-sensitive"));
+}
 
 export async function authenticateWallet(walletOverride?: ActiveWallet): Promise<Session> {
   const wallet = walletOverride ?? await getActiveWallet();

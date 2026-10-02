@@ -1,0 +1,116 @@
+{
+  "scope": "BSC Testnet / MockUSDC only",
+  "vault": "0x0837ac35ec54F678ba08912dcfd6166a299FCA31",
+  "owner": "0x9084d67cB70d618d63D54Ea2a5cab8C3D977c4d4",
+  "merchant": "0x9B00334f8fb61F57071a2AaEB4E76E4a5726f37B",
+  "transactions": {
+    "gas_owner": "0xb0ed27a52b5818ae0649953d3112fd739d2eb73b86e1ac52e5ebdca3b6d33c9d",
+    "gas_merchant": "0x70ad3ea5c414d08bb77e28905dad527dad6f2e62475f2f7bbb939f7209e6310a",
+    "faucet": "0xe9538f182abc9c23fa9cbe4fd7c7c1019ec8b92a05abd5b811ec300eae47c2d7",
+    "approval": "0xa4ed32ee500014ad0b0ca978562ce5e4ae7f2af6c21a64fe30323e8d2c9e1000",
+    "reserve_payment": "0xd5b0fe15a5ed08413333cee2f433a82ffc3129054951f0f7f88e20993b379f23",
+    "reserve_expiry": "0x6e6080f98cabaffead77143c1c339927e4f6faeb27c61fafac4b5bed527a8629",
+    "redeem": "0xea11ffb59b93e621f6f08ef221f91303e3c74c4392967e655bd2e6b7ec414b00",
+    "reclaim": "0x0f8b2ecf962ffc1ba6e14aa3a27b407d3fcb4871f39a01c4f7227780f44eceb2"
+  },
+  "vouchers": {
+    "payment": {
+      "owner": "0x9084d67cB70d618d63D54Ea2a5cab8C3D977c4d4",
+      "merchant": "0x9B00334f8fb61F57071a2AaEB4E76E4a5726f37B",
+      "amountRaw": "5000000000000000000",
+      "validBefore": "1790918441",
+      "salt": "0x31dd002dbe758d40917182bec054f1de9c5ac6d848ba1414d005ef1870e09f8f"
+    },
+    "expiry": {
+      "owner": "0x9084d67cB70d618d63D54Ea2a5cab8C3D977c4d4",
+      "merchant": "0x9B00334f8fb61F57071a2AaEB4E76E4a5726f37B",
+      "amountRaw": "2000000000000000000",
+      "validBefore": "1790915209",
+      "salt": "0x9d204b2349e47f7eecac08fdc76fcd438b06752274d55bad0423e74d3eb96242"
+    }
+  },
+  "proofs": {
+    "reserve_payment": {
+      "voucherId": "0xdfad2e816fba512fdda912ced241d9464c3f1358c16427fcfd7ac3fac2067924",
+      "action": "reserve",
+      "txHash": "0xd5b0fe15a5ed08413333cee2f433a82ffc3129054951f0f7f88e20993b379f23",
+      "logIndex": 1,
+      "blockNumber": "134373080",
+      "blockHash": "0xa824728dd221a30a3ef6a68d08a86267e8375f466dcbcc528bf7539e8209ff9f",
+      "blockTimestamp": "1790914843",
+      "confirmations": 16,
+      "owner": "0x9084d67cB70d618d63D54Ea2a5cab8C3D977c4d4",
+      "merchant": "0x9B00334f8fb61F57071a2AaEB4E76E4a5726f37B",
+      "amountRaw": "5000000000000000000",
+      "verified": true,
+      "scope": "reservationProof",
+      "voucher": {
+        "owner": "0x9084d67cB70d618d63D54Ea2a5cab8C3D977c4d4",
+        "merchant": "0x9B00334f8fb61F57071a2AaEB4E76E4a5726f37B",
+        "amountRaw": "5000000000000000000",
+        "validBefore": "1790918441",
+        "salt": "0x31dd002dbe758d40917182bec054f1de9c5ac6d848ba1414d005ef1870e09f8f"
+      }
+    },
+    "reserve_expiry": {
+      "voucherId": "0x5f04a6af2b67a0519ed123946b3b5834d5648974ea23edfd8c70fbf2c0a567fb",
+      "action": "reserve",
+      "txHash": "0x6e6080f98cabaffead77143c1c339927e4f6faeb27c61fafac4b5bed527a8629",
+      "logIndex": 59,
+      "blockNumber": "134373102",
+      "blockHash": "0x5493547cb1875119644f2a0520643a97cd264205ac3d480fe914ed1c2affcdd4",
+      "blockTimestamp": "1790914852",
+      "confirmations": 15,
+      "owner": "0x9084d67cB70d618d63D54Ea2a5cab8C3D977c4d4",
+      "merchant": "0x9B00334f8fb61F57071a2AaEB4E76E4a5726f37B",
+      "amountRaw": "2000000000000000000",
+      "verified": true,
+      "scope": "reservationProof",
+      "voucher": {
+        "owner": "0x9084d67cB70d618d63D54Ea2a5cab8C3D977c4d4",
+        "merchant": "0x9B00334f8fb61F57071a2AaEB4E76E4a5726f37B",
+        "amountRaw": "2000000000000000000",
+        "validBefore": "1790915209",
+        "salt": "0x9d204b2349e47f7eecac08fdc76fcd438b06752274d55bad0423e74d3eb96242"
+      }
+    },
+    "redeem": {
+      "voucherId": "0xdfad2e816fba512fdda912ced241d9464c3f1358c16427fcfd7ac3fac2067924",
+      "action": "redeem",
+      "txHash": "0xea11ffb59b93e621f6f08ef221f91303e3c74c4392967e655bd2e6b7ec414b00",
+      "logIndex": 1,
+      "blockNumber": "134373193",
+      "blockHash": "0x904d0347d5688583d68368f219f2feded3a18b7064e725a7479c7b383023e1a5",
+      "blockTimestamp": "1790914893",
+      "confirmations": 17,
+      "owner": "0x9084d67cB70d618d63D54Ea2a5cab8C3D977c4d4",
+      "merchant": "0x9B00334f8fb61F57071a2AaEB4E76E4a5726f37B",
+      "amountRaw": "5000000000000000000",
+      "verified": true,
+      "scope": "redemptionProof"
+    },
+    "reclaim": {
+      "voucherId": "0x5f04a6af2b67a0519ed123946b3b5834d5648974ea23edfd8c70fbf2c0a567fb",
+      "action": "reclaim",
+      "txHash": "0x0f8b2ecf962ffc1ba6e14aa3a27b407d3fcb4871f39a01c4f7227780f44eceb2",
+      "logIndex": 1,
+      "blockNumber": "134373974",
+      "blockHash": "0x108cd55de5a491e8c68e9623c8bfcb51c8132f75bba5c56605046238bf8391be",
+      "blockTimestamp": "1790915245",
+      "confirmations": 18,
+      "owner": "0x9084d67cB70d618d63D54Ea2a5cab8C3D977c4d4",
+      "merchant": "0x9B00334f8fb61F57071a2AaEB4E76E4a5726f37B",
+      "amountRaw": "2000000000000000000",
+      "verified": true,
+      "scope": "reclaimProof"
+    }
+  },
+  "checks": {
+    "earlyReclaimRejected": true,
+    "wrongMerchantRejected": true,
+    "exactMerchantTransfer": true,
+    "replayRejected": true,
+    "expiredOwnerReclaim": true
+  },
+  "physicalPhoneOffTest": "not performed; separate buyer and merchant processes only"
+}

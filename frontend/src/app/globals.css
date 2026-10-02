@@ -1,5 +1,27 @@
 @import "tailwindcss";
 
+/* Ghost Protocol inherits Liber's printed-paper visual identity. */
+.ghost-topline{display:flex;justify-content:space-between;gap:20px;margin-bottom:32px;font-size:12px;font-weight:600;color:#0b6b4e}
+.ghost-topline nav{display:flex;gap:24px;flex-wrap:wrap}.ghost-topline a{min-height:36px;display:inline-flex;align-items:center}
+.ghost-environment{font-size:11px;color:#536158;margin-top:14px}.ghost-columns{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:start}
+.ghost-stack{display:flex;flex-direction:column;gap:18px}.ghost-stack h2{font-size:17px;font-weight:600}.ghost-stack label{font-size:13px;font-weight:500;display:block}
+.ghost-stack :is(input,select,textarea){display:block;width:100%;padding:13px 14px;margin-top:9px;background:#f5f3e9;line-height:1.6}.ghost-stack textarea{resize:vertical}
+.ghost-muted,.ghost-export-actions p{font-size:12px;line-height:1.75;color:#536158}.ghost-address{font-family:monospace;font-size:11px;line-height:1.8;overflow-wrap:anywhere}
+.ghost-amount{font-family:var(--font-display);font-size:46px;line-height:1.15}.ghost-amount small{display:block;font-family:var(--font-body);font-size:12px;color:#536158;margin-top:8px}
+.ghost-review{display:grid;grid-template-columns:1fr;gap:8px;font-size:13px}.ghost-review dt{font-size:11px;color:#536158}.ghost-review dd{margin-bottom:8px}
+.ghost-status{color:#0b6b4e;font-size:12px;line-height:1.7;margin-top:20px}.ghost-error{color:#a83b2e;font-size:12px;line-height:1.7;margin-top:16px}
+.ghost-paper-placeholder{padding:40px 32px;background:#e7ebdf;min-height:440px;border-radius:16px;display:flex;flex-direction:column;justify-content:center;gap:28px}
+.ghost-display{font-family:var(--font-display);font-size:40px;line-height:1.12;letter-spacing:-.025em}.ghost-display em{color:#0b6b4e}.ghost-paper-placeholder>p:last-of-type{font-size:13px;color:#536158;line-height:1.75}
+.ghost-placeholder-stamp{border:1px solid #0b6b4e;color:#0b6b4e;align-self:start;padding:12px 20px;border-radius:100px;font-size:10px;line-height:1.7;letter-spacing:.1em;transform:rotate(-5deg)}
+.ghost-ticket{padding:30px;background:#fff;border:1px dashed #0b6b4e80;border-radius:16px;max-width:480px;margin-inline:auto;color:#101e1a}.ghost-ticket-head{display:flex;justify-content:space-between;gap:12px;font-size:10px;font-weight:600;color:#0b6b4e}
+.ghost-ticket-amount{font-family:var(--font-display);font-size:56px;margin-top:28px;line-height:1}.ghost-ticket-amount small{display:block;font-family:var(--font-body);font-size:12px;color:#536158;margin-top:10px}.ghost-ticket-caption{font-size:13px;margin-top:20px}
+.ghost-ticket-qr{display:block;width:100%;max-width:340px;height:auto;margin:24px auto}.ghost-ticket-details{display:grid;gap:7px;font-size:12px}.ghost-ticket-details dt{font-size:10px;color:#536158}.ghost-ticket-details dd{margin-bottom:8px}.ghost-ticket-warning{border-top:1px dashed #101e1a40;padding-top:18px;margin-top:18px;font-size:10px;line-height:1.7}
+.ghost-export-actions{display:flex;flex-direction:column;gap:14px;margin:20px auto;max-width:480px}.ghost-file-input input{padding:10px;font-size:11px}.ghost-card-top{display:flex;justify-content:space-between;gap:12px;align-items:start}.ghost-status-tag{font-size:10px;color:#0b6b4e;text-transform:uppercase}.ghost-proof-card{max-width:650px;margin-inline:auto}
+.ghost-hero{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}.ghost-lead{font-family:var(--font-display);font-size:34px;line-height:1.2;letter-spacing:-.02em}.ghost-hero-art{width:100%;height:auto;border-radius:16px}.ghost-inline-actions{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:24px}
+.ghost-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;border-block:1px solid #101e1a26;margin-top:56px;padding-block:32px}.ghost-steps span{font-family:monospace;font-size:12px;color:#0b6b4e}.ghost-steps h2{font-size:17px;margin-top:16px;font-weight:600}.ghost-steps p{font-size:12px;line-height:1.8;color:#536158;margin-top:12px}.ghost-limit-details{margin-top:28px;font-size:13px}.ghost-limit-details p{max-width:680px;font-size:12px;line-height:1.9;color:#536158;margin-top:12px}
+@media(max-width:767px){.ghost-columns,.ghost-hero,.ghost-steps{grid-template-columns:1fr;gap:28px}.ghost-topline{flex-direction:column;gap:6px}.ghost-topline nav{gap:20px}.ghost-display{font-size:34px}.ghost-paper-placeholder{min-height:340px;padding:28px}.ghost-ticket{padding:24px}.ghost-hero-art{max-width:360px;margin-inline:auto}.ghost-steps{margin-top:32px;gap:28px}}
+@media print{body,.product-page{background:#fff!important}body>header,.environment-note,.ghost-no-print,dialog,.skip-link{display:none!important}.product-container,.product-page-wide .product-container{width:100%!important;max-width:none!important;padding:0!important}.ghost-columns{display:block!important}.ghost-ticket{width:125mm;max-width:125mm;border-radius:0;padding:8mm;margin:0 auto;break-inside:avoid}.ghost-ticket-qr{width:80mm;max-width:80mm;height:80mm}.ghost-ticket-warning{font-size:9pt}.ghost-ticket-details{font-size:10pt}.ghost-address{font-size:9pt}.ghost-ticket-head{font-size:9pt}.ghost-ticket-amount{font-size:36pt}}
+
 @theme inline {
   --color-ink: #101e1a;
   --color-paper: #f5f3e9;

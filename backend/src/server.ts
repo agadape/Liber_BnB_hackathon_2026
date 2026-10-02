@@ -1,5 +1,6 @@
 import { serve } from "@hono/node-server";
 import { createApp } from "./app.js";
+import { databaseConnectionString } from "./db/pool.js";
 
 // Fail fast on a misconfigured deploy rather than accepting traffic that
 // will error out mid-flow. These have no working default.
@@ -8,7 +9,7 @@ const REQUIRED_ENV_VARS = [
   "USDC_ADDRESS",
 ];
 
-const missingEnvVars = REQUIRED_ENV_VARS.filter((name) => !process.env[name]);
+const missingEnvVars = REQUIRED_ENV_VARS.filter((name) => name==="DATABASE_URL"?!databaseConnectionString():!process.env[name]);
 if (missingEnvVars.length > 0) {
   console.error(`Missing required environment variable(s): ${missingEnvVars.join(", ")}`);
   process.exit(1);

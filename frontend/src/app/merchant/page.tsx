@@ -66,6 +66,7 @@ export default function MerchantPage() {
     }catch(e){setError((e as Error).message);}finally{setBusy(false);}
   }
   return <PageShell wide><PageHeading eyebrow="BNB workspace" title="BNB invoices.">Set an amount and expiry. Share a test-token invoice.</PageHeading>
+    <Link href="/ghost/merchant" className="landing-text-link mb-6">Redeem a Ghost paper voucher ↗</Link>
     <div className="grid items-start gap-8 lg:grid-cols-2"><div>
     <Link href="/demo/funds" className="mb-4 inline-block text-xs font-semibold text-emerald underline">Get demo tokens ↗</Link>
     {config && !config.contractAddress && <Card className="mt-5"><p className="font-semibold">Contract deployment pending</p><p className="mt-2 text-sm text-ink/60">Invoice creation is unavailable until the contract is configured.</p></Card>}

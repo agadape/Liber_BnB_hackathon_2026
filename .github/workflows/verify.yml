@@ -24,6 +24,7 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - run: npm ci
       - run: npm test
+      - run: npm run protocol:check
       - run: npx tsc --noEmit
       - run: npm run lint
       - run: npm run build
@@ -78,7 +79,7 @@ jobs:
         with:
           persist-credentials: false
       - uses: foundry-rs/foundry-toolchain@v1
-      - run: forge install --no-git OpenZeppelin/openzeppelin-contracts@v5.1.0 foundry-rs/forge-std
+      - run: forge install --no-git OpenZeppelin/openzeppelin-contracts@v5.0.2 foundry-rs/forge-std@v1.9.7
       - run: forge build
       - run: forge test
 

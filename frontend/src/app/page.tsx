@@ -3,9 +3,9 @@ import Image from "next/image";
 import { DEMO_LINKS } from "@/lib/demo-links";
 
 const tools = [
-  { title: "QRIS sandbox", detail: "Rupiah test payments", href: "/pilot" },
-  { title: "BNB invoices", detail: "Payments in test tokens", href: "/merchant" },
-  { title: "QR checks", detail: "Know what you scan", href: "/demo?view=checks" },
+  { title: "Issue a voucher", detail: "One merchant. One amount.", href: "/ghost/create" },
+  { title: "Redeem paper", detail: "Verify. Claim once.", href: "/ghost/merchant" },
+  { title: "Your paper trail", detail: "Recover or reclaim.", href: "/ghost/vouchers" },
 ] as const;
 
 export default function LandingPage() {
@@ -14,10 +14,10 @@ export default function LandingPage() {
       <div className="landing-container">
         <section className="landing-hero" aria-labelledby="landing-title">
           <div className="landing-intro">
-            <p className="landing-eyebrow">Everyday payments, built on BNB.</p>
-            <h1 id="landing-title">A familiar QR.<br />A clearer checkout.</h1>
-            <p className="landing-description">QRIS sandbox payments and BNB invoices, with receipts you can verify.</p>
-            <Link href="/demo" className="landing-primary">Try Liber <span aria-hidden="true">↗</span></Link>
+            <p className="landing-eyebrow">liber:Ghost Protocol · built on BNB.</p>
+            <h1 id="landing-title">A dead phone.<br />A live permission.</h1>
+            <p className="landing-description">Reserve online. Carry paper. Your merchant claims once.</p>
+            <Link href="/ghost" className="landing-primary">Meet Ghost <span aria-hidden="true">↗</span></Link>
           </div>
           <Image
             src="/illustrations/hero-success.jpg"
@@ -50,17 +50,17 @@ export default function LandingPage() {
             className="landing-proof-image"
           />
           <div>
-            <h2 id="proof-title">Less guesswork.<br />More proof.</h2>
-            <p>A completed Rp10.000 sandbox payment.<br />Its receipt hash, recorded on BNB.</p>
-            <Link href={DEMO_LINKS.sandboxReceipt} className="landing-text-link">See the receipt <span aria-hidden="true">↗</span></Link>
+            <h2 id="proof-title">Buyer offline.<br />Merchant online.</h2>
+            <p>A fixed recipient and amount.<br />Unused funds are reclaimable after expiry.</p>
+            <Link href="/demo" className="landing-text-link">See the testnet proof <span aria-hidden="true">↗</span></Link>
           </div>
         </section>
 
         <footer className="landing-footer">
-          <p>Sandbox only. No real-money payments.</p>
+          <p>BSC Testnet only. MockUSDC has no cash value.</p>
           <div>
             <Link href="/demo/funds">Get demo tokens</Link>
-            <a href={DEMO_LINKS.registry} target="_blank" rel="noopener noreferrer">BNB contract ↗</a>
+            <a href="https://testnet.bscscan.com/address/0x0837ac35ec54F678ba08912dcfd6166a299FCA31" target="_blank" rel="noopener noreferrer">Ghost vault ↗</a>
             <a href={DEMO_LINKS.source} target="_blank" rel="noopener noreferrer">GitHub ↗</a>
           </div>
         </footer>

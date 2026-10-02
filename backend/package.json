@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "node --env-file-if-exists=.env --import tsx --watch src/server.ts",
     "start": "tsx src/server.ts",
-    "test": "node --env-file-if-exists=.env --import tsx --test $(find src -name '*.test.ts')",
+    "test": "node ../scripts/run-tests.mjs",
     "typecheck": "tsc --noEmit",
     "migrate": "node --env-file-if-exists=.env --import tsx src/db/migrate.ts"
   },

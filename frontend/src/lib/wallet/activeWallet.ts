@@ -1,9 +1,11 @@
 import { getOrCreateWallet, LocalStorageWalletStorage, type WalletStorage } from "./storage";
-import { createWalletClient, http, type Hash, type Hex } from "viem";
+import { createWalletClient, http, type Hash, type Hex, type Address } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { CHAIN, RPC_URL } from "../chain";
 import type { EvmTxRequest } from "./topup";
 import { getConnectedExternalAddress, sendWithExternalWallet, disconnectExternalWallet, signWithExternalWallet } from "./externalWallet";
+import { signGhostWithExternalWallet } from "./externalWallet";
+import { voucherTypedData, validateSignature, type GhostVoucher } from "../ghost/codec";
 
 const WALLET_MODE_KEY = "liber:wallet:mode";
 
@@ -14,6 +16,12 @@ export type ActiveWallet =
 export async function signActiveWallet(wallet: ActiveWallet, message: string): Promise<Hex> {
   if (wallet.mode === "external") return signWithExternalWallet(wallet.publicKey, message);
   return privateKeyToAccount(wallet.secretKey as Hex).signMessage({ message });
+}
+
+export async function signActiveWalletTypedData(wallet:ActiveWallet,vault:Address,voucher:GhostVoucher):Promise<Hex> {
+  if(CHAIN.id!==97)throw Error("Ghost vouchers use testnet only.");
+  const raw=wallet.mode==="external"?await signGhostWithExternalWallet(wallet.publicKey,vault,voucher):await privateKeyToAccount(wallet.secretKey as Hex).signTypedData(voucherTypedData(vault,voucher));
+  return validateSignature(vault,voucher,raw);
 }
 
 export function getWalletMode(): "local" | "external" {

@@ -1,0 +1,49 @@
+{
+  "checkedAt": "2026-10-02T10:03:00Z",
+  "scope": "Hosted Ghost branch / browser viewport layout observations / not real mobile hardware",
+  "frontend": "https://liber-bnb-web-git-codex-ghost-protocol-daves-projects-3628ad99.vercel.app",
+  "verifiedUiCodeCommit": "2b02d16b6510130d577bab1802ded2be08d2faeb",
+  "method": "Browser controls and read-only public DOM measurements; screenshots visually reviewed. innerWidth measured after resizing rather than inferred from an API call.",
+  "cases": [
+    {"route": "/ghost", "innerWidth": 320, "clientWidth": 305, "scrollWidth": 305, "horizontalOverflow": false},
+    {"route": "/ghost", "innerWidth": 390, "clientWidth": 375, "scrollWidth": 375, "horizontalOverflow": false},
+    {"route": "/ghost/create", "innerWidth": 320, "clientWidth": 305, "scrollWidth": 305, "horizontalOverflow": false, "state": "Owner form"},
+    {"route": "/ghost/create", "innerWidth": 390, "clientWidth": 375, "scrollWidth": 375, "horizontalOverflow": false, "state": "Reviewed authorization; funded then expiry-blocked ticket"},
+    {"route": "/ghost/merchant", "innerWidth": 320, "clientWidth": 305, "scrollWidth": 305, "horizontalOverflow": false, "state": "Connected wallet and image input"},
+    {"route": "/ghost/vouchers", "innerWidth": 320, "clientWidth": 305, "scrollWidth": 305, "horizontalOverflow": false, "state": "Owner history with reserved/reclaimed voucher and saved reclaim link"},
+    {"route": "/ghost/receipt", "innerWidth": 320, "clientWidth": 305, "scrollWidth": 305, "horizontalOverflow": false, "state": "Verified payment and verified reclaim proofs"},
+    {"route": "/demo/funds", "innerWidth": 320, "clientWidth": 305, "scrollWidth": 305, "horizontalOverflow": false, "state": "Ghost issue link visible; existing BNB invoice link retained"}
+  ],
+  "observations": {
+    "existingLandingIllustrationRetained": true,
+    "nearExpiryQrRemovedAndExportDisabled": true,
+    "hostedUiOwnerReclaimConfirmed": true,
+    "savedReclaimTransactionLinkVisible": true,
+    "optionalReclaimMetadataSyncSucceeded": true,
+    "publicReceiptDisplayedVerifiedReclaim": true,
+    "ghostTestFundsNavigationVerified": true,
+    "temporaryViewportResetCalled": true
+  },
+  "export": {
+    "saveQrButtonClickedAfterFundedQrAppeared": true,
+    "uiErrorObserved": false,
+    "downloadEvent": "Not observed within 10 seconds; file download remains unverified",
+    "printDialog": "Not verified",
+    "printBackground": "Code updated to white; paper output not verified"
+  },
+  "hosting": {
+    "frontendExactBranchDomainException": "User approved and saved in Vercel",
+    "apiExactBranchDomainException": "Previously user approved",
+    "projectWideRequireLogin": "Retained",
+    "anonymousFrontendGhostGet": 200,
+    "anonymousFrontendContainedGhostHeading": true,
+    "productionPromoted": false
+  },
+  "pending": [
+    "Real buyer phone-off test using two physical devices",
+    "Actual PNG save and print-dialog behavior on target browsers",
+    "Printed-paper readability and camera scan",
+    "Injected MetaMask and real mobile device checks"
+  ],
+  "boundary": "No browser private key, wallet token, authorization signature or active QR is included. The narrow screenshots are browser viewport evidence only. Earlier failed resize attempts and unreliable download automation do not establish app download or physical-device behavior. Some layout cases were observed before the latest UI navigation changes; the changed history/proof/funds views were checked again after deployment."
+}
