@@ -62,7 +62,8 @@
   "uiObservations": {
     "method": "Observed through browser controls; chain receipts independently rechecked by this script",
     "wallets": "Separate browser origins using device test wallets; browser private keys never extracted",
-    "buyerPageClosedBeforeRedeem": true,
+    "buyerVoucherTabClosedBeforeRedeem": true,
+    "buyerOfflineBoundary": "Buyer voucher tab was closed; a separate funds tab remained open. This does not prove buyer device offline.",
     "fundedQrDisplayed": true,
     "ownerReservationHistorySynced": true,
     "merchantLocalPngDecoded": true,

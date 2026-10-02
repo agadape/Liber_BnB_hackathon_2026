@@ -1333,9 +1333,11 @@ APP_CHECKOUT: C:/Project_Dave/Liber_bnb/app
 APP_BASELINE: 3f451ec527b98de1da39e158a8c502d0f62638e4
 APP_FIRST_IMPLEMENTATION_HEAD: 33f5316dd109774d9aac20a4ed54230f81e3341e
 APP_BRANCH: codex/ghost-protocol
-APP_VERIFIED_IMPLEMENTATION_HEAD: 710f8afb43d800df36320c1a45acbcf316962aba
-CURRENT_MILESTONE: hosted UI/API proof completed; recovery hardening added; physical/device release gates pending
-NEXT_TASK: CI + hosted recovery verification for final hardening, then physical print/phone-off/device gate
+APP_VERIFIED_IMPLEMENTATION_HEAD: a7cf37ef7c9c9960e969f702562c639fb16f8fe1
+CURRENT_MILESTONE: hosted UI/API proof and recovery hardening verified; physical/device release gates pending
+NEXT_TASK: physical print/phone-off/device gate; keep production promotion gated
+REVIEW: https://github.com/agadape/Liber_BnB_hackathon_2026/pull/1 (draft)
+CODE_CI: https://github.com/agadape/Liber_BnB_hackathon_2026/actions/runs/36981441878 (success)
 PROTOCOL_VERSION: ghost-v1 (implemented, shared codec/chain generated)
 GHOST_VAULT_ADDRESS: 0x0837ac35ec54F678ba08912dcfd6166a299FCA31
 GHOST_DEPLOYMENT_BLOCK: 134372464
@@ -1352,24 +1354,34 @@ PRODUCTION_SCOPE: old main still deployed; promotion gated
 
 - G-001..013, G-015..020: implemented. Shared codec and verifier, golden Solidity/viem fixture, immutable prefunded vault, owner/merchant/recovery pages, auth and durable rate limits are in `app/`.
 - G-014: funded-only QR/print implemented; actual paper readability remains pending.
-- G-019: signed bounded owner-log cursor and paginated history implemented; five-proof dense-block cap and three-at-a-time history reads added in final hardening. Hosted authenticated sync/history passed; new recovery checks await the next preview deployment.
+- G-019: signed bounded owner-log cursor and paginated history implemented; five-proof dense-block cap and three-at-a-time history reads added in final hardening. Hosted authenticated sync/history/recovery passed; merchant use of owner cursor rejected with 400.
 - G-020: deployment tx `0x22c1e28a6974bf9b092abff60e9315ce72b4a158e13c60cf4661f7d473080bdf`. Sourcify exact creation/runtime matches recorded in `contracts/verification/LiberGhostVault.sourcify-result.json`. No unverified BscScan badge claim.
 - G-022: actual 5 MockUSDC redemption `0xea11ffb59b93e621f6f08ef221f91303e3c74c4392967e655bd2e6b7ec414b00`; wrong merchant and replay rejected. Actual 2 MockUSDC reclaim `0x0f8b2ecf962ffc1ba6e14aa3a27b407d3fcb4871f39a01c4f7227780f44eceb2`; early reclaim rejected. All require canonical matching event/transfer and 12 confirmations. Buyer and merchant ran as separate processes. Physical printed paper + phone-off footage is NOT yet proven.
 - CI `36979729750` at `4455a1e` exposed an isolated-build issue in the new hosted-check script: it imported a backend module and pulled backend-only dependencies into frontend typechecking. Fixed at `47ea87a` by using the frontend's validated SIWE challenge-message helper.
-- Latest complete CI: run `36980025649` at `47ea87a`: frontend 61/61, backend 82/82 on disposable PostgreSQL, Foundry 26/26 including fuzz and three invariants (8,192 handler calls). Frontend typecheck/lint/build and backend typecheck/migration passed; both Vercel previews succeeded. Next pinned 16.3.8; prior npm audit returned zero vulnerabilities. Final recovery-index correction adds two more backend tests; its full CI result is pending until recorded below.
+- Latest complete code CI: run `36981441878` at `a7cf37e`: frontend 61/61, backend 84/84 on disposable PostgreSQL, Foundry 26/26 including fuzz and three invariants (8,192 handler calls). Total 171 tests passed. Frontend typecheck/lint/build and backend typecheck/migration passed; both Vercel previews succeeded. Next pinned 16.3.8; prior npm audit returned zero vulnerabilities.
 - Final hardening focused recovery/cursor/index-consistency tests: 7/7 passed locally without a database. No test suite ran against the shared Neon database.
 - Hosted API passed configuration/CORS, unauthenticated 401, both SIWE roles, wrong-owner 403, concurrent idempotent reservation persistence, signature-field 400, canonical redeem/reclaim public proofs and owner history. SIWE sessions were revoked at the end. No Ghost authorization packet was read or sent by this check.
-- Hosted owner log recovery initially returned 503; live diagnosis confirmed the default RPC rejected logs. The dedicated index correction is implemented and local ownership/position tests passed; its deployed recovery result remains pending until recorded.
-- Hosted UI run: buyer `0xde6fBA63bBcD1F2E81a2c498b7880EEbf12Faf64`, merchant `0x6EAdd91fc2FAc8c7110ADac362982FE881A3f1E1`, voucher `0xea0ade9bb3b58bcb01854d3a1ec93f13b86f6a6718ae41cae806bbe957bae860`. Reserve `0xacceb4dd859f8b11616e37f323e9637b00caa4488b65035a95664ec35630e9bd`; redeem `0xc6671085ab00f55cc9a4cdf231060343a785ae917c82302c444b6cdfc3abb91b`. Funded local PNG decoded by merchant; buyer page closed before redeem; exact 5 MockUSDC received; rescanning the same PNG showed “Already redeemed. No new transaction will be sent.” Chain proofs independently rechecked. Browser private keys were never extracted.
+- Hosted owner log recovery initially returned 503; live diagnosis confirmed the default RPC rejected logs. Dedicated index correction deployed and checked at 2026-10-02T08:01:19Z: HTTP 200, two canonical owner reserve proofs; merchant reuse of its owner cursor returned 400. Public report includes the full successful hosted check set; sessions revoked after the run.
+- Hosted UI run: buyer `0xde6fBA63bBcD1F2E81a2c498b7880EEbf12Faf64`, merchant `0x6EAdd91fc2FAc8c7110ADac362982FE881A3f1E1`, voucher `0xea0ade9bb3b58bcb01854d3a1ec93f13b86f6a6718ae41cae806bbe957bae860`. Reserve `0xacceb4dd859f8b11616e37f323e9637b00caa4488b65035a95664ec35630e9bd`; redeem `0xc6671085ab00f55cc9a4cdf231060343a785ae917c82302c444b6cdfc3abb91b`. Funded local PNG decoded by merchant; buyer voucher tab closed before redeem, but a funds tab remained open. No buyer-device-offline claim. Exact 5 MockUSDC received; rescanning the same PNG showed “Already redeemed. No new transaction will be sent.” Chain proofs independently rechecked. Browser private keys were never extracted.
 - QR download-event automation did not complete reliably; Save QR button / print dialog, actual paper, actual phone-off, injected MetaMask and real mobile checks remain pending. Browser viewport override did not take effect; desktop screenshots are not mobile evidence. Merchant used a second frontend origin for a separate device wallet; its terminal API sync was not attempted. The separate scripted run proved authenticated terminal sync on the configured stable origin.
 - Frontend/backend Vercel Ghost variables are scoped to `codex/ghost-protocol` Preview only. API HMAC is server-only; Neon credentials are not copied into files or chat. Frontend points to the stable API branch URL; API origin is the stable frontend branch URL.
 - Existing invoice/registry/Midtrans sandbox flows remain available. Old video and deck do not prove Ghost and are pending a separate truthful update.
 - Rollback correction: issuance disabled blocks new handover through the UI but keeps existing-state verification and expired-owner reclaim with valid deployment settings. An immutable vault cannot revoke signed paper or block direct redemption before expiry.
 - User explicitly approved opening the sandbox API. Only the stable API branch domain was added as an Unprotected Domain; project-wide Vercel authentication and other deployments remain protected. Frontend requires the existing Vercel team login.
 - Public proof page visibly showed “VERIFIED TOKEN PAYMENT”, live redeemed state and canonical reserve/redeem links. Existing `/pilot` page rendered but its provider connection is unavailable in the branch preview; this is not a successful provider-flow regression check. Production configuration was not changed.
+- Existing `/merchant` and `/demo` pages rendered with retained illustrations and old-flow navigation. Read-only `/pilot/config` check: production 200/enabled/sandbox/correct registry, Ghost preview 200/disabled/sandbox/no registry. The preview has no provider credentials; no new Midtrans payment was attempted.
 - G-023..025 remain production release gates until physical/device/print checks finish. G-026 README/runbook/public evidence updated. G-027 video/deck and G-028 new production design remain separate follow-ups; no mainnet promotion occurred.
 
 Append/update this record when code work starts:
+
+### Session 2026-10-02 15:10 WIB
+- Workspace / branch / verified code HEAD: `C:/Project_Dave/Liber_bnb/app`, `codex/ghost-protocol`, `a7cf37ef7c9c9960e969f702562c639fb16f8fe1`.
+- Completed: contract/source identity, actual redeem/reclaim, hosted UI reserve/redeem/replay, SIWE/canonical persistence/history/recovery, dense-block resource caps, release documentation and draft PR1. Physical parts of G-014/G-022 and device gates remain open.
+- Hosting: preview enabled only on the Ghost branch. Exactly one API branch domain is public by user approval; no project-wide authentication toggle, mainnet or production promotion.
+- Tests: 171 CI tests passed; 7 focused recovery tests passed; all 12 hosted check flags true. Actual chain evidence is in the three public JSON reports above. No browser private keys, handover signature, raw QR or API token committed.
+- Rejected approaches: browser download/file chooser automation was unreliable; no download/physical-print claim. Viewport override failed; desktop images are not mobile proof. Dataseed log queries rejected small ranges; separate index discovery now canonical-checked against primary RPC. Backend imports in frontend utility broke isolated CI and were replaced with the frontend SIWE validator.
+- Review: draft PR1 attached to this chat. Keep it draft until physical/device gates and final old-flow review pass.
+- Next concrete action: owner/merchant real-device check, print a newly funded voucher, turn buyer phone off, redeem once and rescan the same paper; separately exercise expired reclaim. New video/pitch must show the actual result. Do not reuse an expired/spent local QR as an active demo.
 
 ```markdown
 ### Session YYYY-MM-DD HH:mm WIB

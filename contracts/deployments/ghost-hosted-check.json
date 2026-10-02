@@ -1,6 +1,6 @@
 {
   "scope": "BSC Testnet / hosted sandbox metadata only",
-  "checkedAt": "2026-10-02T05:08:38.523Z",
+  "checkedAt": "2026-10-02T08:01:19.736Z",
   "api": "https://liber-bnb-api-git-codex-ghost-protocol-daves-projects-3628ad99.vercel.app",
   "origin": "https://liber-bnb-web-git-codex-ghost-protocol-daves-projects-3628ad99.vercel.app",
   "checks": {
@@ -13,6 +13,8 @@
     "capabilityFieldsRejected": true,
     "redeemPublicProof": true,
     "reclaimPublicProof": true,
-    "ownerHistory": true
+    "ownerHistory": true,
+    "boundedOwnerRecovery": true,
+    "recoveryCursorIsolation": true
   }
 }
