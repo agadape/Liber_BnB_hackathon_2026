@@ -114,6 +114,7 @@
 .ghost-limit-details { font-size:12px; max-width:620px; }
 .ghost-limit-details summary { display:flex; align-items:center; min-height:44px; gap:40px; list-style:none; font-weight:500; }
 .ghost-limit-details summary::-webkit-details-marker { display:none; }
+.ghost-limit-details summary::before { content:none; }
 .ghost-limit-details p { font-size:12px; line-height:1.8; color:var(--ghost-muted); padding:8px 0 16px; }
 @media(max-width:1023px) {
   .ghost-hero { gap:28px; }
