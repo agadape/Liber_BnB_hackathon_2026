@@ -1,0 +1,63 @@
+{
+  "scope": "BSC Testnet / public receipts from hosted UI expiry and reclaim / no cash value",
+  "checkedAt": "2026-10-02T09:57:56.657Z",
+  "vault": "0x0837ac35ec54F678ba08912dcfd6166a299FCA31",
+  "token": "0x2116D4a3f11Aa7059Ad0911ad5C89897CC0BcC97",
+  "voucherId": "0xed6b4758b563425e225d5d28afa34c32f170b930751da2ddb865a7ec954339f7",
+  "transactions": {
+    "reserve": "0x0ba004c3a7beb4f5887c7e08d40cb6097a0a20fe1ccdd00dd384ee4f86f8f5ed",
+    "reclaim": "0xb01b1f547092fcb98cd3469869a6ee1675a7c7d67f8653133028e44abf57d439"
+  },
+  "proofs": {
+    "reserve": {
+      "voucherId": "0xed6b4758b563425e225d5d28afa34c32f170b930751da2ddb865a7ec954339f7",
+      "action": "reserve",
+      "txHash": "0x0ba004c3a7beb4f5887c7e08d40cb6097a0a20fe1ccdd00dd384ee4f86f8f5ed",
+      "logIndex": 1,
+      "blockNumber": "134416170",
+      "blockHash": "0x09e49b769370e15a94e7f0b8da7cd860e810fd054b2095cf6fbc9e9fb65aff4d",
+      "blockTimestamp": "1790934233",
+      "confirmations": 1869,
+      "owner": "0xde6fBA63bBcD1F2E81a2c498b7880EEbf12Faf64",
+      "merchant": "0x6EAdd91fc2FAc8c7110ADac362982FE881A3f1E1",
+      "amountRaw": "1000000000000000000",
+      "verified": true,
+      "scope": "reservationProof",
+      "voucher": {
+        "owner": "0xde6fBA63bBcD1F2E81a2c498b7880EEbf12Faf64",
+        "merchant": "0x6EAdd91fc2FAc8c7110ADac362982FE881A3f1E1",
+        "amountRaw": "1000000000000000000",
+        "validBefore": "1790934567",
+        "salt": "0x75976c27c58d4fb9bd9a2c5ce5a18436022947906fcc53cfa1db4ac7ba780e48"
+      }
+    },
+    "reclaim": {
+      "voucherId": "0xed6b4758b563425e225d5d28afa34c32f170b930751da2ddb865a7ec954339f7",
+      "action": "reclaim",
+      "txHash": "0xb01b1f547092fcb98cd3469869a6ee1675a7c7d67f8653133028e44abf57d439",
+      "logIndex": 8,
+      "blockNumber": "134417305",
+      "blockHash": "0x21465ae9a6ad0fc21a58e8b72539a7aa4f54a612d68e2d0eda57d812f7f90fb1",
+      "blockTimestamp": "1790934744",
+      "confirmations": 741,
+      "owner": "0xde6fBA63bBcD1F2E81a2c498b7880EEbf12Faf64",
+      "merchant": "0x6EAdd91fc2FAc8c7110ADac362982FE881A3f1E1",
+      "amountRaw": "1000000000000000000",
+      "verified": true,
+      "scope": "reclaimProof"
+    }
+  },
+  "state": {
+    "voucherId": "0xed6b4758b563425e225d5d28afa34c32f170b930751da2ddb865a7ec954339f7",
+    "owner": "0xde6fBA63bBcD1F2E81a2c498b7880EEbf12Faf64",
+    "merchant": "0x6EAdd91fc2FAc8c7110ADac362982FE881A3f1E1",
+    "amountRaw": "1000000000000000000",
+    "validBefore": "1790934567",
+    "storageStatus": 3,
+    "effectiveStatus": "reclaimed",
+    "checkedBlockNumber": "134418045",
+    "checkedBlockHash": "0x446a13fd7644a2804b679c4536bb394bc366f3350d47c37b50797a1debd10a85",
+    "checkedBlockTimestamp": "1790935077"
+  },
+  "evidenceBoundary": "The browser displayed funded QR, disabled new export near expiry, and confirmed the owner reclaim. This script independently checks public chain evidence only; it does not prove a saved PNG, physical print, buyer phone-off or a real mobile device."
+}
