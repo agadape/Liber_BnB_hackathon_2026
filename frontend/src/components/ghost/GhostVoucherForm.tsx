@@ -21,12 +21,13 @@ export function GhostVoucherForm({initialId}:{initialId?:Hash}) {
   const [voucher,setVoucher]=useState<GhostVoucher|null>(null),[signature,setSignature]=useState<Hex|null>(null),[journal,setJournal]=useState<GhostJournal|null>(null),[ready,setReady]=useState<GhostState|null>(null);
   const [busy,setBusy]=useState(false),[status,setStatus]=useState(""),[error,setError]=useState<string|null>(null),[sync,setSync]=useState("");
   useEffect(()=>{getGhostConfig().then(setConfig).catch(()=>setError("Ghost configuration could not be checked."));},[]);
-  useEffect(()=>{const clear=()=>{setSignature(null);setReady(null);};window.addEventListener("liber:ghost-clear-sensitive",clear);return()=>window.removeEventListener("liber:ghost-clear-sensitive",clear);},[]);
+  useEffect(()=>{const clear=()=>{setSignature(null);setReady(null);setWallet(null);};window.addEventListener("liber:ghost-clear-sensitive",clear);return()=>window.removeEventListener("liber:ghost-clear-sensitive",clear);},[]);
   function updateJournal(row:GhostJournal){setJournal(row);try{saveJournal(row);}catch{setError("Browser storage is unavailable. Keep the transaction hash shown here before leaving this page.");}}
   async function connect(external:boolean) {
     setBusy(true);setError(null);setReady(null);setSignature(null);
     try {
       const active=await selectWallet(external);setWallet(active);
+      if(voucher&&getAddress(active.publicKey)!==voucher.owner){setVoucher(null);setJournal(null);setStatus("");}
       if(initialId && config?.vaultAddress) {
         let found=getJournal(config.vaultAddress,active.publicKey as Address,initialId);
         if(!found) {

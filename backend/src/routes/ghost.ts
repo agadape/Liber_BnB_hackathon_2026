@@ -3,7 +3,7 @@ import {bodyLimit} from "hono/body-limit";
 import {getAddress,type Hash} from "viem";
 import {requireWallet,type AuthEnv} from "../auth/auth.js";
 import {ghostConfig} from "../ghost/config.js";
-import {GhostChainError,requireReadyConfig,verifyGhostProof,type GhostAction} from "../ghost/chain.js";
+import {GhostChainError,requireDeployedConfig,verifyGhostProof,type GhostAction} from "../ghost/chain.js";
 import {hashPattern,deserializeVoucher,voucherId,validateVoucher,type GhostVoucher} from "../ghost/codec.js";
 import {getGhost,proveGhost,saveGhostProof,ghostRpc} from "../ghost/service.js";
 import {ghostLimit,decodeCursor,encodeCursor,type RecoveryCursor} from "../ghost/limits.js";
@@ -25,7 +25,7 @@ export function createGhostRoute(deps={config:ghostConfig,read:getGhost,prove:pr
   route.get("/ghost/vouchers/:id",async c=>{
     const id=c.req.param("id");if(!hashPattern.test(id))return c.json({error:"Invalid voucher ID",code:"MALFORMED_INPUT"},400);
     try {
-      requireReadyConfig(deps.config());
+      requireDeployedConfig(deps.config());
       // Only Vercel's overwritten single-client header is trusted; local requests share a bucket.
       const ip=process.env.VERCEL==="1"?(c.req.header("x-vercel-forwarded-for")??"unknown").split(",")[0].trim():"local";
       if(!await deps.limit("public_read",ip)){c.header("Retry-After","60");return c.json({error:"Too many verification requests.",code:"RATE_LIMITED"},429);}
@@ -41,7 +41,7 @@ export function createGhostRoute(deps={config:ghostConfig,read:getGhost,prove:pr
     let v:GhostVoucher;
     try{v=deserializeVoucher(body.voucher);}catch{return c.json({error:"Malformed voucher fields",code:"MALFORMED_INPUT"},400);}
     try {
-      const config=deps.config();requireReadyConfig(config);
+      const config=deps.config();requireDeployedConfig(config);
       try{validateVoucher(v,config.vaultAddress);}catch{return c.json({error:"Invalid voucher fields",code:"MALFORMED_INPUT"},400);}
       if(getAddress(c.get("walletAddress"))!==v.owner)return c.json({error:"This reservation belongs to another wallet",code:"OWNER_MISMATCH"},403);
       if(!await deps.limit("private_proof",v.owner))return c.json({error:"Try again in a minute",code:"RATE_LIMITED"},429);
@@ -52,7 +52,7 @@ export function createGhostRoute(deps={config:ghostConfig,read:getGhost,prove:pr
     const id=c.req.param("id"),body=await c.req.json().catch(()=>null);
     if(!hashPattern.test(id) || !body || Object.keys(body).sort().join(",")!=="action,txHash" || !hashPattern.test(body.txHash??"") || !["redeem","reclaim"].includes(body.action))return c.json({error:"Malformed terminal proof",code:"MALFORMED_INPUT"},400);
     try {
-      requireReadyConfig(deps.config());const wallet=c.get("walletAddress");
+      requireDeployedConfig(deps.config());const wallet=c.get("walletAddress");
       if(!await deps.limit("private_proof",wallet))return c.json({error:"Try again in a minute",code:"RATE_LIMITED"},429);
       const proof=await deps.prove(id.toLowerCase() as Hash,body.txHash.toLowerCase(),body.action as GhostAction);
       const expected=body.action==="redeem"?proof.merchant:proof.owner;
@@ -62,7 +62,7 @@ export function createGhostRoute(deps={config:ghostConfig,read:getGhost,prove:pr
   });
   route.get("/ghost/me/vouchers",async c=>{
     try {
-      const config=deps.config();requireReadyConfig(config);const owner=c.get("walletAddress").toLowerCase();
+      const config=deps.config();requireDeployedConfig(config);const owner=c.get("walletAddress").toLowerCase();
       if(!await deps.limit("private_proof",owner))return c.json({error:"Try again in a minute",code:"RATE_LIMITED"},429);
       const before=c.req.query("before")??"0x"+"f".repeat(64);if(!hashPattern.test(before))return c.json({error:"Invalid list cursor"},400);
       const result=await getPool().query("SELECT voucher_id,reserve_tx_hash FROM ghost_vouchers WHERE owner_address=$1 AND chain_id=97 AND vault_address=$2 AND voucher_id<$3 ORDER BY voucher_id DESC LIMIT 20",[owner,config.vaultAddress.toLowerCase(),before.toLowerCase()]);
@@ -73,7 +73,7 @@ export function createGhostRoute(deps={config:ghostConfig,read:getGhost,prove:pr
   route.post("/ghost/me/recover",async c=>{
     const body=await c.req.json().catch(()=>null);if(!body || Object.keys(body).some(k=>k!=="cursor") || (body.cursor!==undefined && typeof body.cursor!=="string"))return c.json({error:"Invalid recovery request"},400);
     try {
-      const config=deps.config();requireReadyConfig(config);const owner=getAddress(c.get("walletAddress"));
+      const config=deps.config();requireDeployedConfig(config);const owner=getAddress(c.get("walletAddress"));
       if(!await deps.limit("owner_recovery",owner))return c.json({error:"Recovery rate limit; retry next minute",code:"RATE_LIMITED"},429);
       const rpc=ghostRpc(),head=await rpc.getBlockNumber();
       let cursor:RecoveryCursor={v:1,chain:97,vault:config.vaultAddress.toLowerCase(),owner:owner.toLowerCase(),next:config.deploymentBlock,upper:head.toString(),expires:Math.floor(Date.now()/1000)+900};

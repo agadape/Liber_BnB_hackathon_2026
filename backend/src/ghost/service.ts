@@ -1,12 +1,12 @@
 import { createPublicClient, http, type Hash } from "viem";
 import { bscTestnet } from "viem/chains";
 import { ghostConfig } from "./config.js";
-import { GhostChainError, readGhostState, verifyGhostProof, requireReadyConfig, type GhostProof, type GhostAction } from "./chain.js";
+import { GhostChainError, readGhostState, verifyGhostProof, requireDeployedConfig, type GhostProof, type GhostAction } from "./chain.js";
 import { getPool } from "../db/pool.js";
 import type { GhostVoucher } from "./codec.js";
 export const ghostRpc=()=>createPublicClient({chain:bscTestnet,transport:http(process.env.BSC_TESTNET_RPC_URL||bscTestnet.rpcUrls.default.http[0],{timeout:12_000,retryCount:1})});
 export async function getGhost(id:Hash) {
-  const config=ghostConfig();requireReadyConfig(config);
+  const config=ghostConfig();requireDeployedConfig(config);
   const state=await readGhostState(ghostRpc(),config,id);
   if(!state.storageStatus)throw new GhostChainError("UNKNOWN_VOUCHER","Voucher has not been reserved.");
   let rows:{action:GhostAction;tx_hash:Hash}[]=[];
@@ -25,7 +25,7 @@ export async function proveGhost(id:Hash,hash:Hash,action:GhostAction,voucher?:G
   return verifyGhostProof(ghostRpc(),ghostConfig(),id,hash,action,voucher);
 }
 export async function saveGhostProof(proof:GhostProof):Promise<void> {
-  const config=ghostConfig();requireReadyConfig(config);
+  const config=ghostConfig();requireDeployedConfig(config);
   const observed=await readGhostState(ghostRpc(),config,proof.voucherId);
   const client=await getPool().connect();
   try {

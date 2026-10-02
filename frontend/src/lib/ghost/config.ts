@@ -7,12 +7,14 @@ export function localGhostConfig():GhostConfig {
   const vaultAddress=address(process.env.NEXT_PUBLIC_GHOST_VAULT_ADDRESS),tokenAddress=address(process.env.NEXT_PUBLIC_GHOST_TOKEN_ADDRESS);
   const block=process.env.NEXT_PUBLIC_GHOST_DEPLOYMENT_BLOCK;
   const confirmations=Number(process.env.NEXT_PUBLIC_GHOST_CONFIRMATIONS??12);
+  const protocolChain=Number(process.env.NEXT_PUBLIC_GHOST_CHAIN_ID??97);
+  const walletChain=Number(process.env.NEXT_PUBLIC_CHAIN_ID??97);
   let reason:string|null=null;
   if(process.env.NEXT_PUBLIC_GHOST_ENABLED!=="true")reason="Ghost issuance is not enabled yet.";
-  else if(Number(process.env.NEXT_PUBLIC_GHOST_CHAIN_ID??97)!==97 || Number(process.env.NEXT_PUBLIC_CHAIN_ID??97)!==97)reason="Ghost only supports BSC Testnet.";
+  else if(protocolChain!==97 || walletChain!==97)reason="Ghost only supports BSC Testnet.";
   else if(!vaultAddress || !tokenAddress || !block || !/^\d+$/.test(block))reason="Ghost contract deployment is not configured.";
   else if(!Number.isInteger(confirmations) || confirmations<12)reason="Ghost confirmation policy is invalid.";
-  return {enabled:!reason,chainId:97,vaultAddress,tokenAddress,tokenDecimals:18,deploymentBlock:block&&/^\d+$/.test(block)?block:null,confirmationsRequired:Number.isInteger(confirmations)&&confirmations>=12?confirmations:12,tokenLabel:"MockUSDC",testnet:true,reason};
+  return {enabled:!reason,chainId:protocolChain!==97?protocolChain:walletChain,vaultAddress,tokenAddress,tokenDecimals:18,deploymentBlock:block&&/^\d+$/.test(block)?block:null,confirmationsRequired:Number.isInteger(confirmations)&&confirmations>=12?confirmations:12,tokenLabel:"MockUSDC",testnet:true,reason};
 }
 export async function getGhostConfig():Promise<GhostConfig> {
   const local=localGhostConfig();if(!local.enabled)return local;

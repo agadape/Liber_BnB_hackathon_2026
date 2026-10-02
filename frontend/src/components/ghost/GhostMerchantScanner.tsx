@@ -20,7 +20,7 @@ export function GhostMerchantScanner(){
   const [packet,setPacket]=useState<GhostPacket|null>(null),[state,setState]=useState<GhostState|null>(null),[pending,setPending]=useState<Pending|null>(null),[proof,setProof]=useState<GhostProof|null>(null);
   const [busy,setBusy]=useState(false),[error,setError]=useState<string|null>(null),[status,setStatus]=useState(""),[sync,setSync]=useState("");
   useEffect(()=>{getGhostConfig().then(setConfig).catch(()=>setError("Ghost configuration could not be checked."));},[]);
-  useEffect(()=>{const clear=()=>{setPacket(null);setRaw("");setCamera(false);};window.addEventListener("liber:ghost-clear-sensitive",clear);return()=>window.removeEventListener("liber:ghost-clear-sensitive",clear);},[]);
+  useEffect(()=>{const clear=()=>{setPacket(null);setRaw("");setCamera(false);setWallet(null);};window.addEventListener("liber:ghost-clear-sensitive",clear);return()=>window.removeEventListener("liber:ghost-clear-sensitive",clear);},[]);
   async function connect(external:boolean){setBusy(true);setError(null);try{const active=await selectWallet(external);setWallet(active);if(config?.vaultAddress){try{const saved=JSON.parse(sessionStorage.getItem(pendingKey(config.vaultAddress,active.publicKey))??"null");if(saved?.merchant===active.publicKey&&/^0x[a-fA-F0-9]{64}$/.test(saved.id)&&/^0x[a-fA-F0-9]{64}$/.test(saved.hash))setPending(saved);}catch{/* No usable saved pending proof. */}}}catch(e){setError(safeGhostError(e));}finally{setBusy(false);}}
   const inspect=useCallback(async(text:string)=>{
     setCamera(false);setRaw("");setBusy(true);setError(null);setPacket(null);setState(null);setProof(null);

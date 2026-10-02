@@ -53,6 +53,8 @@ Backend variables are in `.env.example`. Generate a server-only `GHOST_SERVER_HM
 
 Frontend receives only public `NEXT_PUBLIC_GHOST_*` deployment values. Initially set `NEXT_PUBLIC_GHOST_ENABLED=false`. API and frontend must agree on network, vault, token and confirmation policy. UI checks deployed token, decimals and EIP-5267 domain. Direct RPC fallback permits chain verification when metadata is unavailable; never invent a proof from a database row.
 
+Disabling issuance prevents creating, exporting and redeeming vouchers through this UI. It does not revoke already signed authorizations on the immutable contract. Keep the trusted deployment configuration present: existing owners retain state/proof checks and can reclaim expired reservations even with issuance disabled. Wrong network or deployment identity always blocks recovery transactions. Backend metadata verification remains available with a valid deployment and server HMAC secret. The Neon integration may provide `DATABASE_POSTGRES_PRISMA_URL` or `DATABASE_POSTGRES_URL`; an explicit `DATABASE_URL` takes precedence.
+
 Deployment order: backend additive schema → disabled backend preview → disabled frontend preview → identity checks → E2E and UI checks → preview enable → hosted checks → production enable. Keep the old invoice and registry addresses intact.
 
 ## API contract

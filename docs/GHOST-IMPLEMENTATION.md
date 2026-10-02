@@ -4,11 +4,11 @@
 >
 > Demo utama: pembeli menyiapkan voucher saat online, mencetaknya, mematikan ponsel, lalu merchant online menebus voucher untuk menerima MockUSDC di BSC Testnet. Pemindaian ulang ditolak. Voucher lain yang kedaluwarsa dapat dikembalikan ke pembeli.
 
-**Tanggal:** 2 October 2026, Asia/Jakarta  
-**Versi dokumen:** 1.0 / protocol `ghost-v1`  
-**Status:** implementasi dimulai; Ghost belum dideploy atau dibuktikan end-to-end.  
-**Nama file:** `IMPLEMENTATHOIN.MD`, mengikuti nama yang diminta pengguna.  
-**Pemilik keputusan produk:** pemilik proyek Liber.  
+**Tanggal:** 2 October 2026, Asia/Jakarta
+**Versi dokumen:** 1.0 / protocol `ghost-v1`
+**Status:** protokol dan aplikasi telah diimplementasikan; vault testnet dideploy dan transaksi redeem/reclaim telah dibuktikan. Preview hosting dan pengujian fisik paper/phone-off masih menjadi gate rilis.
+**Nama file:** `IMPLEMENTATHOIN.MD`, mengikuti nama yang diminta pengguna.
+**Pemilik keputusan produk:** pemilik proyek Liber.
 **Lingkungan MVP:** BSC Testnet, chain ID `97`, MockUSDC tanpa nilai uang.
 
 ---
@@ -34,7 +34,7 @@ Workspace aktif saat dokumen dibuat:
 C:/Project_Dave/Liber_bnb
 ```
 
-Workspace ini berisi hasil pitch deck dan dokumen; belum berisi checkout aplikasi Liber. Snapshot kode aplikasi yang diperiksa berada di:
+Checkout aktif berada di `C:/Project_Dave/Liber_bnb/app`, branch `codex/ghost-protocol`. Snapshot baseline yang sebelumnya diperiksa berada di:
 
 ```text
 C:/Users/LENOVO/Documents/Codex/2026-09-29/lets-start-this-new-project-shall/outputs/stellar-apac
@@ -1321,23 +1321,38 @@ Backend metadata work can occur after protocol/verification is stable; it must n
 
 ## 25. Resume ledger — required after every implementation session
 
-Current ledger at document creation:
+Current ledger after implementation (2 October 2026):
 
 ```text
 ACTIVE_WORKSPACE: C:/Project_Dave/Liber_bnb
 APP_CHECKOUT: C:/Project_Dave/Liber_bnb/app
-APP_HEAD: 3f451ec527b98de1da39e158a8c502d0f62638e4 (clean remote main at checkout)
+APP_BASELINE: 3f451ec527b98de1da39e158a8c502d0f62638e4
+APP_FIRST_IMPLEMENTATION_HEAD: 33f5316dd109774d9aac20a4ed54230f81e3341e
 APP_BRANCH: codex/ghost-protocol
-CURRENT_MILESTONE: G-001 complete; G-002 dependency audit in progress
-NEXT_TASK: G-003
-PROTOCOL_VERSION: ghost-v1 (specification only)
-GHOST_VAULT_ADDRESS: not deployed
-GHOST_DEPLOYMENT_BLOCK: unknown
-GHOST_FEATURE_FLAGS: not configured
-DATABASE_MIGRATION: not created/applied
-E2E_PROOF: not run
-PRODUCTION_SCOPE: excluded
+CURRENT_MILESTONE: G-021 hosted preview; G-022 physical proof pending
+NEXT_TASK: Verify branch preview API/UI, then physical print/phone-off gate
+PROTOCOL_VERSION: ghost-v1 (implemented, shared codec/chain generated)
+GHOST_VAULT_ADDRESS: 0x0837ac35ec54F678ba08912dcfd6166a299FCA31
+GHOST_DEPLOYMENT_BLOCK: 134372464
+GHOST_FEATURE_FLAGS: enabled only for Preview branch codex/ghost-protocol
+DATABASE_MIGRATION: three Ghost tables + three indexes applied to existing Neon sandbox
+E2E_PROOF: app/contracts/deployments/ghost-demo-e2e.json (separate processes; no physical phone-off claim)
+PRODUCTION_SCOPE: old main still deployed; promotion gated
 ```
+
+### Implementation evidence and remaining gates
+
+- G-001..013, G-015..020: implemented. Shared codec and verifier, golden Solidity/viem fixture, immutable prefunded vault, owner/merchant/recovery pages, auth and durable rate limits are in `app/`.
+- G-014: funded-only QR/print implemented; actual paper readability remains pending.
+- G-019: signed bounded owner-log cursor and paginated history implemented; hosted authenticated sync/recovery still needs preview verification.
+- G-020: deployment tx `0x22c1e28a6974bf9b092abff60e9315ce72b4a158e13c60cf4661f7d473080bdf`. Sourcify exact creation/runtime matches recorded in `contracts/verification/LiberGhostVault.sourcify-result.json`. No unverified BscScan badge claim.
+- G-022: actual 5 MockUSDC redemption `0xea11ffb59b93e621f6f08ef221f91303e3c74c4392967e655bd2e6b7ec414b00`; wrong merchant and replay rejected. Actual 2 MockUSDC reclaim `0x0f8b2ecf962ffc1ba6e14aa3a27b407d3fcb4871f39a01c4f7227780f44eceb2`; early reclaim rejected. All require canonical matching event/transfer and 12 confirmations. Buyer and merchant ran as separate processes. Physical printed paper + phone-off footage is NOT yet proven.
+- Initial CI run `36964948722`: frontend 59/59, backend 75/75 on disposable PostgreSQL, Foundry 26/26 including fuzz and three invariants (8,192 calls each). Frontend typecheck/lint/build and backend typecheck/migration passed. Next was updated to pinned 16.3.8 after dependency audit; npm audit returned zero vulnerabilities.
+- Subsequent local frontend suite: 60/60 after recovery split; frontend/backend typechecks passed. New database constraint/concurrent-rate tests and wrong-chain recovery tests await the next CI run. Do not claim their result before it completes.
+- Frontend/backend Vercel Ghost variables are scoped to `codex/ghost-protocol` Preview only. API HMAC is server-only; Neon credentials are not copied into files or chat. Frontend points to the stable API branch URL; API origin is the stable frontend branch URL.
+- Existing invoice/registry/Midtrans sandbox flows remain available. Old video and deck do not prove Ghost and are pending a separate truthful update.
+- Rollback correction: issuance disabled blocks new handover through the UI but keeps existing-state verification and expired-owner reclaim with valid deployment settings. An immutable vault cannot revoke signed paper or block direct redemption before expiry.
+- G-023..025 remain release gates until hosted UI/auth/proof and responsive checks finish; G-026 runbook/evidence updates in progress. G-027 video/deck and G-028 new production design are outside the current implementation release.
 
 Append/update this record when code work starts:
 

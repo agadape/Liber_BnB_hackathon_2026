@@ -11,5 +11,5 @@ export function ghostConfig(env:NodeJS.ProcessEnv=process.env):GhostConfig {
   else if(!vaultAddress || !tokenAddress || !block || !/^\d+$/.test(block)) reason="Ghost contract deployment is not configured.";
   else if(Number(env.GHOST_TOKEN_DECIMALS??18)!==18 || !Number.isInteger(confirmations) || confirmations<12) reason="Ghost protocol configuration is invalid.";
   else if(!/^[a-fA-F0-9]{64,}$/.test(env.GHOST_SERVER_HMAC_SECRET??"")) reason="Ghost metadata protection is not configured.";
-  return {enabled:!reason,chainId:97,vaultAddress,tokenAddress,tokenDecimals:18,deploymentBlock:block && /^\d+$/.test(block)?block:null,confirmationsRequired:Number.isInteger(confirmations)&&confirmations>=12?confirmations:12,tokenLabel:"MockUSDC",testnet:true,reason};
+  return {enabled:!reason,chainId:Number(env.GHOST_CHAIN_ID??97),vaultAddress,tokenAddress,tokenDecimals:18,deploymentBlock:block && /^\d+$/.test(block)?block:null,confirmationsRequired:Number.isInteger(confirmations)&&confirmations>=12?confirmations:12,tokenLabel:"MockUSDC",testnet:true,reason};
 }

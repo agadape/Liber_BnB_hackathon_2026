@@ -2,9 +2,10 @@ import {BaseError,ContractFunctionRevertedError,encodeFunctionData,erc20Abi,getA
 import {GHOST} from "./protocol";
 import {ghostAbi} from "./ghost-abi";
 import {ghostRpc} from "./config";
-import {requireReadyConfig,assertGhostDeployment,freshHead,readGhostState,verifyGhostProof,assertReservationMatches,GhostChainError,type GhostConfig,type GhostAction,type GhostState} from "./chain";
+import {requireReadyConfig,requireDeployedConfig,assertGhostDeployment,freshHead,readGhostState,verifyGhostProof,assertReservationMatches,GhostChainError,type GhostConfig,type GhostAction,type GhostState} from "./chain";
 import {voucherId,validateSignature,type GhostVoucher} from "./codec";
 import {getActiveWallet,sendActiveWallet,type ActiveWallet} from "../wallet/activeWallet";
+import {CHAIN} from "../chain";
 export const ghostTxUrl=(hash:string)=>`https://testnet.bscscan.com/tx/${hash}`;
 export function expiryLabel(seconds:string|bigint):string {const n=Number(seconds);if(!Number.isSafeInteger(n)||n>8_640_000_000_000)return "Unsupported display date";return new Intl.DateTimeFormat("en-GB",{dateStyle:"medium",timeStyle:"short",timeZone:"Asia/Jakarta"}).format(new Date(n*1000))+" WIB";}
 export function safeGhostError(error:unknown):string {
@@ -15,7 +16,8 @@ export function safeGhostError(error:unknown):string {
 }
 export function uiError(message:string):Error {const e=new Error(message);e.name="GhostUiError";return e;}
 export async function assertActiveOwner(wallet:ActiveWallet,expected:Address,config:GhostConfig):Promise<void> {
-  requireReadyConfig(config);const active=await getActiveWallet();
+  requireDeployedConfig(config);const active=await getActiveWallet();
+  if(CHAIN.id!==97)throw uiError("Switch the app and wallet to BSC Testnet before using Ghost.");
   if(active.mode!==wallet.mode || getAddress(active.publicKey)!==getAddress(expected) || getAddress(wallet.publicKey)!==getAddress(expected))throw uiError("Wallet account changed. Reconnect and review before signing.");
   if(await ghostRpc().getCode({address:expected}))throw uiError("Ghost V1 supports ordinary EOA wallets. Smart and delegated accounts are not supported.");
 }
@@ -56,13 +58,13 @@ export async function redeemGhost(wallet:ActiveWallet,config:GhostConfig,v:Ghost
   return sendActiveWallet(wallet,{to:config.vaultAddress,data:encodeFunctionData({abi:ghostAbi,functionName:"redeem",args:[v,signature]})}) as Promise<Hash>;
 }
 export async function reclaimGhost(wallet:ActiveWallet,config:GhostConfig,id:Hash):Promise<Hash> {
-  requireReadyConfig(config);const state=await readGhostState(ghostRpc(),config,id);await assertActiveOwner(wallet,state.owner,config);
+  requireDeployedConfig(config);const state=await readGhostState(ghostRpc(),config,id);await assertActiveOwner(wallet,state.owner,config);
   if(state.effectiveStatus!=="expired_reclaimable")throw uiError("Reclaim is available only after expiry for an unredeemed voucher.");
   await ghostRpc().simulateContract({address:config.vaultAddress,abi:ghostAbi,functionName:"reclaim",args:[id],account:state.owner});
   return sendActiveWallet(wallet,{to:config.vaultAddress,data:encodeFunctionData({abi:ghostAbi,functionName:"reclaim",args:[id]})}) as Promise<Hash>;
 }
 export async function confirmGhost(config:GhostConfig,id:Hash,hash:Hash,action:GhostAction,onReplacement?:(hash:Hash)=>void) {
-  requireReadyConfig(config);let minedHash=hash,changed=false;
+  requireDeployedConfig(config);let minedHash=hash,changed=false;
   const receipt=await ghostRpc().waitForTransactionReceipt({hash,confirmations:config.confirmationsRequired,timeout:120_000,onReplaced:replacement=>{
     if(replacement.reason!=="repriced"){changed=true;return;}
     minedHash=replacement.transaction.hash;onReplacement?.(minedHash);

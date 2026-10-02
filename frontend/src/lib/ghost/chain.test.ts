@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { encodeAbiParameters, encodeEventTopics, erc20Abi, type Hash, type PublicClient } from "viem";
 import { ghostAbi } from "./ghost-abi";
 import { deserializeVoucher } from "./codec";
-import { verifyGhostProof, freshHead, effectiveStatus, assertGhostDeployment, type ReadyGhostConfig } from "./chain";
+import { verifyGhostProof, freshHead, effectiveStatus, assertGhostDeployment, readGhostState, requireReadyConfig, type ReadyGhostConfig } from "./chain";
 const f = JSON.parse(readFileSync(new URL("../../../../protocol/fixtures/ghost-v1-golden.json", import.meta.url),"utf8"));
 const v = deserializeVoucher(f.voucher);
 const token = "0x4444444444444444444444444444444444444444" as const;
@@ -48,4 +48,10 @@ test("deployment identity rejects wrong network or signing domain",async()=>{
 });
 test("exact expiry partitions redeemable and reclaimable states",()=>{
  assert.equal(effectiveStatus(1,100n,99n),"reserved");assert.equal(effectiveStatus(1,100n,100n),"expired_reclaimable");assert.equal(effectiveStatus(2,100n,101n),"redeemed");assert.equal(effectiveStatus(3,100n,101n),"reclaimed");
+});
+test("disabling issuance preserves deployment verification and existing voucher recovery",async()=>{
+ const disabled={...config,enabled:false,reason:"Issuance disabled"};const {client}=setup();
+ assert.throws(()=>requireReadyConfig(disabled));
+ assert.equal((await readGhostState(client,disabled,f.voucherId)).effectiveStatus,"redeemed");
+ assert.equal((await verifyGhostProof(client,disabled,f.voucherId,h("c"),"redeem")).verified,true);
 });

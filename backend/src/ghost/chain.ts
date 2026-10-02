@@ -22,14 +22,18 @@ export interface GhostProof {
   voucher?: {owner:Address;merchant:Address;amountRaw:string;validBefore:string;salt:Hash};
 }
 export function requireReadyConfig(config: GhostConfig): asserts config is ReadyGhostConfig {
-  if(!config.enabled || config.chainId!==97 || !config.vaultAddress || !config.tokenAddress || !config.deploymentBlock || !/^\d+$/.test(config.deploymentBlock) || config.tokenDecimals!==18 || !Number.isInteger(config.confirmationsRequired) || config.confirmationsRequired<12) throw new GhostChainError("GHOST_DISABLED",config.reason ?? "Ghost is not configured on BSC Testnet.");
+  requireDeployedConfig(config);
+  if(!config.enabled)throw new GhostChainError("GHOST_DISABLED",config.reason ?? "Ghost issuance is disabled.");
+}
+export function requireDeployedConfig(config: GhostConfig): asserts config is ReadyGhostConfig {
+  if(config.chainId!==97 || !config.vaultAddress || !config.tokenAddress || !config.deploymentBlock || !/^\d+$/.test(config.deploymentBlock) || config.tokenDecimals!==18 || !Number.isInteger(config.confirmationsRequired) || config.confirmationsRequired<12) throw new GhostChainError("GHOST_DISABLED","Ghost deployment is not configured on BSC Testnet.");
 }
 const equal=(a:string,b:string)=>a.toLowerCase()===b.toLowerCase();
 export function effectiveStatus(status:number,validBefore:bigint,timestamp:bigint): GhostEffectiveStatus {
   return status===0?"unknown":status===2?"redeemed":status===3?"reclaimed":timestamp>=validBefore?"expired_reclaimable":"reserved";
 }
 export async function assertGhostDeployment(client: PublicClient, config: GhostConfig): Promise<void> {
-  requireReadyConfig(config);
+  requireDeployedConfig(config);
   const [chain,vaultCode,tokenCode,token,decimals,domain]=await Promise.all([
     client.getChainId(),client.getCode({address:config.vaultAddress}),client.getCode({address:config.tokenAddress}),
     client.readContract({address:config.vaultAddress,abi:ghostAbi,functionName:"token"}),
@@ -44,7 +48,7 @@ export async function freshHead(client:PublicClient,now=Math.floor(Date.now()/10
   return block;
 }
 export async function readGhostState(client:PublicClient, config:GhostConfig, id:Hash):Promise<GhostState> {
-  requireReadyConfig(config); if(!hashPattern.test(id)) throw new GhostChainError("MALFORMED_INPUT","Invalid voucher ID.");
+  requireDeployedConfig(config); if(!hashPattern.test(id)) throw new GhostChainError("MALFORMED_INPUT","Invalid voucher ID.");
   await assertGhostDeployment(client,config);
   const head=await freshHead(client);
   const [owner,merchant,amount,validBefore,status]=await client.readContract({address:config.vaultAddress,abi:ghostAbi,functionName:"reservations",args:[id],blockNumber:head.number});
@@ -52,7 +56,7 @@ export async function readGhostState(client:PublicClient, config:GhostConfig, id
   return {voucherId:id,owner:getAddress(owner),merchant:getAddress(merchant),amountRaw:amount.toString(),validBefore:validBefore.toString(),storageStatus:status,effectiveStatus:effectiveStatus(status,validBefore,head.timestamp),checkedBlockNumber:head.number.toString(),checkedBlockHash:head.hash!,checkedBlockTimestamp:head.timestamp.toString()};
 }
 export function assertReservationMatches(state:GhostState, voucher:GhostVoucher,config:GhostConfig):void {
-  requireReadyConfig(config); validateVoucher(voucher,config.vaultAddress);
+  requireDeployedConfig(config); validateVoucher(voucher,config.vaultAddress);
   if(state.voucherId.toLowerCase()!==voucherId(config.vaultAddress,voucher).toLowerCase() || !equal(state.owner,voucher.owner) || !equal(state.merchant,voucher.merchant) || state.amountRaw!==voucher.amount.toString() || state.validBefore!==voucher.validBefore.toString()) throw new GhostChainError("PROOF_MISMATCH","Voucher fields do not match its funded reservation.");
 }
 type ProofLog={address:string;data:Hash;topics:readonly Hash[];logIndex:number|null};
@@ -79,7 +83,7 @@ export function matchGhostProofLogs(logs:readonly ProofLog[],config:ReadyGhostCo
   return matched && transfer?matched:null;
 }
 export async function verifyGhostProof(client:PublicClient,config:GhostConfig,id:Hash,txHash:Hash,action:GhostAction,expectedVoucher?:GhostVoucher):Promise<GhostProof> {
-  requireReadyConfig(config);
+  requireDeployedConfig(config);
   if(!hashPattern.test(id) || !hashPattern.test(txHash)) throw new GhostChainError("MALFORMED_INPUT","Invalid proof reference.");
   const state=await readGhostState(client,config,id);
   if(state.storageStatus===0) throw new GhostChainError("UNKNOWN_VOUCHER","Voucher has not been funded.");

@@ -9,14 +9,15 @@ import { Button } from "@/components/ui/Button";
 import { CopilotCard, type Inspection } from "@/components/CopilotCard";
 import Image from "next/image";
 import { DEMO_LINKS } from "@/lib/demo-links";
+import { GhostDemo } from "@/components/ghost/GhostDemo";
 
-const views = [ {id:"qris",name:"QRIS sandbox"}, {id:"bnb",name:"BNB invoice"}, {id:"checks",name:"QR checks"} ] as const;
+const views = [ {id:"ghost",name:"Ghost Protocol"}, {id:"qris",name:"QRIS sandbox"}, {id:"bnb",name:"BNB invoice"}, {id:"checks",name:"QR checks"} ] as const;
 type View = typeof views[number]["id"];
 export default function DemoPage() {return <Suspense fallback={<PageShell>Opening demo…</PageShell>}><DemoContent/></Suspense>;}
 function DemoContent() {
   const requested = useSearchParams().get("view");
   const [selected,setSelected]=useState<View|null>(null);
-  const view=selected ?? (requested==="checks"||requested==="bnb"?requested:"qris");
+  const view=selected ?? (requested==="checks"||requested==="bnb"||requested==="qris"?requested:"ghost");
   const [result,setResult]=useState<Inspection|null>(null),[busy,setBusy]=useState(false),[error,setError]=useState<string|null>(null),[rejected,setRejected]=useState(false);
   async function trySample(sample:"valid"|"corrupt") {
     setBusy(true);setError(null);setResult(null);setRejected(false);
@@ -29,7 +30,7 @@ function DemoContent() {
   return <PageShell wide>
     <PageHeading eyebrow="Demo" title="Choose your demo.">Explore completed payments or inspect a sample QR. No wallet needed.</PageHeading>
     <nav aria-label="Demo flows" className="flow-tabs">{views.map(tab => <button key={tab.id} aria-current={view === tab.id ? "page" : undefined} onClick={() => setSelected(tab.id)}>{tab.name}</button>)}</nav>
-    {view !== "checks" ? <section className="demo-stage">
+    {view === "ghost" ? <GhostDemo/> : view !== "checks" ? <section className="demo-stage">
       <div>
         <p className="demo-amount">{view === "qris" ? "Rp10.000" : "5 MockUSDC"}<small>{view === "qris" ? "Completed sandbox payment" : "Completed BNB test payment"}</small></p>
         <h2 className="mt-7 font-display text-3xl">{view === "qris" ? "QRIS, with a public receipt." : "A payment you can verify."}</h2>

@@ -3,6 +3,15 @@ import { CHAIN } from "../chain";
 import type { EvmTxRequest } from "./topup";
 import { chooseWalletProvider, connectedProvider, forgetWalletProvider } from "./providers";
 import { voucherTypedData, type GhostVoucher } from "../ghost/codec";
+import { clearApiSession } from "../auth";
+const watchedProviders=new WeakSet<object>();
+function watchWalletChanges(eth:EIP1193Provider) {
+  const events=eth as EIP1193Provider & {on?:(event:string,listener:()=>void)=>void};
+  if(!events.on || watchedProviders.has(eth))return;
+  watchedProviders.add(eth);
+  const reset=()=>clearApiSession();
+  for(const event of ["accountsChanged","chainChanged","disconnect"])events.on(event,reset);
+}
 
 const ACCOUNT_HELP = "Open your wallet and unlock it. Select the account you want to use, then allow Liber to connect. In MetaMask, check this site's connected accounts and retry.";
 
@@ -48,6 +57,7 @@ export async function connectExternalWallet(): Promise<string> {
   const address = await account(eth, true);
   await ensureBnbChain(eth);
   if (await account(eth) !== address) throw new Error("Wallet account changed while connecting. Select your account and reconnect.");
+  watchWalletChanges(eth);
   return address;
 }
 
