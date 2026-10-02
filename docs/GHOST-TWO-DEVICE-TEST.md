@@ -8,12 +8,12 @@ Use BSC Testnet (chain 97), TEST BNB and MockUSDC only. Record the buyer shutdow
 
 ## Entry points
 
-- [Buyer: issue](https://liber-bnb-web-git-codex-ghost-protocol-daves-projects-3628ad99.vercel.app/ghost/create)
-- [Merchant: redeem](https://liber-bnb-web-git-codex-ghost-protocol-daves-projects-3628ad99.vercel.app/ghost/merchant)
-- [Test funds](https://liber-bnb-web-git-codex-ghost-protocol-daves-projects-3628ad99.vercel.app/demo/funds)
-- [Owner: recover/reclaim](https://liber-bnb-web-git-codex-ghost-protocol-daves-projects-3628ad99.vercel.app/ghost/vouchers)
+- [Buyer: issue](https://liber-bnb-web.vercel.app/ghost/create)
+- [Merchant: redeem](https://liber-bnb-web.vercel.app/ghost/merchant)
+- [Test funds](https://liber-bnb-web.vercel.app/demo/funds)
+- [Owner: recover/reclaim](https://liber-bnb-web.vercel.app/ghost/vouchers)
 
-The exact branch frontend and API domains are publicly accessible by the project owner's approval. Owner and merchant API writes/history still require SIWE. Other deployment URLs may require Vercel login. These links remain branch previews, not a production launch.
+The primary frontend and API are active by the project owner's approval, still on BSC Testnet with no cash value. Owner and merchant API writes/history require SIWE. The earlier branch preview remains separate. Browser device test wallets belong to their original origin/profile: moving from the preview to these primary links does not move a device wallet. Recover any earlier reservation using its original wallet and origin, or the same external wallet.
 
 ## 1. Prepare two different wallets
 

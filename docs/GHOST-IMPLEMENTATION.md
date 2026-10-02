@@ -1334,20 +1334,20 @@ APP_BASELINE: 3f451ec527b98de1da39e158a8c502d0f62638e4
 APP_FIRST_IMPLEMENTATION_HEAD: 33f5316dd109774d9aac20a4ed54230f81e3341e
 APP_BRANCH: main
 APP_VERIFIED_IMPLEMENTATION_HEAD: 8df8cadbc5bffed5941674b8048404bd82d18d50
-CURRENT_MILESTONE: user-requested main merge and primary-site deployment completed; primary Ghost API activation awaits approval for server-only Production HMAC secret
-NEXT_TASK: complete approved production HMAC setup if consent arrives; verify primary Ghost config; then two-device image-handover/phone-off test; printed-paper check later
+CURRENT_MILESTONE: user-requested main publication and primary Ghost API activation completed; all 12 primary hosted checks passed
+NEXT_TASK: two-device image-handover/phone-off test using primary URLs; saved-image, injected-wallet and printed-paper verification remain open
 REVIEW: https://github.com/agadape/Liber_BnB_hackathon_2026/pull/1 (merged 2026-10-02T11:51:03Z at user request)
 CODE_CI: https://github.com/agadape/Liber_BnB_hackathon_2026/actions/runs/37003284691 (success on main; frontend/backend/contracts/live-smoke and both Vercel deployments passed)
 PROTOCOL_VERSION: ghost-v1 (implemented, shared codec/chain generated)
 GHOST_VAULT_ADDRESS: 0x0837ac35ec54F678ba08912dcfd6166a299FCA31
 GHOST_DEPLOYMENT_BLOCK: 134372464
-GHOST_FEATURE_FLAGS: Preview enabled; Production public values configured, but primary API safely reports disabled because Production HMAC is absent
+GHOST_FEATURE_FLAGS: Preview and primary hosting enabled on BSC Testnet; Production API HMAC saved as server-only Vercel Secret by explicit user authorization
 DATABASE_MIGRATION: three Ghost tables + three indexes applied to existing Neon sandbox
 E2E_PROOF: app/contracts/deployments/ghost-demo-e2e.json (separate processes; no physical phone-off claim)
 UI_E2E_PROOF: app/contracts/deployments/ghost-ui-e2e.json (buyer page closed; no physical phone-off claim)
 UI_RECLAIM_PROOF: app/contracts/deployments/ghost-ui-reclaim.json (exact 1 MockUSDC returned after expiry)
 RESPONSIVE_EVIDENCE: app/contracts/deployments/ghost-responsive-check.json (browser viewports only, not real mobile devices)
-API_EVIDENCE: app/contracts/deployments/ghost-hosted-check.json
+API_EVIDENCE: app/contracts/deployments/ghost-hosted-check.json (preview); app/contracts/deployments/ghost-production-check.json (primary, all 12 checks passed)
 API_PUBLIC_EXCEPTION: only stable liber-bnb-api codex-ghost-protocol branch domain; project auth remains enabled
 FRONTEND_PUBLIC_EXCEPTION: only stable liber-bnb-web codex-ghost-protocol branch domain; separately user-approved for two-device sandbox test
 PRODUCTION_SCOPE: Ghost code published on primary web/API at explicit user request; remains BSC Testnet with no cash value
@@ -1367,7 +1367,7 @@ PRODUCTION_SCOPE: Ghost code published on primary web/API at explicit user reque
 - Hosted owner log recovery initially returned 503; live diagnosis confirmed the default RPC rejected logs. Dedicated index correction deployed and checked at 2026-10-02T08:01:19Z: HTTP 200, two canonical owner reserve proofs; merchant reuse of its owner cursor returned 400. Public report includes the full successful hosted check set; sessions revoked after the run.
 - Hosted UI run: buyer `0xde6fBA63bBcD1F2E81a2c498b7880EEbf12Faf64`, merchant `0x6EAdd91fc2FAc8c7110ADac362982FE881A3f1E1`, voucher `0xea0ade9bb3b58bcb01854d3a1ec93f13b86f6a6718ae41cae806bbe957bae860`. Reserve `0xacceb4dd859f8b11616e37f323e9637b00caa4488b65035a95664ec35630e9bd`; redeem `0xc6671085ab00f55cc9a4cdf231060343a785ae917c82302c444b6cdfc3abb91b`. Funded local PNG decoded by merchant; buyer voucher tab closed before redeem, but a funds tab remained open. No buyer-device-offline claim. Exact 5 MockUSDC received; rescanning the same PNG showed “Already redeemed. No new transaction will be sent.” Chain proofs independently rechecked. Browser private keys were never extracted.
 - QR download-event automation did not complete reliably; Save QR button / print dialog, actual paper, actual phone-off, injected MetaMask and real mobile checks remain pending. Later responsive checks measured actual 320/390px browser viewports without horizontal document overflow; real mobile hardware remains untested. Merchant used a second frontend origin for a separate device wallet; its terminal API sync was not attempted. The separate scripted run proved authenticated terminal sync on the configured stable origin.
-- Frontend/backend Vercel Ghost variables are scoped to `codex/ghost-protocol` Preview only. API HMAC is server-only; Neon credentials are not copied into files or chat. Frontend points to the stable API branch URL; API origin is the stable frontend branch URL.
+- Initial frontend/backend Ghost variables were scoped to `codex/ghost-protocol` Preview. The separately authorized main publication and primary activation below add matching Production settings. Each frontend uses its matching API origin; HMAC remains server-only and database credentials are not copied into source.
 - Existing invoice/registry/Midtrans sandbox flows remain available. Old video and deck do not prove Ghost and are pending a separate truthful update.
 - Rollback correction: issuance disabled blocks new handover through the UI but keeps existing-state verification and expired-owner reclaim with valid deployment settings. An immutable vault cannot revoke signed paper or block direct redemption before expiry.
 - User separately approved opening the sandbox API and frontend for a two-device test. Only the stable API and frontend branch domains were added as Unprotected Domains in their respective projects; project-wide Vercel authentication and other protected deployments remain enabled. An unauthenticated request to the frontend `/ghost` returned 200 and the Ghost page, without a login page.
@@ -1376,6 +1376,14 @@ PRODUCTION_SCOPE: Ghost code published on primary web/API at explicit user reque
 - G-023..025 remain production release gates until physical/device/print checks finish. G-026 README/runbook/public evidence updated. G-027 video/deck and G-028 new production design remain separate follow-ups; no mainnet promotion occurred.
 
 Append/update this record when code work starts:
+
+### Session 2026-10-02 primary Ghost API activation
+- User instruction: “gasssssss API ghost nyalain”, resolving the specific pending approval for Production HMAC setup and API activation. Generated a fresh 32-byte random hex HMAC in memory and saved it as Secret / Production only in Vercel `liber-bnb-api`. No wallet key, provider credential or database migration was changed; no new token transaction was sent.
+- Redeployed current main source `7a903c9a9cb14d04e614a07b8701ba44be864f35`; deployment `fbQT4zZkaMkNzgcz1k5z19xkDBeo` reached Ready and was assigned `liber-bnb-api.vercel.app`. Public `/ghost/config` returned enabled true, chain 97, expected vault/token/block, 18 decimals, 12 confirmations, testnet true, reason null. Existing deployment protection configuration retained.
+- Extended the hosted-check utility to allow only the two exact trusted API/frontend pairs (preview or primary). Primary evidence has its own filename, preserving the preview report. Local frontend typecheck passed. The previously published code's main CI `37003905327` passed on `7a903c9`.
+- Primary hosted check started at `2026-10-02T12:11:28.715Z`: all 12 checks passed (config, CORS, unauthenticated 401, SIWE owner/merchant sessions, wrong-owner 403, concurrent idempotent reservation sync, forbidden capability-field 400, canonical public redeem/reclaim proofs, owner history, bounded recovery with two items, and foreign-owner cursor 400). Only existing public testnet metadata and SIWE signatures reached the API; no Ghost authorization packet was read or sent. Sessions were revoked after the check.
+- Primary `/ghost/create` visibly enabled Connect owner wallet and Use device test wallet after remote configuration loaded. Screenshot saved locally as `outputs/ghost/ghost-api-activated.jpg`. Updated README/runbook/two-device guide to primary URLs and preserved the browser-wallet origin warning.
+- Remaining: actual phone shutdown with two devices, saved-image export, injected MetaMask/mobile and paper readability. Hosted activation does not establish these physical gates, real-money operation or mainnet readiness.
 
 ### Session 2026-10-02 main publication
 - User instruction: “Push ke main, ke utama.” This authorizes the main merge/publication before the remaining physical/device checks; those checks are still pending and are not claimed passed.

@@ -47,6 +47,8 @@ GitHub CI uses a disposable PostgreSQL service for the API suite. Frontend tests
 
 ## Database and hosting
 
+Primary Ghost UI/API were enabled on 2 October 2026 at the owner's explicit request. The API's Production HMAC is a server-only Vercel Secret; no value is stored in the repository. Both primary domains use the existing chain-97 deployment. `contracts/deployments/ghost-production-check.json` records 12 successful hosted checks, including authenticated recovery and canonical redeem/reclaim proof sync. This activates the testnet sandbox; real device, phone-off and paper checks remain open.
+
 `backend/src/db/ghost-migration.sql` adds only `ghost_vouchers`, `ghost_proofs`, `ghost_rate_limits` and indexes. It does not alter old tables or data. Apply in staging, inspect constraints, then apply to the existing sandbox database. Do not run the test suite against the shared hosted database: old tests intentionally clean up their own fixtures.
 
 Backend variables are in `.env.example`. Generate a server-only `GHOST_SERVER_HMAC_SECRET` of 32+ random bytes encoded as hex. It protects cursor integrity and pseudonymous durable rate buckets; it is not a wallet key. Never expose it in frontend/public artifacts. Keep `GHOST_ENABLED=false` until migration, configuration and verification gates pass.

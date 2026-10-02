@@ -7,7 +7,12 @@ import type {Hex} from "viem";
 // Only SIWE signatures reach the API. No Ghost authorization is read or sent.
 const base=process.argv[2];const origin=process.argv[3];const localDir=resolve(process.argv[4]??"../../outputs/ghost");
 if(!base?.startsWith("https://")||!origin?.startsWith("https://"))throw Error("Provide the trusted sandbox API and frontend HTTPS origins.");
-if(base!=="https://liber-bnb-api-git-codex-ghost-protocol-daves-projects-3628ad99.vercel.app"||origin!=="https://liber-bnb-web-git-codex-ghost-protocol-daves-projects-3628ad99.vercel.app")throw Error("Only the project's configured Ghost sandbox origins are allowed.");
+const trustedPairs=[
+  ["https://liber-bnb-api-git-codex-ghost-protocol-daves-projects-3628ad99.vercel.app","https://liber-bnb-web-git-codex-ghost-protocol-daves-projects-3628ad99.vercel.app"],
+  ["https://liber-bnb-api.vercel.app","https://liber-bnb-web.vercel.app"],
+];
+if(!trustedPairs.some(([api,web])=>base===api&&origin===web))throw Error("Only the project's configured Ghost testnet API/frontend pairs are allowed.");
+const reportName=base===trustedPairs[1][0]?"ghost-production-check.json":"ghost-hosted-check.json";
 const report=JSON.parse(await readFile(resolve(localDir,"ghost-demo-e2e.json"),"utf8"));
 const sessions:string[]=[];
 async function request(path:string,method="GET",body?:unknown,token?:string){
@@ -49,5 +54,5 @@ try {
   check(recovered.status===200&&Array.isArray(recovered.data.items)&&recovered.data.items.length<=5,"bounded owner recovery");
   check(recovered.data.items.every((p:{owner:string;verified:boolean;confirmations:number})=>p.owner===report.owner&&p.verified&&p.confirmations>=12),"recovered owner canonical proofs");result.checks.boundedOwnerRecovery=true;
   if(recovered.data.next){const foreign=await request("/ghost/me/recover","POST",{cursor:recovered.data.next},merchant);check(foreign.status===400,"recovery cursor owner binding");result.checks.recoveryCursorIsolation=true;}
-  await writeFile(resolve(localDir,"ghost-hosted-check.json"),JSON.stringify(result,null,2)+"\n");console.log(JSON.stringify(result,null,2));
+  await writeFile(resolve(localDir,reportName),JSON.stringify(result,null,2)+"\n");console.log(JSON.stringify(result,null,2));
 } finally {for(const token of sessions)await request("/auth/logout","POST",undefined,token).catch(()=>{});}

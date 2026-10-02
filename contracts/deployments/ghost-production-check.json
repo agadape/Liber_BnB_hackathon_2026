@@ -1,0 +1,20 @@
+{
+  "scope": "BSC Testnet / hosted sandbox metadata only",
+  "checkedAt": "2026-10-02T12:11:28.715Z",
+  "api": "https://liber-bnb-api.vercel.app",
+  "origin": "https://liber-bnb-web.vercel.app",
+  "checks": {
+    "config": true,
+    "cors": true,
+    "authenticationRequired": true,
+    "siwe": true,
+    "ownerIsolation": true,
+    "idempotentConcurrentSync": true,
+    "capabilityFieldsRejected": true,
+    "redeemPublicProof": true,
+    "reclaimPublicProof": true,
+    "ownerHistory": true,
+    "boundedOwnerRecovery": true,
+    "recoveryCursorIsolation": true
+  }
+}
