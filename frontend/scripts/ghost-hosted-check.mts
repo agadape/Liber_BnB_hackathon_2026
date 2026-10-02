@@ -1,8 +1,7 @@
 import {readFile,writeFile} from "node:fs/promises";
 import {resolve} from "node:path";
 import {privateKeyToAccount} from "viem/accounts";
-import {createSiweMessage} from "viem/siwe";
-import {AUTH_STATEMENT} from "../../backend/src/auth/auth.js";
+import {challengeMessage} from "../src/lib/auth";
 import type {Hex} from "viem";
 
 // Only SIWE signatures reach the API. No Ghost authorization is read or sent.
@@ -21,7 +20,7 @@ async function login(file:string,expected:string){
   check(account.address===expected,"local account identity");
   const challenge=await request("/auth/challenge","POST",{walletAddress:account.address});check(challenge.status===200,"SIWE challenge");const c=challenge.data;
   check(c.uri===origin&&c.domain===new URL(origin).host&&c.chainId===97,"SIWE domain and chain");
-  const message=createSiweMessage({address:account.address,domain:c.domain,uri:c.uri,version:"1",chainId:97,nonce:c.nonce,issuedAt:new Date(c.issuedAt),expirationTime:new Date(c.expiresAt),statement:AUTH_STATEMENT});
+  const message=challengeMessage(c,account.address,origin);
   const signed=await account.signMessage({message});const verified=await request("/auth/verify","POST",{nonce:c.nonce,signature:signed});
   check(verified.status===200&&verified.data.walletAddress===account.address,"SIWE session");sessions.push(verified.data.token);return verified.data.token as string;
 }
