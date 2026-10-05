@@ -1,0 +1,17 @@
+{
+  "project": "liber:Ghost Protocol",
+  "network": "BSC Testnet",
+  "chainId": 97,
+  "vault": "0x0837ac35ec54F678ba08912dcfd6166a299FCA31",
+  "tracks": [
+    "Finance & Commerce",
+    "Consumer Apps"
+  ],
+  "website": "https://liber-bnb-web.vercel.app/ghost",
+  "github": "https://github.com/agadape/Liber_BnB_hackathon_2026",
+  "assetsRelease": "https://github.com/agadape/Liber_BnB_hackathon_2026/releases/tag/ghost-submission-2026-10-05",
+  "youtube": null,
+  "pitchDeckCanvaDrive": null,
+  "publicationStatus": "awaiting new YouTube and Canva/Drive URLs",
+  "videoSeconds": 120
+}

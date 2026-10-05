@@ -1,0 +1,290 @@
+[
+  {
+    "text": "The sandwich is ready.",
+    "file": "audio/story-0.wav",
+    "seconds": 1.9,
+    "rate": 1.1568047337278102,
+    "start": 0.45,
+    "end": 2.0924552429667527
+  },
+  {
+    "text": "Your phone is at one percent.",
+    "file": "audio/story-1.wav",
+    "seconds": 2.175,
+    "rate": 1.1568047337278102,
+    "start": 2.2424552429667526,
+    "end": 4.122634271099745
+  },
+  {
+    "text": "Of course it is.",
+    "file": "audio/story-2.wav",
+    "seconds": 1.65,
+    "rate": 1.1568047337278102,
+    "start": 4.272634271099745,
+    "end": 5.6989769820971885
+  },
+  {
+    "text": "What if you could prepare a payment permission before your battery gives up?",
+    "file": "audio/story-3.wav",
+    "seconds": 4.05,
+    "rate": 1.1568047337278102,
+    "start": 5.848976982097189,
+    "end": 9.350000000000003
+  },
+  {
+    "text": "Meet Liber, Ghost Protocol.",
+    "file": "audio/intro-0.wav",
+    "seconds": 2.425,
+    "rate": 1.0592592592592591,
+    "start": 10.45,
+    "end": 12.739335664335664
+  },
+  {
+    "text": "A prefunded payment permission that can leave your phone, and travel on paper.",
+    "file": "audio/intro-1.wav",
+    "seconds": 4.725,
+    "rate": 1.0592592592592591,
+    "start": 12.889335664335665,
+    "end": 17.35
+  },
+  {
+    "text": "Choose one merchant, one amount, and an expiry.",
+    "file": "audio/rules-0.wav",
+    "seconds": 3.225,
+    "rate": 1.1555023923444974,
+    "start": 18.45,
+    "end": 21.240993788819875
+  },
+  {
+    "text": "Sign that exact permission, then reserve the tokens.",
+    "file": "audio/rules-1.wav",
+    "seconds": 3.675,
+    "rate": 1.1555023923444974,
+    "start": 21.390993788819873,
+    "end": 24.57142857142857
+  },
+  {
+    "text": "The contract enforces the limits.",
+    "file": "audio/rules-2.wav",
+    "seconds": 2.55,
+    "rate": 1.1555023923444974,
+    "start": 24.721428571428568,
+    "end": 26.928260869565214
+  },
+  {
+    "text": "The paper carries the authorization.",
+    "file": "audio/rules-3.wav",
+    "seconds": 2.625,
+    "rate": 1.1555023923444974,
+    "start": 27.078260869565213,
+    "end": 29.349999999999994
+  },
+  {
+    "text": "Here is the live workspace.",
+    "file": "audio/prepare-0.wav",
+    "seconds": 2.15,
+    "rate": 1.1204819277108433,
+    "start": 30.45,
+    "end": 32.368817204301074
+  },
+  {
+    "text": "Review the recipient and expiry before signing.",
+    "file": "audio/prepare-1.wav",
+    "seconds": 3.4,
+    "rate": 1.1204819277108433,
+    "start": 32.51881720430107,
+    "end": 35.55322580645161
+  },
+  {
+    "text": "Preparation requires your wallet and an internet connection.",
+    "file": "audio/prepare-2.wav",
+    "seconds": 4.05,
+    "rate": 1.1204819277108433,
+    "start": 35.703225806451606,
+    "end": 39.317741935483866
+  },
+  {
+    "text": "Only after the reserve is confirmed should you hand over the voucher.",
+    "file": "audio/prepare-3.wav",
+    "seconds": 4.35,
+    "rate": 1.1204819277108433,
+    "start": 39.467741935483865,
+    "end": 43.349999999999994
+  },
+  {
+    "text": "The buyer can leave the device behind.",
+    "file": "audio/handover-0.wav",
+    "seconds": 2.6,
+    "rate": 1.0813953488372094,
+    "start": 44.45,
+    "end": 46.85430107526882
+  },
+  {
+    "text": "The merchant scans the voucher and claims with the named wallet.",
+    "file": "audio/handover-1.wav",
+    "seconds": 3.95,
+    "rate": 1.0813953488372094,
+    "start": 47.00430107526882,
+    "end": 50.65698924731183
+  },
+  {
+    "text": "The merchant still needs internet and gas.",
+    "file": "audio/handover-2.wav",
+    "seconds": 2.75,
+    "rate": 1.0813953488372094,
+    "start": 50.806989247311826,
+    "end": 53.349999999999994
+  },
+  {
+    "text": "This public testnet receipt shows five mock tokens transferred to the merchant.",
+    "file": "audio/payment-0.wav",
+    "seconds": 5.125,
+    "rate": 1.1863207547169812,
+    "start": 54.45,
+    "end": 58.77007952286283
+  },
+  {
+    "text": "You can inspect the reserve and redemption transactions yourself.",
+    "file": "audio/payment-1.wav",
+    "seconds": 4.275,
+    "rate": 1.1863207547169812,
+    "start": 58.92007952286283,
+    "end": 62.523658051689864
+  },
+  {
+    "text": "No wallet login is needed to view the proof.",
+    "file": "audio/payment-2.wav",
+    "seconds": 3.175,
+    "rate": 1.1863207547169812,
+    "start": 62.67365805168986,
+    "end": 65.35
+  },
+  {
+    "text": "A screenshot is not a second payment.",
+    "file": "audio/replay-0.wav",
+    "seconds": 2.7,
+    "rate": 1.1603773584905661,
+    "start": 66.45,
+    "end": 68.77682926829269
+  },
+  {
+    "text": "This recorded interface rejected the same voucher after redemption.",
+    "file": "audio/replay-1.wav",
+    "seconds": 4.875,
+    "rate": 1.1603773584905661,
+    "start": 68.92682926829269,
+    "end": 73.12804878048782
+  },
+  {
+    "text": "The contract also rejects replay and claims from a different merchant.",
+    "file": "audio/replay-2.wav",
+    "seconds": 4.725,
+    "rate": 1.1603773584905661,
+    "start": 73.27804878048782,
+    "end": 77.35000000000002
+  },
+  {
+    "text": "If the permission expires unused, the owner can reclaim the funds.",
+    "file": "audio/expiry-0.wav",
+    "seconds": 4.525,
+    "rate": 1.1244979919678715,
+    "start": 78.45,
+    "end": 82.47401785714285
+  },
+  {
+    "text": "This separate test returned two mock tokens.",
+    "file": "audio/expiry-1.wav",
+    "seconds": 3.25,
+    "rate": 1.1244979919678715,
+    "start": 82.62401785714286,
+    "end": 85.51419642857144
+  },
+  {
+    "text": "Recovery requires an owner transaction after expiry.",
+    "file": "audio/expiry-2.wav",
+    "seconds": 4.3,
+    "rate": 1.1244979919678715,
+    "start": 85.66419642857144,
+    "end": 89.48812500000001
+  },
+  {
+    "text": "It is not automatic.",
+    "file": "audio/expiry-3.wav",
+    "seconds": 1.925,
+    "rate": 1.1244979919678715,
+    "start": 89.63812500000002,
+    "end": 91.35000000000002
+  },
+  {
+    "text": "Ghost runs on BNB Smart Chain Testnet.",
+    "file": "audio/bounds-0.wav",
+    "seconds": 3.375,
+    "rate": 1.2727272727272727,
+    "start": 92.45,
+    "end": 95.10178571428571
+  },
+  {
+    "text": "Mock tokens have no cash value.",
+    "file": "audio/bounds-1.wav",
+    "seconds": 2.55,
+    "rate": 1.2727272727272727,
+    "start": 95.25178571428572,
+    "end": 97.25535714285715
+  },
+  {
+    "text": "Physical phone off testing remains pending.",
+    "file": "audio/bounds-2.wav",
+    "seconds": 3.075,
+    "rate": 1.2727272727272727,
+    "start": 97.40535714285716,
+    "end": 99.82142857142858
+  },
+  {
+    "text": "This release does not settle rupiah or verify goods delivery.",
+    "file": "audio/bounds-3.wav",
+    "seconds": 4.3,
+    "rate": 1.2727272727272727,
+    "start": 99.97142857142859,
+    "end": 103.35000000000002
+  },
+  {
+    "text": "The next step is a small, prearranged merchant pilot, followed by security review.",
+    "file": "audio/close-0.wav",
+    "seconds": 5.475,
+    "rate": 1.0734265734265733,
+    "start": 104.45,
+    "end": 109.55048859934854
+  },
+  {
+    "text": "Explore the live workspace and public evidence.",
+    "file": "audio/close-1.wav",
+    "seconds": 3.375,
+    "rate": 1.0734265734265733,
+    "start": 109.70048859934855,
+    "end": 112.84462540716613
+  },
+  {
+    "text": "Liber, Ghost Protocol.",
+    "file": "audio/close-2.wav",
+    "seconds": 2.175,
+    "rate": 1.0734265734265733,
+    "start": 112.99462540716614,
+    "end": 115.02084690553748
+  },
+  {
+    "text": "Your battery gets a break.",
+    "file": "audio/close-3.wav",
+    "seconds": 2.025,
+    "rate": 1.0734265734265733,
+    "start": 115.17084690553749,
+    "end": 117.05732899022804
+  },
+  {
+    "text": "Your permission keeps its limits.",
+    "file": "audio/close-4.wav",
+    "seconds": 2.3,
+    "rate": 1.0734265734265733,
+    "start": 117.20732899022805,
+    "end": 119.35000000000004
+  }
+]

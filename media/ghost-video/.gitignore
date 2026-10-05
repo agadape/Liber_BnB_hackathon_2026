@@ -1,0 +1,7 @@
+node_modules/
+.model-cache/
+public/audio/*.wav
+public/audio/fit-*.wav
+output/
+reviews/
+*.log

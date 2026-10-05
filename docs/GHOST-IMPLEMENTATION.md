@@ -1333,11 +1333,11 @@ APP_CHECKOUT: C:/Project_Dave/Liber_bnb/app
 APP_BASELINE: 3f451ec527b98de1da39e158a8c502d0f62638e4
 APP_FIRST_IMPLEMENTATION_HEAD: 33f5316dd109774d9aac20a4ed54230f81e3341e
 APP_BRANCH: main
-APP_VERIFIED_IMPLEMENTATION_HEAD: 8df8cadbc5bffed5941674b8048404bd82d18d50
-CURRENT_MILESTONE: primary Ghost API active with 12 hosted checks passed; compact Ghost frontend refresh implemented and locally verified
-NEXT_TASK: two-device image-handover/phone-off test using primary URLs; saved-image, injected-wallet and printed-paper verification remain open
+APP_VERIFIED_IMPLEMENTATION_HEAD: c7bc856307921b04ec6c504a2273abd0a7d44152
+CURRENT_MILESTONE: main Ghost application and API verified; English submission package, ten-slide deck and 120-second Remotion film prepared
+NEXT_TASK: publish the new Ghost film to YouTube and deck to Canva/Drive, update release links and complete owner fields; physical two-device/printed-paper gates remain open
 REVIEW: https://github.com/agadape/Liber_BnB_hackathon_2026/pull/1 (merged 2026-10-02T11:51:03Z at user request)
-CODE_CI: https://github.com/agadape/Liber_BnB_hackathon_2026/actions/runs/37003284691 (success on main; frontend/backend/contracts/live-smoke and both Vercel deployments passed)
+CODE_CI: https://github.com/agadape/Liber_BnB_hackathon_2026/actions/runs/37007328822 (success on main; frontend/backend/contracts/live-smoke passed)
 PROTOCOL_VERSION: ghost-v1 (implemented, shared codec/chain generated)
 GHOST_VAULT_ADDRESS: 0x0837ac35ec54F678ba08912dcfd6166a299FCA31
 GHOST_DEPLOYMENT_BLOCK: 134372464
@@ -1421,6 +1421,17 @@ Append/update this record when code work starts:
 - Next concrete action: owner/merchant real-device check, print a newly funded voucher, turn buyer phone off, redeem once and rescan the same paper; separately exercise expired reclaim. New video/pitch must show the actual result. Do not reuse an expired/spent local QR as an active demo.
 
 ```markdown
+### Session 2026-10-02 Ghost submission package
+- Workspace / branch / verified application HEAD: `C:/Project_Dave/Liber_bnb/app`, `main`, `c7bc856307921b04ec6c504a2273abd0a7d44152`. Submission publication adds assets and documentation, not protocol changes.
+- User authorization: “OKKE GAS” approved the Ghost README, submission, English pitch deck, English narrated/subtitled video, judge guide, Q&A and visual package. Existing main publication authorization retained.
+- Completed: README reframed around constrained prefunded permission; legacy README archived; exact form fields and project detail; no-wallet judge guide; pitch/Q&A; YouTube upload copy; release manifest with genuinely pending external URLs.
+- Deck: 10 slides, 16:9, full English, original Liber artwork, native editable PowerPoint text/diagram, faithful current UI screenshot. Final PPTX structural/layout/font/import checks passed; all 10 imported slides individually visually inspected. PDF has 10 pages and seven working link annotations; rendered PDF contact sheet checked. No mixed-language dialogue or invented traction.
+- Film: Remotion, 120 seconds, 1920x1080, 30 fps, H.264/AAC; local English narration, English burned captions and matching 64-cue SRT; original score and music-only fallback. Actual payment/reclaim screenshots and separate historical UI replay; current preparation explicitly unsigned walkthrough. Whole-device-off/paper exercise remains pending. Receipt focus and guided preparation revised following an independent first review.
+- Verification: video source TypeScript check passed. Full final picture/audio decode and format checks passed. Unchanged audio master measured -15.84 LUFS, -1.48 dBTP, 2.4 LU range; independent listening and pronunciation review not performed. Final review record is `media/ghost-video/REVIEW.md`. No engineering-test counts expanded; prior main CI 37007328822 passed the established 171 tests and live checks.
+- Artifacts: `C:/Project_Dave/Liber_bnb/outputs/ghost-submission`; PDF/PPTX/thumbnail and editable Remotion source are also included in the repository. WAV/cache/dependencies and active authorizations are excluded. Checksums and upload bundle accompany final local files.
+- Deployment/config/transactions: none for this asset session. Public existing receipts and reports reused. No database writes or wallet payment/signing performed.
+- Publication boundaries: new Ghost YouTube URL and public Canva/Drive deck link remain null/pending until genuine upload. Previous video WyFs-pF5AYM is explicitly legacy QRIS/invoice. Owner completes personal fields and any required attestations.
+- Next concrete action: upload the new MP4 with matching SRT/thumbnail, upload the deck, update SUBMISSION.md/project-detail.md/release.json with actual links, preview final submission. Physical phone-off/printed-paper/injected-wallet verification and production security gates remain open.
 ### Session YYYY-MM-DD HH:mm WIB
 - Workspace / branch / HEAD:
 - Completed task IDs:
@@ -1480,3 +1491,10 @@ Primary technical references, checked 2 October 2026:
 Original product idea, Ghost schema, constants, architecture, milestones, and proposed APIs in this file are project design decisions. They are not claims that a library, regulator, or existing provider already implements or approves Ghost.
 
 **Final direction:** build one testnet payment capability that is visible, constrained, and reproducible: reserve online, hand over paper while buyer offline, redeem online once, reclaim unused funds after the exact expiry boundary.
+
+### Session 2026-10-05 submission delivery finalization
+- Resumed after user interruption; no pre-existing assets or application work was discarded.
+- Final revised Ghost film retained: 120 seconds, English narration/captions, separate SRT. Independent round-two review returned SHIP after inspecting 20 actual full-resolution frames; prior receipt/preparation issues fixed. Audio remains measured rather than independently listened to.
+- Editable ten-slide PPTX and linked PDF retained. Complete upload ZIP, separate Remotion source ZIP, original logo/thumbnail/cover, form copy, project detail, Q&A, judge guide and SHA-256 manifest assembled. ZIP integrity and repository deck/thumbnail equality checked.
+- GitHub release target: `ghost-submission-2026-10-05`; new Ghost YouTube and Canva/Drive URLs remain pending until actual publication. Owner completes personal fields. No new contract transaction, migration or hosting configuration performed.
+- User explicitly requested all submission materials including latest Remotion and PPT pitch deck. Existing main publication authorization retained. Next action after publication: add actual YouTube/Drive URLs, preview portal, complete owner fields; physical/device gates remain open.

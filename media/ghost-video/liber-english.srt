@@ -1,0 +1,255 @@
+1
+00:00:00,450 --> 00:00:02,092
+The sandwich is ready.
+
+2
+00:00:02,242 --> 00:00:04,123
+Your phone is at one percent.
+
+3
+00:00:04,273 --> 00:00:05,699
+Of course it is.
+
+4
+00:00:05,849 --> 00:00:07,985
+What if you could prepare a payment permission
+
+5
+00:00:07,985 --> 00:00:09,350
+before your battery gives up?
+
+6
+00:00:10,450 --> 00:00:12,739
+Meet Liber, Ghost Protocol.
+
+7
+00:00:12,889 --> 00:00:14,664
+A prefunded payment permission
+
+8
+00:00:14,664 --> 00:00:16,451
+that can leave your phone, and
+
+9
+00:00:16,451 --> 00:00:17,350
+travel on paper.
+
+10
+00:00:18,450 --> 00:00:20,450
+Choose one merchant, one amount,
+
+11
+00:00:20,450 --> 00:00:21,241
+and an expiry.
+
+12
+00:00:21,391 --> 00:00:23,133
+Sign that exact permission,
+
+13
+00:00:23,133 --> 00:00:24,571
+then reserve the tokens.
+
+14
+00:00:24,721 --> 00:00:26,459
+The contract enforces the
+
+15
+00:00:26,459 --> 00:00:26,928
+limits.
+
+16
+00:00:27,078 --> 00:00:29,350
+The paper carries the authorization.
+
+17
+00:00:30,450 --> 00:00:32,369
+Here is the live workspace.
+
+18
+00:00:32,519 --> 00:00:34,580
+Review the recipient and expiry
+
+19
+00:00:34,580 --> 00:00:35,553
+before signing.
+
+20
+00:00:35,703 --> 00:00:37,699
+Preparation requires your wallet
+
+21
+00:00:37,699 --> 00:00:39,318
+and an internet connection.
+
+22
+00:00:39,468 --> 00:00:41,498
+Only after the reserve is confirmed
+
+23
+00:00:41,498 --> 00:00:43,350
+should you hand over the voucher.
+
+24
+00:00:44,450 --> 00:00:46,406
+The buyer can leave the device
+
+25
+00:00:46,406 --> 00:00:46,854
+behind.
+
+26
+00:00:47,004 --> 00:00:48,779
+The merchant scans the voucher
+
+27
+00:00:48,779 --> 00:00:50,657
+and claims with the named wallet.
+
+28
+00:00:50,807 --> 00:00:52,878
+The merchant still needs internet
+
+29
+00:00:52,878 --> 00:00:53,350
+and gas.
+
+30
+00:00:54,450 --> 00:00:56,312
+This public testnet receipt shows
+
+31
+00:00:56,312 --> 00:00:58,060
+five mock tokens transferred to
+
+32
+00:00:58,060 --> 00:00:58,770
+the merchant.
+
+33
+00:00:58,920 --> 00:01:00,667
+You can inspect the reserve and
+
+34
+00:01:00,667 --> 00:01:02,524
+redemption transactions yourself.
+
+35
+00:01:02,674 --> 00:01:04,436
+No wallet login is needed to
+
+36
+00:01:04,436 --> 00:01:05,350
+view the proof.
+
+37
+00:01:06,450 --> 00:01:08,263
+A screenshot is not a second
+
+38
+00:01:08,263 --> 00:01:08,777
+payment.
+
+39
+00:01:08,927 --> 00:01:11,005
+This recorded interface rejected
+
+40
+00:01:11,005 --> 00:01:13,128
+the same voucher after redemption.
+
+41
+00:01:13,278 --> 00:01:15,201
+The contract also rejects replay
+
+42
+00:01:15,201 --> 00:01:17,350
+and claims from a different merchant.
+
+43
+00:01:18,450 --> 00:01:20,560
+If the permission expires unused,
+
+44
+00:01:20,560 --> 00:01:22,474
+the owner can reclaim the funds.
+
+45
+00:01:22,624 --> 00:01:24,473
+This separate test returned
+
+46
+00:01:24,473 --> 00:01:25,514
+two mock tokens.
+
+47
+00:01:25,664 --> 00:01:27,641
+Recovery requires an owner
+
+48
+00:01:27,641 --> 00:01:29,488
+transaction after expiry.
+
+49
+00:01:29,638 --> 00:01:31,350
+It is not automatic.
+
+50
+00:01:32,450 --> 00:01:34,533
+Ghost runs on BNB Smart Chain
+
+51
+00:01:34,533 --> 00:01:35,102
+Testnet.
+
+52
+00:01:35,252 --> 00:01:37,255
+Mock tokens have no cash value.
+
+53
+00:01:37,405 --> 00:01:39,370
+Physical phone off testing remains
+
+54
+00:01:39,370 --> 00:01:39,821
+pending.
+
+55
+00:01:39,971 --> 00:01:41,964
+This release does not settle rupiah
+
+56
+00:01:41,964 --> 00:01:43,350
+or verify goods delivery.
+
+57
+00:01:44,450 --> 00:01:46,799
+The next step is a small, prearranged
+
+58
+00:01:46,799 --> 00:01:48,565
+merchant pilot, followed by
+
+59
+00:01:48,565 --> 00:01:49,550
+security review.
+
+60
+00:01:49,700 --> 00:01:51,507
+Explore the live workspace
+
+61
+00:01:51,507 --> 00:01:52,845
+and public evidence.
+
+62
+00:01:52,995 --> 00:01:55,021
+Liber, Ghost Protocol.
+
+63
+00:01:55,171 --> 00:01:57,057
+Your battery gets a break.
+
+64
+00:01:57,207 --> 00:01:59,350
+Your permission keeps its limits.

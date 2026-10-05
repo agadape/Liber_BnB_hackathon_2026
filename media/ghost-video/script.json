@@ -1,0 +1,52 @@
+[
+  {
+    "id": "story",
+    "duration": 10,
+    "text": "The sandwich is ready. Your phone is at one percent. Of course it is. What if you could prepare a payment permission before your battery gives up?"
+  },
+  {
+    "id": "intro",
+    "duration": 8,
+    "text": "Meet Liber, Ghost Protocol. A prefunded payment permission that can leave your phone, and travel on paper."
+  },
+  {
+    "id": "rules",
+    "duration": 12,
+    "text": "Choose one merchant, one amount, and an expiry. Sign that exact permission, then reserve the tokens. The contract enforces the limits. The paper carries the authorization."
+  },
+  {
+    "id": "prepare",
+    "duration": 14,
+    "text": "Here is the live workspace. Review the recipient and expiry before signing. Preparation requires your wallet and an internet connection. Only after the reserve is confirmed should you hand over the voucher."
+  },
+  {
+    "id": "handover",
+    "duration": 10,
+    "text": "The buyer can leave the device behind. The merchant scans the voucher and claims with the named wallet. The merchant still needs internet and gas."
+  },
+  {
+    "id": "payment",
+    "duration": 12,
+    "text": "This public testnet receipt shows five mock tokens transferred to the merchant. You can inspect the reserve and redemption transactions yourself. No wallet login is needed to view the proof."
+  },
+  {
+    "id": "replay",
+    "duration": 12,
+    "text": "A screenshot is not a second payment. This recorded interface rejected the same voucher after redemption. The contract also rejects replay and claims from a different merchant."
+  },
+  {
+    "id": "expiry",
+    "duration": 14,
+    "text": "If the permission expires unused, the owner can reclaim the funds. This separate test returned two mock tokens. Recovery requires an owner transaction after expiry. It is not automatic."
+  },
+  {
+    "id": "bounds",
+    "duration": 12,
+    "text": "Ghost runs on BNB Smart Chain Testnet. Mock tokens have no cash value. Physical phone off testing remains pending. This release does not settle rupiah or verify goods delivery."
+  },
+  {
+    "id": "close",
+    "duration": 16,
+    "text": "The next step is a small, prearranged merchant pilot, followed by security review. Explore the live workspace and public evidence. Liber, Ghost Protocol. Your battery gets a break. Your permission keeps its limits."
+  }
+]

@@ -1,80 +1,92 @@
-# Liber
+# liber:Ghost Protocol
 
-**Familiar checkout, verifiable payment receipts on BNB Chain.**
+**A prefunded payment permission that can leave your phone.**
 
-Liber is a working sandbox payment workspace for Indonesian merchant and buyer workflows. It uses **Midtrans Sandbox** for QRIS integration and **BNB Smart Chain Testnet (chain ID 97)** for token invoices and public receipt commitments.
+The sandwich is ready. Your battery is not. Ghost asks what happens if a payment permission can be prepared earlier and carried on paper. The merchant stays online; the buyer need not return to their wallet at claim time.
 
-## Product flows
+## The problem and our first use case
 
-### 1. Inspect a QR before paying
-The QR checker parses the payload and validates its format, Indonesian IDR fields, positive amount, and CRC16 checksum. The built-in Rp25,000 sample exposes its merchant and amount; a corrupted sample is rejected. These checks establish payload integrity, not merchant identity. Inspection does not initiate a payment.
+Digital checkout often assumes a charged, connected buyer device. A dead battery or a deliberately screen-free outing breaks that assumption. A payment notification can report a transfer; Ghost explores a permission prepared before the moment of purchase.
 
-### 2. Share a familiar QRIS checkout
-An authenticated merchant creates a rupiah invoice and shares its buyer checkout link. The backend checks payment status with Midtrans and binds the provider status, environment, order, and amount into a receipt statement. Its hash is recorded by LiberReceiptRegistry on BNB. A completed Rp10,000 sandbox order demonstrates the provider integration and public receipt recording.
+Our proposed first use case is a bounded event with prearranged merchants and sandbox community tokens. It deliberately limits merchant choice. This is a pilot hypothesis, not a claim of existing customers or product-market fit. Preparation friction, scanning reliability and merchant willingness need measurement.
 
-**Midtrans confirms payment status; BNB timestamps the receipt commitment.** The registry does not independently verify fiat settlement or move rupiah.
+## What the working release does
 
-### 3. Pay and verify a native BNB invoice
-The merchant specifies the receiving wallet, exact token amount, and expiry. The buyer approves that exact amount, then separately signs the payment. LiberInvoice transfers MockUSDC directly from buyer to merchant and records the paid invoice. Unknown, expired, cancelled, already-paid, and merchant self-payment attempts are rejected.
-
-The public receipt checks:
-- A successful transaction receipt on the configured chain.
-- A matching InvoicePaid event for the invoice.
-- An exact MockUSDC Transfer to the intended recipient.
-
-A completed **5 MockUSDC** payment is available for inspection. Test tokens have no monetary value; TEST BNB is required for gas.
-
-## Why BNB Chain
-
-BNB supplies the execution and public evidence layer: native invoice state, direct token payments, and immutable receipt-hash timestamps. These are deployed contracts and confirmed testnet transactions, not a planned chain integration.
-
-## Architecture
+1. **Buyer prepares online.** Choose one merchant wallet, the exact amount and an expiry. Sign an EIP-712 `GhostVoucher` authorization under the `LiberGhost` v1 domain. Approve tokens if needed and reserve the exact amount in the vault.
+2. **Buyer hands over privately.** Paper/QR carries the signed authorization. It never contains the wallet private key. Reserve calldata omits the signature, so reserving does not publish an immediately redeemable packet.
+3. **Merchant redeems online.** The named wallet claims before expiry and pays TEST BNB gas. The immutable vault verifies the authorization and lifecycle, releases the exact tokens and prevents a second claim. Redemption makes the authorization visible in public calldata.
+4. **Owner recovers unused funds.** At or after expiry, the owner can send a reclaim transaction. It is not automatic and there is no early cancellation.
 
 ```mermaid
-flowchart LR
-  QR["QR payload"] --> Checks["API: format, amount, CRC16"]
-  Checks --> Review["Buyer reviews checked facts"]
-  Merchant["Authenticated merchant"] --> Order["QRIS sandbox order"]
-  Order --> Midtrans["Midtrans Sandbox"]
-  Midtrans --> Status["API verifies provider status"]
-  Status --> Registry["LiberReceiptRegistry on BSC Testnet"]
-  Registry --> FiatReceipt["Public sandbox receipt"]
-  Buyer["Buyer wallet"] -->|"Exact approval then payment"| Invoice["LiberInvoice on BSC Testnet"]
-  Invoice -->|"Direct MockUSDC transfer"| Recipient["Merchant wallet"]
-  Invoice --> Verify["API verifies receipt and both events"]
-  Verify --> TokenReceipt["Public token receipt"]
+sequenceDiagram
+  participant Buyer as Buyer (online preparation)
+  participant Vault as BSC Ghost Vault
+  participant Paper as Private paper / QR
+  participant Merchant as Named merchant (online)
+  Buyer->>Buyer: Choose recipient, amount and expiry; sign EIP-712
+  Buyer->>Vault: Reserve exact tokens (signature excluded)
+  Vault-->>Buyer: Reservation confirmed
+  Buyer->>Paper: Export restricted authorization locally
+  Paper->>Merchant: Private handover
+  Merchant->>Vault: Redeem with named wallet before expiry
+  Vault->>Merchant: Exact token transfer, one terminal claim
+  Note over Buyer,Merchant: Buyer can be absent; merchant needs internet and gas
 ```
 
-The frontend uses Next.js and viem; the backend uses Hono and PostgreSQL. Solidity contracts are built with Foundry. Frontend and API run on Vercel, with Neon providing PostgreSQL.
+```mermaid
+stateDiagram-v2
+  [*] --> Reserved: Owner reserves funds
+  Reserved --> Redeemed: Named merchant / valid signature / before expiry
+  Reserved --> Reclaimed: Owner / at or after expiry
+  Redeemed --> [*]
+  Reclaimed --> [*]
+```
 
-## Implemented safeguards
+## Architecture and trust
 
-- Signed wallet authentication, expiring challenges, and atomic nonce consumption.
-- Merchant ownership checks and retry-safe order creation.
-- Provider status verification and duplicate receipt handling.
-- Exact token approval and transfer verification.
-- Contract tests covering replay, expiry, cancellation, transfer rollback, and amount checks.
+- **Next.js frontend:** wallet connection, constrained preparation, local handover, merchant verification and wallet-owned recovery.
+- **Immutable Solidity vault:** ERC-20 reservation, EIP-712 checks, merchant binding, expiry and single terminal state. No upgrade, pause, protocol fee or admin withdrawal.
+- **API and database:** SIWE sessions for wallet-owned unsigned metadata; verified public receipts and bounded history recovery. The backend does not store active authorization signatures or wallet keys.
+- **Receipt verification:** canonical blocks, expected vault events and exact ERC-20 transfers, with a 12-confirmation threshold. This is not an absolute finality guarantee.
 
-These are implementation safeguards, not an independent security audit.
+The contract and signature remain the authorization source. Database records cannot create settlement. A signature alone is not a completed payment. A token transfer does not establish delivery of goods.
 
-## Deployed contracts — BSC Testnet
+## BNB deployment
 
-- **LiberInvoice:** [0x2ad1785460b3c60b0131b0649b37dacf3dc17b1c](https://testnet.bscscan.com/address/0x2ad1785460b3c60b0131b0649b37dacf3dc17b1c)
-- **LiberReceiptRegistry:** [0xf1267a5ab17b61c5c110b95d4dbb6197ffbbb46d](https://testnet.bscscan.com/address/0xf1267a5ab17b61c5c110b95d4dbb6197ffbbb46d)
-- **MockUSDC:** [0x2116D4a3f11Aa7059Ad0911ad5C89897CC0BcC97](https://testnet.bscscan.com/address/0x2116D4a3f11Aa7059Ad0911ad5C89897CC0BcC97)
+**Network:** BNB Smart Chain Testnet, chain **97**.
 
-## Evidence and judge walkthrough
+**Ghost vault:** [`0x0837ac35ec54F678ba08912dcfd6166a299FCA31`](https://testnet.bscscan.com/address/0x0837ac35ec54F678ba08912dcfd6166a299FCA31).
 
-1. [Open the demo workspace](https://liber-bnb-web.vercel.app/demo).
-2. Try the valid QR and corrupted sample under **QR checks**.
-3. Open the [completed Rp10,000 sandbox receipt](https://liber-bnb-web.vercel.app/pilot/receipt?id=5e28547c-4936-4fdf-970b-198fc623fcf4) and its [BNB recording](https://testnet.bscscan.com/tx/0x12b0809769aac39b4274d08f9c0b37f1308048b5f4811232276cb7a2a55dcc83).
-4. Open the [completed 5 MockUSDC invoice](https://liber-bnb-web.vercel.app/receipt?id=0x9472aacf99e2369eaf65a51d2e7b0f515c6433ac32d0450da1b18e9465ded034) and its [token payment](https://testnet.bscscan.com/tx/0x572e268f3a2a835dacfdfcadd1874997720f3b905f35bed52cc3f1101e263241).
-5. Watch the [90-second BNB demo](https://youtu.be/WyFs-pF5AYM).
+**MockUSDC:** [`0x2116D4a3f11Aa7059Ad0911ad5C89897CC0BcC97`](https://testnet.bscscan.com/address/0x2116D4a3f11Aa7059Ad0911ad5C89897CC0BcC97), 18 decimals, no cash value.
 
-## Scope and next milestone
+The EVM provides inspectable ERC-20 reservations and authorization enforcement. [Sourcify reports an exact source match](https://repo.sourcify.dev/97/0x0837ac35ec54F678ba08912dcfd6166a299FCA31). A verified source badge on BscScan is not claimed. Fees and performance have not been benchmarked for commercial claims.
 
-The current release uses sandbox QRIS and testnet tokens throughout. It does not perform production QRIS settlement, convert crypto into rupiah, or prove merchant identity through a checksum. Live AI is not part of this submission; QR inspection works with deterministic checks.
+## Evidence judges can inspect without a wallet
 
-The next milestone is a merchant pilot after production provider onboarding and operational testing of payment expiry, refunds, reconciliation, and bank disbursement.
+### A completed payment
 
-[Live website](https://liber-bnb-web.vercel.app/) · [Public GitHub repository](https://github.com/agadape/Liber_BnB_hackathon_2026) · [Demo video](https://youtu.be/WyFs-pF5AYM)
+The [public 5 MockUSDC receipt](https://liber-bnb-web.vercel.app/ghost/receipt?id=0xdfad2e816fba512fdda912ced241d9464c3f1358c16427fcfd7ac3fac2067924) links the reserve and [redemption transaction](https://testnet.bscscan.com/tx/0xea11ffb59b93e621f6f08ef221f91303e3c74c4392967e655bd2e6b7ec414b00). It verifies the transfer to the named merchant.
+
+### Recovery of unused funds
+
+A separate [2 MockUSDC receipt](https://liber-bnb-web.vercel.app/ghost/receipt?id=0x5f04a6af2b67a0519ed123946b3b5834d5648974ea23edfd8c70fbf2c0a567fb) links the [owner reclaim](https://testnet.bscscan.com/tx/0x0f8b2ecf962ffc1ba6e14aa3a27b407d3fcb4871f39a01c4f7227780f44eceb2) after expiry.
+
+### Enforcement and application checks
+
+The [on-chain exercise report](https://github.com/agadape/Liber_BnB_hackathon_2026/blob/main/contracts/deployments/ghost-demo-e2e.json) records wrong-merchant, replay and early-reclaim rejection, with matching transfers. [Hosted browser evidence](https://github.com/agadape/Liber_BnB_hackathon_2026/blob/main/contracts/deployments/ghost-ui-e2e.json) records a different payment and a same-voucher rescan rejected without another transaction. The browser exercise closed a voucher tab; it did not prove a whole buyer device was disconnected.
+
+The recorded main build passed **171 tests** (61 frontend, 84 backend, 26 contracts including fuzz/invariant coverage). [Hosted API checks](https://github.com/agadape/Liber_BnB_hackathon_2026/blob/main/contracts/deployments/ghost-production-check.json) passed 12 scenarios covering authentication, owner isolation, metadata idempotence, signature rejection, proof/history verification and cursor ownership. These are engineering checks, not an independent audit.
+
+## Limitations and next steps
+
+Ghost supports EOA wallets in this release. Smart/delegated wallets are unsupported. Preparation requires the buyer online; redemption requires the merchant online with gas. Merchant preselection limits flexibility. Active QR leakage can let the named merchant claim earlier than intended; Ghost does not verify physical handover or delivery. Lost paper does not unlock funds early.
+
+Physical buyer-phone-off, printed-paper readability and actual mobile wallet exercises remain pending. Next steps are a bounded sandbox merchant pilot, measurements of preparation/scanning friction, and independent security review. Real-value Indonesian deployment also requires a defined operating model and qualified legal/regulatory review. No rupiah settlement, QRIS conversion, mainnet launch, regulatory approval, adoption or revenue is claimed.
+
+## Links
+
+- [Live Ghost workspace](https://liber-bnb-web.vercel.app/ghost)
+- [Public repository](https://github.com/agadape/Liber_BnB_hackathon_2026)
+- [Two-minute judge guide](https://github.com/agadape/Liber_BnB_hackathon_2026/blob/main/docs/GHOST-JUDGE-GUIDE.md)
+- [Ghost pitch PDF](https://github.com/agadape/Liber_BnB_hackathon_2026/blob/main/submission/Liber-Ghost-Protocol-Pitch.pdf)
+- New Ghost YouTube and required Canva/Drive deck link: pending owner publication; insert the actual URLs before portal submission.
