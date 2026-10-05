@@ -17,6 +17,8 @@ const USER_ID_KEY = "liber:userId";
 export default function HomePage() {
   const [balance, setBalance] = useState<{ usdcBalance: string; idrEstimate: string } | null>(null);
   const [recent, setRecent] = useState<HistoryEntry[]>([]);
+  const [balanceError, setBalanceError] = useState(false);
+  const [historyState, setHistoryState] = useState<"loading" | "ready" | "error">("loading");
 
   useEffect(() => {
     const userId = window.localStorage.getItem(USER_ID_KEY);
@@ -24,11 +26,11 @@ export default function HomePage() {
 
     getBalance(userId)
       .then(setBalance)
-      .catch(() => setBalance({ usdcBalance: "0.00", idrEstimate: "0" }));
+      .catch(() => setBalanceError(true));
 
     getHistory(userId)
-      .then((entries) => setRecent(entries.slice(0, 3)))
-      .catch(() => setRecent([]));
+      .then((entries) => { setRecent(entries.slice(0, 3)); setHistoryState("ready"); })
+      .catch(() => setHistoryState("error"));
   }, []);
 
   return (
@@ -38,8 +40,10 @@ export default function HomePage() {
       <div className="mt-4">
         {balance ? (
           <GradientBalanceCard usdcBalance={balance.usdcBalance} idrEstimate={balance.idrEstimate} />
+        ) : balanceError ? (
+          <Card><p role="status" className="text-sm text-ink/65">Your balance could not be checked. Refresh this page before relying on the amount.</p></Card>
         ) : (
-          <div className="h-40 animate-pulse rounded-2xl bg-ink/5" />
+          <div className="h-40 animate-pulse rounded-2xl bg-ink/5" role="status"><span className="sr-only">Checking your balance…</span></div>
         )}
       </div>
 
@@ -51,7 +55,8 @@ export default function HomePage() {
         Receive {TOKEN_LABEL}
       </Link>
 
-      <div className="mt-5 grid grid-cols-2 gap-3">
+      <Link href="/ghost" className="wallet-ghost-link mt-5"><span className="ghost-mark" aria-hidden="true">g.</span><span><strong>Ghost Protocol</strong><small>Prepare a permission. Take it off-screen.</small></span><span aria-hidden="true">↗</span></Link>
+      <div className="mt-4 grid grid-cols-2 gap-3">
         <Link href="/pilot" className="rounded-2xl border border-emerald/20 bg-surface p-4"><p className="text-sm font-semibold text-emerald">QRIS sandbox →</p><p className="mt-1 text-xs text-ink/65">Rupiah test invoices</p></Link>
         <Link href="/merchant" className="rounded-2xl border border-ink/10 bg-surface p-4"><p className="text-sm font-semibold">BNB invoices →</p><p className="mt-1 text-xs text-ink/65">MockUSDC on chain</p></Link>
       </div>
@@ -65,7 +70,9 @@ export default function HomePage() {
       </div>
 
       <ul className="mt-3 flex flex-col gap-3">
-        {recent.length === 0 && <p className="text-sm text-ink/65">No activity yet.</p>}
+        {historyState === "loading" && <li role="status" className="text-sm text-ink/65">Reading your recent activity…</li>}
+        {historyState === "error" && <li role="status" className="text-sm text-ink/65">Recent activity is unavailable. Refresh to check again.</li>}
+        {historyState === "ready" && recent.length === 0 && <li className="text-sm text-ink/65">No activity yet.</li>}
         {recent.map((entry) => (
           <li key={entry.id}>
             <Card className="flex items-center gap-3">

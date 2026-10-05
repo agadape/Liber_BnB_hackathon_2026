@@ -119,7 +119,7 @@ export function OnboardingForm() {
             </p>
           )}
         </Card>
-        {error && <p className="text-sm text-rose">{error}</p>}
+        {error && <p role="alert" className="text-sm text-rose">{error}</p>}
         <Button onClick={handleCheckFunding} disabled={submitting}>
           {submitting ? "Checking..." : "I've sent it - Check Again"}
         </Button>
@@ -131,7 +131,7 @@ export function OnboardingForm() {
     <div className="flex flex-col gap-4">
       <p className="mb-1 text-xs leading-relaxed text-ink/65">Sign a message to access your account. This does not authorize a transfer.</p>
 
-      {error && <p className="text-sm text-rose">{error}</p>}
+      {error && <p role="alert" className="text-sm text-rose">{error}</p>}
 
       <Button onClick={handleCreateWallet} disabled={submitting}>
         {submitting ? "Setting up..." : "Create New Wallet"}

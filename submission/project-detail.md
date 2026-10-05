@@ -89,4 +89,6 @@ Physical buyer-phone-off, printed-paper readability and actual mobile wallet exe
 - [Public repository](https://github.com/agadape/Liber_BnB_hackathon_2026)
 - [Two-minute judge guide](https://github.com/agadape/Liber_BnB_hackathon_2026/blob/main/docs/GHOST-JUDGE-GUIDE.md)
 - [Ghost pitch PDF](https://github.com/agadape/Liber_BnB_hackathon_2026/blob/main/submission/Liber-Ghost-Protocol-Pitch.pdf)
-- New Ghost YouTube and required Canva/Drive deck link: pending owner publication; insert the actual URLs before portal submission.
+- [Final Ghost demo film](https://www.youtube.com/watch?v=F03WVgskONw)
+- [Public Ghost pitch deck](https://drive.google.com/file/d/1qod4wenq-ytOWXU0MFrWE098sNBVcWc1/view)
+- [Submitted hackathon project](https://indonesiaweb3hack.xyz/en/projects/proj_4def0a781540276a5d)

@@ -1,70 +1,21 @@
 import Link from "next/link";
 import Image from "next/image";
-import { DEMO_LINKS } from "@/lib/demo-links";
+import { GhostWalkthrough } from "@/components/ghost/GhostWalkthrough";
+import { GhostEvidence } from "@/components/ghost/GhostEvidence";
+import { GhostQuestions } from "@/components/ghost/GhostQuestions";
+import { PROJECT_LINKS } from "@/lib/project-links";
 
 const tools = [
-  { title: "Issue a voucher", detail: "One merchant. One amount.", href: "/ghost/create" },
-  { title: "Redeem paper", detail: "Verify. Claim once.", href: "/ghost/merchant" },
-  { title: "Your paper trail", detail: "Recover or reclaim.", href: "/ghost/vouchers" },
+  { title: "Issue a voucher", detail: "For the buyer. Set the limits.", href: "/ghost/create" },
+  { title: "Redeem a voucher", detail: "For the merchant. Claim once.", href: "/ghost/merchant" },
+  { title: "See your vouchers", detail: "For the owner. Keep the trail.", href: "/ghost/vouchers" },
 ] as const;
 
 export default function LandingPage() {
-  return (
-    <main id="main-content" className="landing-page">
-      <div className="landing-container">
-        <section className="landing-hero" aria-labelledby="landing-title">
-          <div className="landing-intro">
-            <p className="landing-eyebrow">liber:Ghost Protocol · built on BNB.</p>
-            <h1 id="landing-title">A dead phone.<br />A live permission.</h1>
-            <p className="landing-description">Reserve online. Carry paper. Your merchant claims once.</p>
-            <Link href="/ghost" className="landing-primary">Meet Ghost <span aria-hidden="true">↗</span></Link>
-          </div>
-          <Image
-            src="/illustrations/hero-success.jpg"
-            alt="Illustrated Indonesian merchant holding a QR code outside her food stall"
-            width={1000}
-            height={1000}
-            sizes="(max-width: 767px) calc(100vw - 48px), (max-width: 1200px) 46vw, 520px"
-            loading="eager"
-            fetchPriority="high"
-            className="landing-hero-image"
-          />
-        </section>
-
-        <section className="landing-tools" aria-label="Explore Liber">
-          {tools.map(tool => (
-            <Link href={tool.href} key={tool.href} className="landing-tool">
-              <div><h2>{tool.title}</h2><p>{tool.detail}</p></div>
-              <span aria-hidden="true">↗</span>
-            </Link>
-          ))}
-        </section>
-
-        <section className="landing-proof" aria-labelledby="proof-title">
-          <Image
-            src="/illustrations/problem-hook.jpg"
-            alt="Illustration of a crypto user separated from a coffee shop by a wall"
-            width={1000}
-            height={1000}
-            sizes="(max-width: 767px) 200px, 270px"
-            className="landing-proof-image"
-          />
-          <div>
-            <h2 id="proof-title">Buyer offline.<br />Merchant online.</h2>
-            <p>A fixed recipient and amount.<br />Unused funds are reclaimable after expiry.</p>
-            <Link href="/demo" className="landing-text-link">See the testnet proof <span aria-hidden="true">↗</span></Link>
-          </div>
-        </section>
-
-        <footer className="landing-footer">
-          <p>BSC Testnet only. MockUSDC has no cash value.</p>
-          <div>
-            <Link href="/demo/funds">Get demo tokens</Link>
-            <a href="https://testnet.bscscan.com/address/0x0837ac35ec54F678ba08912dcfd6166a299FCA31" target="_blank" rel="noopener noreferrer">Ghost vault ↗</a>
-            <a href={DEMO_LINKS.source} target="_blank" rel="noopener noreferrer">GitHub ↗</a>
-          </div>
-        </footer>
-      </div>
-    </main>
-  );
+  return <main id="main-content" className="landing-page liber-home"><div className="landing-container">
+    <section className="landing-hero" aria-labelledby="landing-title"><div className="landing-intro"><p className="landing-eyebrow">liber:Ghost Protocol</p><h1 id="landing-title">A dead phone.<br />A live permission.</h1><p className="landing-description">Reserve online. Carry paper. Your merchant claims once.</p><div className="home-hero-actions"><Link href="/ghost" className="landing-primary">Ghost workspace <span aria-hidden="true">↗</span></Link><a href={PROJECT_LINKS.video} target="_blank" rel="noopener noreferrer" className="ghost-secondary-link">Watch demo <span aria-hidden="true">↗</span></a></div></div><Image src="/illustrations/hero-success.jpg" alt="Illustrated Indonesian merchant holding a QR code outside her food stall" width={1000} height={1000} sizes="(max-width:767px) calc(100vw - 40px), (max-width:1200px) 46vw, 520px" loading="eager" fetchPriority="high" className="landing-hero-image" /></section>
+    <nav className="landing-tools" aria-label="Choose your Ghost workspace">{tools.map(tool => <Link href={tool.href} key={tool.href} className="landing-tool"><div><h2>{tool.title}</h2><p>{tool.detail}</p></div><span aria-hidden="true">↗</span></Link>)}</nav>
+    <section className="home-story" aria-labelledby="story-title"><div className="home-story-art"><Image src="/illustrations/problem-hook.jpg" alt="Comic illustration of a buyer and a food stall on opposite sides of a wall" width={1000} height={1000} sizes="(max-width:767px) 280px,380px" /><p>Illustrative scenario. Testnet tokens only.</p></div><div className="home-story-copy"><h2 id="story-title">The sandwich is ready.<br /><em>Your battery is not.</em></h2><p>Ghost lets you prepare a permission before checkout. Keep it on paper, with the rules already attached.</p><dl className="home-rules"><div><dt>One merchant</dt><dd>You choose the receiving wallet.</dd></div><div><dt>One amount</dt><dd>The recipient cannot change it.</dd></div><div><dt>One claim</dt><dd>A copied code cannot pay twice.</dd></div></dl><p className="home-story-boundary">Buyer prepares online. Merchant redeems online.</p></div></section>
+    <GhostWalkthrough /><GhostEvidence /><GhostQuestions />
+  </div></main>;
 }

@@ -3,6 +3,7 @@ import {useEffect,useState} from "react";
 import Link from "next/link";
 import QRCode from "qrcode";
 import {encodeFunctionData,type Address,type Hash} from "viem";
+import {GhostJourney} from "@/components/ghost/GhostJourney";
 import {PageShell} from "@/components/ui/PageShell";
 import {PageHeading} from "@/components/ui/PageHeading";
 import {ExampleProofs} from "@/components/ExampleProofs";
@@ -66,12 +67,13 @@ export default function MerchantPage() {
     }catch(e){setError((e as Error).message);}finally{setBusy(false);}
   }
   return <PageShell wide><PageHeading eyebrow="BNB workspace" title="BNB invoices.">Set an amount and expiry. Share a test-token invoice.</PageHeading>
+    <GhostJourney steps={["Connect wallet","Set invoice","Share checkout","Verify receipt"]} current={!wallet?0:selected?2:1}/>
     <Link href="/ghost/merchant" className="landing-text-link mb-6">Redeem a Ghost paper voucher ↗</Link>
     <div className="grid items-start gap-8 lg:grid-cols-2"><div>
     <Link href="/demo/funds" className="mb-4 inline-block text-xs font-semibold text-emerald underline">Get demo tokens ↗</Link>
     {config && !config.contractAddress && <Card className="mt-5"><p className="font-semibold">Contract deployment pending</p><p className="mt-2 text-sm text-ink/60">Invoice creation is unavailable until the contract is configured.</p></Card>}
     {!wallet?<Card className="flex flex-col gap-3"><Button disabled={busy} onClick={()=>connect(true)}>Connect existing wallet</Button><Button variant="ghost" disabled={busy} onClick={()=>connect(false)}>Use this device&apos;s test wallet</Button><p className="text-xs text-ink/65">Your wallet needs test BNB for gas. Keys remain on your device.</p></Card>:<Card className=""><p className="text-xs text-ink/65">Receiving wallet · BSC Testnet</p><p className="mt-2 break-all font-mono text-xs">{wallet.publicKey}</p><Button className="mt-3" variant="ghost" disabled={busy || !!pending} onClick={()=>{setWallet(null);setInvoices([]);setSelected(null);}}>Switch wallet</Button></Card>}
-    {wallet && <Card className="mt-4 flex flex-col gap-3"><h2 className="font-semibold">Create invoice</h2><label className="text-sm">Amount · MockUSDC<input className="mt-2 w-full rounded-xl bg-paper p-3" inputMode="decimal" value={amount} onChange={e=>setAmount(e.target.value)}/></label><label className="text-sm">Expires in<select className="mt-2 w-full rounded-xl bg-paper p-3" value={minutes} onChange={e=>setMinutes(e.target.value)}><option value="15">15 minutes</option><option value="60">1 hour</option><option value="1440">24 hours</option></select></label><Button disabled={busy || !!pending || !config?.contractAddress} onClick={create}>{busy?"Working…":"Create on BNB"}</Button><p className="text-xs text-ink/65">No service fee. The wallet pays test BNB gas.</p></Card>}
+    {wallet && <Card className="mt-4 flex flex-col gap-3"><h2 className="font-semibold">Create invoice</h2><label className="text-sm">Amount · MockUSDC<input className="mt-2 w-full rounded-xl bg-paper p-3" name="invoice-amount" autoComplete="off" inputMode="decimal" value={amount} onChange={e=>setAmount(e.target.value)}/></label><label className="text-sm">Expires in<select className="mt-2 w-full rounded-xl bg-paper p-3" value={minutes} onChange={e=>setMinutes(e.target.value)}><option value="15">15 minutes</option><option value="60">1 hour</option><option value="1440">24 hours</option></select></label><Button disabled={busy || !!pending || !config?.contractAddress} onClick={create}>{busy?"Working…":"Create on BNB"}</Button><p className="text-xs text-ink/65">No service fee. The wallet pays test BNB gas.</p></Card>}
     {pending && <Card className="mt-4 flex flex-col gap-3"><p className="text-sm">Transaction submitted. Resume confirmation without sending again.</p><a href={explorerTxUrl(pending.hash)} className="text-sm text-emerald underline" target="_blank" rel="noopener noreferrer">View transaction</a><Button disabled={busy} onClick={async()=>{setBusy(true);setError(null);try{await confirm(pending);}catch(e){setError((e as Error).message);}finally{setBusy(false);}}}>Resume confirmation</Button></Card>}
     {status && <p role="status" className="mt-4 text-sm text-emerald">{status}</p>}{error && <p role="alert" className="mt-4 text-sm text-rose">{error}</p>}
     </div><div><ExampleProofs/>

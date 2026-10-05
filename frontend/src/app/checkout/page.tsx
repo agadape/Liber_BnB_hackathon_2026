@@ -6,15 +6,16 @@ import {erc20Abi,type Address,type Hash} from "viem";
 import {PageShell} from "@/components/ui/PageShell";
 import {PageHeading} from "@/components/ui/PageHeading";
 import {Card} from "@/components/ui/Card";
+import {ReceiptSkeleton} from "@/components/ui/ReceiptSkeleton";
 import {Button} from "@/components/ui/Button";
 import {getInvoice,verifyInvoice,selectWallet,publicRpc,approvalTx,invoicePaymentTx,type Invoice} from "@/lib/merchant";
 import {sendActiveWallet,type ActiveWallet} from "@/lib/wallet/activeWallet";
 import {explorerTxUrl} from "@/lib/chain";
 type Pending={kind:"approval"|"payment";hash:Hash};
 const pendingKey=(id:string,address:string)=>`liber:checkout:97:${id}:${address.toLowerCase()}`;
-export default function CheckoutPage(){return <Suspense fallback={<PageShell>Loading invoice…</PageShell>}><CheckoutContent/></Suspense>;}
-function CheckoutContent() {
-  const id=useSearchParams().get("id") ?? "";
+export default function CheckoutPage(){return <Suspense fallback={<PageShell><ReceiptSkeleton label="Loading invoice…"/></PageShell>}><RoutedCheckout/></Suspense>;}
+function RoutedCheckout(){const id=useSearchParams().get("id")??"";return <CheckoutContent key={id} id={id}/>;}
+function CheckoutContent({id}:{id:string}) {
   const validId=/^0x[a-fA-F0-9]{64}$/.test(id);
   const [invoice,setInvoice]=useState<Invoice|null>(null),[wallet,setWallet]=useState<ActiveWallet|null>(null),[pending,setPending]=useState<Pending|null>(null);
   const [busy,setBusy]=useState(false),[approved,setApproved]=useState(false),[status,setStatus]=useState(""),[error,setError]=useState<string|null>(null);
@@ -49,6 +50,7 @@ function CheckoutContent() {
   }
   async function faucet(){if(!wallet || !invoice?.tokenAddress)return;setBusy(true);setError(null);try{const {encodeFunctionData}=await import("viem");const hash=await sendActiveWallet(wallet,{to:invoice.tokenAddress,data:encodeFunctionData({abi:[{name:"faucet",type:"function",stateMutability:"nonpayable",inputs:[],outputs:[]}],functionName:"faucet"})}) as Hash;setStatus(`Test token request submitted: ${hash}`);const receipt=await publicRpc().waitForTransactionReceipt({hash});if(receipt.status!=="success")throw Error("Test token request reverted. No tokens received.");setStatus("Test tokens received. Check the invoice before paying.");}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
   return <PageShell><PageHeading eyebrow="BNB checkout" title="Review your invoice.">Check the recipient and amount. TEST BNB pays the gas.</PageHeading>
+    {validId&&!invoice&&!error&&<ReceiptSkeleton label="Reading the invoice recipient, amount and expiry…"/>}
     {invoice && <Card className=""><p className="text-xs uppercase text-ink/65">Invoice amount</p><p className="mt-2 text-3xl font-semibold">{invoice.amountUsdc} <span className="text-base">MockUSDC</span></p><span className="mt-3 inline-block rounded-full bg-emerald/10 px-3 py-1 text-xs uppercase text-emerald">{invoice.status}</span><p className="mt-4 text-xs text-ink/65">Receiving wallet · identity not verified</p><p className="mt-2 break-all font-mono text-xs">{invoice.merchant}</p><p className="mt-3 text-xs text-ink/65">Expires {new Date(invoice.expiresAt*1000).toLocaleString()}</p></Card>}
     {invoice?.status==="open" && !wallet && <Card className="mt-4 flex flex-col gap-3"><Button disabled={busy} onClick={()=>connect(true)}>Connect buyer wallet</Button><Button variant="ghost" disabled={busy} onClick={()=>connect(false)}>Use this device&apos;s test wallet</Button></Card>}
     {wallet && invoice?.status==="open" && <Card className="mt-4 flex flex-col gap-3"><p className="text-xs text-ink/65">Paying wallet</p><p className="break-all font-mono text-xs">{wallet.publicKey}</p><p className="text-xs text-ink/60">First approve the exact amount, then sign payment. Your wallet pays test BNB gas.</p><Button disabled={busy || !!pending} onClick={pay}>{busy?"Confirming…":approved?`Pay ${invoice.amountUsdc} MockUSDC`:`Approve / pay ${invoice.amountUsdc} MockUSDC`}</Button><Button variant="ghost" disabled={busy || !!pending} onClick={faucet}>Get test MockUSDC</Button><a href="https://www.bnbchain.org/en/testnet-faucet" target="_blank" rel="noopener noreferrer" className="text-xs text-emerald underline">Need test BNB for gas?</a></Card>}

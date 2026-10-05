@@ -1,2 +1,4 @@
 *.pdf binary
 *.pptx binary
+frontend/src/lib/ghost/protocol.ts text eol=lf
+backend/src/ghost/protocol.ts text eol=lf

@@ -1,6 +1,7 @@
 "use client";
 import {useEffect,useState} from "react";
 import Link from "next/link";
+import {GhostJourney} from "@/components/ghost/GhostJourney";
 import {PageShell} from "@/components/ui/PageShell";
 import {PageHeading} from "@/components/ui/PageHeading";
 import {ExampleProofs} from "@/components/ExampleProofs";
@@ -28,6 +29,7 @@ export default function PilotPage(){
   }catch(e){setError((e as Error).message);}finally{setBusy(false);}}
   return <PageShell wide>
     <PageHeading eyebrow="QRIS workspace" title="QRIS sandbox. BNB receipts.">Create a test invoice. Share the checkout. Verify its receipt.</PageHeading>
+    <GhostJourney steps={["Sign in","Create invoice","Share checkout","Verify receipt"]} current={!wallet?0:orders.length===0?1:2}/>
     <div className="grid items-start gap-8 lg:grid-cols-[1fr_1.15fr]">
       <div className="space-y-4">
         <Card>
@@ -36,7 +38,7 @@ export default function PilotPage(){
           <p className="mt-2 text-xs leading-relaxed text-ink/65">{!config&&!error?"Checking the payment environment and merchant connection…":config?.enabled?config.environment==="production"?"Payments use rupiah. Bank disbursement follows the merchant's Midtrans schedule.":"Midtrans sandbox. No real money or bank disbursement.":"The QRIS connection is unavailable. Completed test receipts remain accessible below."}</p>
         </Card>
         {config?.enabled&&!wallet&&<Card className="flex flex-col gap-3"><h2 className="font-semibold">Create an invoice</h2><p className="text-sm text-ink/60">Sign in with the configured merchant wallet.</p><Button disabled={busy} onClick={()=>connect(true)}>{busy?"Connecting…":"Sign in as pilot merchant"}</Button><Button variant="ghost" disabled={busy} onClick={()=>connect(false)}>Use device wallet to sign in</Button><p className="text-xs leading-relaxed text-ink/65">Sign a login message, not a transfer. Receipts are public.</p></Card>}
-        {wallet&&<Card className="flex flex-col gap-3"><div className="flex items-center justify-between"><h2 className="font-semibold">Create an invoice</h2><button className="text-xs text-emerald underline" disabled={busy} onClick={()=>{setWallet(null);setOrders([]);setDraft(null);setStatus("");}}>Switch wallet</button></div><p className="break-all rounded-lg bg-paper p-3 font-mono text-xs text-ink/60">{wallet.publicKey}</p><label className="text-sm font-medium">Amount · IDR<input inputMode="numeric" className="mt-2 w-full rounded-xl border border-ink/10 bg-paper p-3" value={amount} disabled={!!draft} onChange={e=>setAmount(e.target.value)}/></label><p className="text-xs text-ink/65">Rp1.000 - {rupiah(config?.maxAmountIdr??100000)}</p><Button disabled={busy||!config?.enabled} onClick={create}>{busy?"Checking…":draft?"Resume same invoice":"Create QRIS invoice"}</Button><p className="text-xs leading-relaxed text-ink/65">A retry keeps the same invoice reference, including after a slow response.</p></Card>}
+        {wallet&&<Card className="flex flex-col gap-3"><div className="flex items-center justify-between"><h2 className="font-semibold">Create an invoice</h2><button className="text-xs text-emerald underline" disabled={busy} onClick={()=>{setWallet(null);setOrders([]);setDraft(null);setStatus("");}}>Switch wallet</button></div><p className="break-all rounded-lg bg-paper p-3 font-mono text-xs text-ink/60">{wallet.publicKey}</p><label className="text-sm font-medium">Amount · IDR<input name="invoice-amount" autoComplete="off" inputMode="numeric" className="mt-2 w-full rounded-xl border border-ink/10 bg-paper p-3" value={amount} disabled={!!draft} onChange={e=>setAmount(e.target.value)}/></label><p className="text-xs text-ink/65">Rp1.000 - {rupiah(config?.maxAmountIdr??100000)}</p><Button disabled={busy||!config?.enabled} onClick={create}>{busy?"Checking…":draft?"Resume same invoice":"Create QRIS invoice"}</Button><p className="text-xs leading-relaxed text-ink/65">A retry keeps the same invoice reference, including after a slow response.</p></Card>}
         {status&&<p role="status" className="rounded-xl bg-emerald/10 p-3 text-sm text-emerald">{status}</p>}{error&&<p role="alert" className="rounded-xl bg-rose/10 p-3 text-sm text-rose">{error}</p>}
       </div>
       <div className="space-y-4">

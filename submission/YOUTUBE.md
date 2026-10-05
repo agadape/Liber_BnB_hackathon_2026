@@ -48,4 +48,4 @@ Original Liber artwork, local synthetic English narration, original synthesized 
 - `Liber-Ghost-English.srt`
 - `Ghost-YouTube-Thumbnail.png`
 
-After upload, insert the actual new YouTube URL into SUBMISSION.md and project-detail.md. Do not label the previous QRIS film as Ghost.
+Published final Ghost film: https://www.youtube.com/watch?v=F03WVgskONw. This is the two-minute Ghost version used by the public submission; the previous QRIS film remains a separate legacy demo.

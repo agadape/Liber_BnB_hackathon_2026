@@ -34,17 +34,19 @@ https://github.com/agadape/Liber_BnB_hackathon_2026
 https://liber-bnb-web.vercel.app/ghost
 
 ## Demo video
-**Pending upload of the new Ghost film.** Insert its new YouTube URL after upload. The previous `WyFs-pF5AYM` video describes QRIS/invoices, not Ghost. [Upload copy](submission/YOUTUBE.md).
+[Watch the final Ghost film](https://www.youtube.com/watch?v=F03WVgskONw) · 2 minutes · English narration and captions. [Upload copy](submission/YOUTUBE.md).
 
 ## Pitch deck — Canva/Drive
-**Pending public Canva/Drive link.** Upload the generated Ghost PDF/PPTX, then paste its view link. The repository PDF is a supporting link; the supplied form explicitly requests Canva/Drive.
+[Open the public Ghost pitch deck](https://drive.google.com/file/d/1qod4wenq-ytOWXU0MFrWE098sNBVcWc1/view) · 10 slides. Editable PDF/PPTX sources remain in the repository and release.
 
 ## Optional socials
 Leave blank unless the owner supplies real project accounts. Personal/team fields are completed by the owner.
 
 ## Final publishing checklist
-- [ ] New Ghost YouTube URL inserted here and in project-detail.md.
-- [ ] Ghost deck public Canva/Drive view link inserted here.
-- [ ] Owner completes personal fields and any required attestations.
-- [ ] Network is BSC Testnet; address is the Ghost vault above.
-- [ ] Preview confirms embeds and Mermaid render correctly.
+- [x] Final Ghost YouTube URL inserted here and in project-detail.md.
+- [x] Ghost deck public Drive view link inserted here.
+- [x] Owner submitted the project; public page reports Submitted on 5 October 2026.
+- [x] Network is BSC Testnet; address is the Ghost vault above.
+- [x] Public submission video, deck and Mermaid diagrams visibly checked.
+
+[View the submitted project](https://indonesiaweb3hack.xyz/en/projects/proj_4def0a781540276a5d). Physical phone-off/device gates remain pending; submission does not change those limits.

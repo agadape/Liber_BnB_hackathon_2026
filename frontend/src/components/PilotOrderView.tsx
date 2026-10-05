@@ -4,6 +4,7 @@ import {useSearchParams} from "next/navigation";
 import Link from "next/link";
 import {encodeFunctionData,type Hash} from "viem";
 import {PageShell} from "./ui/PageShell";
+import {ReceiptSkeleton} from "./ui/ReceiptSkeleton";
 import {PageHeading} from "./ui/PageHeading";
 import {Card} from "./ui/Card";
 import {Button} from "./ui/Button";
@@ -38,7 +39,7 @@ function OrderContent({id,proof}:{id:string;proof:boolean}){
   }catch(e){setError((e as Error).message);}finally{setBusy(false);}}
   return <PageShell><PageHeading eyebrow={proof?"QRIS receipt":"QRIS checkout"} title={proof?"Payment evidence.":"Review your invoice."}>{proof?"Provider confirmation and its public receipt hash.":"Check the merchant, amount and payment environment."}</PageHeading>
     {!valid&&<p role="alert" className="mt-5 text-sm text-rose">Invalid invoice link. Use the checkout shared by the merchant.</p>}
-    {valid&&!order&&!error&&<p role="status" className="mt-5 text-sm text-ink/65">Reading invoice…</p>}
+    {valid&&!order&&!error&&<ReceiptSkeleton label="Reading the invoice and provider status…"/>}
     {order&&<><Card className="flex flex-col gap-3"><p className="text-xs uppercase text-ink/65">{order.merchantName}</p><p className="text-3xl font-semibold">{rupiah(order.amountIdr)}</p><p className="text-sm font-semibold text-emerald">{order.environment==="sandbox"?"Sandbox simulation · ":""}{pilotStatus(order.status)}</p><p className="text-xs text-ink/60">{order.environment==="sandbox"?"Testing only. Do not send real money to a sandbox QR.":"Pay in rupiah using your banking or e-wallet app. No crypto wallet is needed."}</p><p className="text-xs text-ink/65">Last provider check: {order.providerCheckedAt?new Date(order.providerCheckedAt).toLocaleString():"not confirmed yet"}</p>{order.status==="settlement"&&<p className="text-xs text-ink/60">{order.environment==="sandbox"?"Simulation confirmed. No bank disbursement occurs.":"Midtrans reports payment confirmation. Bank disbursement follows the provider schedule."}</p>}{["refund","partial_refund"].includes(order.status)&&<p className="text-xs text-ink/60">This invoice has a refund update. Earlier recorded receipts describe its previous state.</p>}</Card>
     {!proof&&order.hasQr&&<Card className="mt-4 flex flex-col items-center gap-3">{!qrFailed?<img src={pilotApi(`/orders/${id}/qr`)} width={280} height={280} alt={`${order.environment==="sandbox"?"Sandbox test":"Midtrans"} QRIS invoice for ${rupiah(order.amountIdr)}`} onError={()=>setQrFailed(true)}/>:<p role="alert" className="text-sm text-rose">QR could not load. Refresh the invoice before paying.</p>}<p className="text-xs text-center text-ink/60">Confirm the merchant and amount in your payment app before authorizing.</p></Card>}
     {order.status==="creating"&&<p className="mt-4 text-sm text-ink/60">Provider confirmation is pending. The merchant can resume the same invoice; no payable QR has been issued here yet.</p>}
